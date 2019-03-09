@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        // "outDir": "./dist/",
+        "outDir": "./pabu/static/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es5",
+        "jsx": "react"
+    },
+    "include": [
+        // "./src/**/*"
+        "./pabu/assets/ts/**/*"
+    ]
+}

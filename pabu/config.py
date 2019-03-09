@@ -1,0 +1,36 @@
+
+from enum import Enum
+from configpp.tree import Tree, Settings, DatabaseLeaf, PythonLoggerLeaf, NodeBase
+from configpp.soil import Config
+from typing import Dict
+from voluptuous import Any
+
+from .auth import backends
+
+backend_names = [b.OAUTH_NAME for b in backends]
+
+tree = Tree(Settings(convert_underscores_to_hypens = True, convert_camel_case_to_hypens = True))
+
+
+class OAuthConfig(NodeBase):
+
+    id = str
+    secret = str
+
+    def serialize(self):
+        return self.__dict__
+
+@tree.root()
+class PabuConfig():
+
+    database = DatabaseLeaf
+
+    auth: Dict[str, OAuthConfig] = tree.dict_node(Any(*backend_names), OAuthConfig)
+
+def load() -> PabuConfig:
+    config_loader = Config('pabu.yaml')
+
+    if not config_loader.load():
+        return None
+
+    return tree.load(config_loader.data)
