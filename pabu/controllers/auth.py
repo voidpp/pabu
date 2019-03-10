@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, session, redirect
 from authlib.flask.client import OAuth
 from loginpass import create_flask_blueprint
+from sqlalchemy import or_, and_
 
 from pabu.auth import backends
 from pabu.config import Config
@@ -29,12 +30,15 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
     oauth = OAuth(app, Cache())
 
     def handle_authorize(remote, token, user_info):
+        print(remote.name)
         sub = user_info['sub']
+        email = user_info['email']
+        user_info['providerName'] = remote.name
         session['user_info'] = user_info
         with db.session_scope() as conn:
-            user = conn.query(User).filter(User.sub == sub).first()
+            user = conn.query(User).filter(or_(User.sub == sub, and_(User.email == email, User.email != None))).first()
             if not user:
-                user = User(sub = sub)
+                user = User(sub = sub, email = email)
                 conn.add(user)
                 conn.flush()
             session['user_id'] = user.id
@@ -47,7 +51,7 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
 
 
     @app.route('/logout')
-    def logout():
+    def logout(): # pylint: disable=unused-variable
         del session['user_info']
         del session['user_id']
         return redirect('/')

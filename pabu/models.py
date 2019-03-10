@@ -1,16 +1,24 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, JSON, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, JSON, DateTime, Table
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+
 
 Base = declarative_base()
+
+association_table = Table('projects_users', Base.metadata,
+    Column('project_id', Integer, ForeignKey('projects.id')),
+    Column('user_id', Integer, ForeignKey('users.id'))
+)
 
 class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     sub = Column(String, nullable = False)
+    email = Column(String)
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -18,6 +26,8 @@ class Project(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable = False)
     desc = Column(String)
+
+    users = relationship("User", secondary = association_table)
 
 class SourceType(enum.Enum):
 
@@ -49,3 +59,4 @@ class TimeEntry(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
     start = Column(DateTime, default = datetime.now)
     end = Column(DateTime)
+

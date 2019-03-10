@@ -10,5 +10,5 @@ run_simple(
     wsgi_application,
     use_reloader = True,
     use_debugger = True,
-    extra_files = ['pabu.yaml', 'heimdall/templates/index.html']
+    extra_files = ['pabu.yaml', 'pabu/templates/index.html']
 )

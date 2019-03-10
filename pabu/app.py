@@ -40,12 +40,13 @@ db = Database(str(config.database))
 @frontent.route('/')
 @frontent.route('/<path:path>')
 def index(path = None):
-    if is_logged_in():
-        return render_template('index.html', user_info = session['user_info'])
-    else:
-        tpl = '<li><a href="/auth/{}/login">{}</a></li>'
-        lis = [tpl.format(name, name) for name in config.auth]
-        return '<ul>{}</ul>'.format(''.join(lis))
+    return render_template('index.html',
+        data = {
+            'userInfo': session.get('user_info'),
+            'isLoggedIn': is_logged_in(),
+            'authBackendNames': list(config.auth.keys()),
+        }
+    )
 
-add_api_controllers(api)
+add_api_controllers(api, db)
 add_auth_controllers(auth, config, db)

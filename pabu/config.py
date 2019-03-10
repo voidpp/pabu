@@ -2,7 +2,6 @@
 from enum import Enum
 from configpp.tree import Tree, Settings, DatabaseLeaf, PythonLoggerLeaf, NodeBase
 from configpp.soil import Config
-from typing import Dict
 from voluptuous import Any
 
 from .auth import backends
@@ -25,7 +24,7 @@ class PabuConfig():
 
     database = DatabaseLeaf
 
-    auth: Dict[str, OAuthConfig] = tree.dict_node(Any(*backend_names), OAuthConfig)
+    auth = tree.dict_node(Any(*backend_names), OAuthConfig)
 
 def load() -> PabuConfig:
     config_loader = Config('pabu.yaml')

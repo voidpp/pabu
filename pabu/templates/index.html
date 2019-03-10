@@ -2,16 +2,23 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello React!</title>
+        <title>Pabu</title>
     </head>
     <body>
-        <div id="example"></div>
+        <div id="body"></div>
 
         <!-- Dependencies -->
-        <script src="/static/react.development.js"></script>
-        <script src="/static/react-dom.development.js"></script>
+        <!-- <script src="/static/react.development.js"></script>
+        <script src="/static/react-dom.development.js"></script> -->
+<!--
+        <script src="https://unpkg.com/@material-ui/core/umd/material-ui.development.js"></script>
 
-        <!-- Main -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.4/umd/react.development.js" integrity="sha256-5qXzTpCme2glpjIMD82N9CvHzot7DsNj+J81wNBYCs8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.4/umd/react-dom.development.js" integrity="sha256-zaBIa6kuwEspzOIU5TeB5bATnxmvJFmht9smi5jLH/Q=" crossorigin="anonymous"></script> -->
+
+        <script>
+            window.initialData = {{data|tojson|safe}}
+        </script>
         <script src="/static/bundle.js"></script>
     </body>
 </html>

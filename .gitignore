@@ -60,4 +60,5 @@ target/
 .pytest_cache/
 pabu.yaml
 node_modules
-pabu/static*
+pabu/static/bundle.js
+pabu/static/bundle.js.map
