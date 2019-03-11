@@ -6,14 +6,30 @@ import {ThunkAction} from 'redux-thunk';
 export enum Action {
     ADD_PROJECT = 'ADD_PROJECT',
     ADD_PROJECT_DONE = 'ADD_PROJECT_DONE',
-    REQUEST_PROJECT_LIST = 'REQUEST_PROJECT_LIST',
-    RECEIVE_PROJECT_LIST = 'RECEIVE_PROJECT_LIST',
+    REQUEST_PROJECTS = 'REQUEST_PROJECTS',
+    RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
     OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
+    OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
+    OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
 }
 
 export function openAddProjectDialog(isOpen = true){
     return {
         type: Action.OPEN_ADD_PROJECT_DIALOG,
+        isOpen,
+    }
+}
+
+export function openAddIssueDialog(isOpen = true){
+    return {
+        type: Action.OPEN_ADD_ISSUE_DIALOG,
+        isOpen,
+    }
+}
+
+export function openAddTimeDialog(isOpen = true){
+    return {
+        type: Action.OPEN_ADD_TIME_DIALOG,
         isOpen,
     }
 }
@@ -32,35 +48,52 @@ export function addProjectDone() {
     }
 }
 
-export function requestProjectList() {
+export function requestProjects(id: number = null) {
     return {
-        type: Action.REQUEST_PROJECT_LIST,
+        type: Action.RECEIVE_PROJECTS,
+        id,
     }
 }
 
-export function fetchProjectList() {
+export function fetchProjects(id: number = null) {
     return dispatch => {
-        dispatch(requestProjectList())
-        return client.getProjectList().then(list => {
-            dispatch(openAddProjectDialog(false))
-            dispatch(receiveProjectList(list))
+        dispatch(requestProjects(id))
+        return client.getProjects(id).then(data => {
+            dispatch(receiveProjects(data))
         })
     }
 }
 
-export function receiveProjectList(list) {
+export function receiveProjects(data) {
     return  {
-        type: Action.RECEIVE_PROJECT_LIST,
-        list,
+        type: Action.RECEIVE_PROJECTS,
+        data,
     }
 }
 
 export function sendProject(name: string, description: string) {
     return dispatch => {
         dispatch(addProject(name, description));
-        return client.createProject(name, description).then(prjId => {
+        return client.createProject(name, description).then(project => {
             dispatch(addProjectDone());
-            return dispatch(fetchProjectList())
+            dispatch(openAddProjectDialog(false))
+            return dispatch(receiveProjects({[project.id]: project}))
+        })
+    }
+}
+
+export function sendIssue(name: string, description: string, projectId: number) {
+    return dispatch => {
+        return client.createIssue(name, description, projectId).then(prjId => {
+            dispatch(openAddIssueDialog(false))
+            return dispatch(fetchProjects(projectId))
+        })
+    }
+}
+
+export function sendTime(projectId: number, start: Date, issueId: number = null, end: Date = null) {
+    return dispatch => {
+        return client.addTime(projectId, start, issueId, end).then(() => {
         })
     }
 }

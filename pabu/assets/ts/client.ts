@@ -1,3 +1,4 @@
+import { Project } from "./types";
 
 class PabuClient {
 
@@ -30,12 +31,20 @@ class PabuClient {
         return data.result;
     }
 
-    async getProjectList() {
-        return this._send('get_project_list');
+    async getProjects(id: number = null) {
+        return this._send('get_projects', [id]);
     }
 
-    async createProject(name: string, description: string) {
+    async createProject(name: string, description: string): Promise<Project> {
         return this._send('create_project', [name, description]);
+    }
+
+    async createIssue(name: string, description: string, projectId: number) {
+        return this._send('create_issue', [name, description, projectId]);
+    }
+
+    async addTime(projectId: number, start: Date, issueId: number = null, end: Date = null) {
+        return this._send('add_time', [projectId, start, issueId, end]);
     }
 }
 

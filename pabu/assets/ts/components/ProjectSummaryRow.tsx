@@ -9,6 +9,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     root: {
@@ -30,22 +31,25 @@ const styles = theme => ({
 type Props = {
     project: Project,
     expanded: boolean,
-    handleChange: (name: string) => void,
+    handleChange: (id: number) => void,
     classes: any,
+    onAddNewIssue: () => void,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, project, handleChange, classes } = props;
-    return  <ExpansionPanel expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.name)}>
+    const { expanded, project, handleChange, classes, onAddNewIssue } = props;
+    return  <ExpansionPanel expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{project.name}</Typography>
-                    <Typography className={classes.secondaryHeading}>{project.desc}</Typography>
+                    <Typography className={classes.secondaryHeading}>{project.desc} ({project.issues})</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                     <Typography>
-                        Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-                        maximus est, id dignissim quam.
-                </Typography>
+                        <Button style={{marginRight: 10}} color="primary" variant="contained" onClick={onAddNewIssue}>
+                            Add new issue
+                        </Button>
+                        <Button color="primary" variant="contained">Add time</Button>
+                    </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
 }));

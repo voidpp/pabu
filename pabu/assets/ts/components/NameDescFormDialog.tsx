@@ -1,15 +1,17 @@
 
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
-import { ProjectSubmitCallback } from '../types';
+import { NameDescSubmitCallback } from '../types';
 
 type Props = {
     opened: boolean,
+    onSubmit: NameDescSubmitCallback,
+    caption: string,
+    text: string,
     onClose: () => void,
-    onSubmit: ProjectSubmitCallback,
 }
 
-export default class CreateProjectDialog extends React.Component<Props, {name: string, desc:string}> {
+export default class NameDescFormDialog extends React.Component<Props, {name: string, desc:string}> {
 
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
@@ -22,12 +24,10 @@ export default class CreateProjectDialog extends React.Component<Props, {name: s
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
         >
-            <DialogTitle id="form-dialog-title">Create project</DialogTitle>
+            <DialogTitle id="form-dialog-title">{this.props.caption}</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">
                 <DialogContent>
-                    <DialogContentText>
-                        Add some text what the heck is a project...
-                    </DialogContentText>
+                    <DialogContentText>{this.props.text}</DialogContentText>
                         <TextField
                             autoFocus
                             margin="dense"

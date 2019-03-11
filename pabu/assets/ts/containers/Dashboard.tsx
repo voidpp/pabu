@@ -3,11 +3,10 @@ import * as React from 'react';
 import Header from '../components/Header';
 import { UserInfo, ProjectSubmitCallback, Project, State } from '../types';
 import { Paper, Grid, Button } from '@material-ui/core';
-import CreateProjectDialog from '../components/CreateProjectDialog';
 import ProjectList from './ProjectList';
 import { connect } from 'react-redux';
 import { sendProject, openAddProjectDialog } from '../actions';
-
+import NameDescFormDialog from '../components/NameDescFormDialog';
 
 type Props = {
     userInfo: UserInfo,
@@ -23,7 +22,9 @@ class Dashboard extends React.Component<Props> {
 
         const { userInfo, onProjectSubmit, addProjectDialogIsOpen, showDialog, hideDialog } = this.props;
         return <div>
-            <CreateProjectDialog
+            <NameDescFormDialog
+                caption="Create project"
+                text="some desc"
                 onSubmit={onProjectSubmit}
                 opened={addProjectDialogIsOpen}
                 onClose={hideDialog}

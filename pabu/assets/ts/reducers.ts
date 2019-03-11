@@ -11,20 +11,21 @@ function creatingNewProject(state = false, action) {
 }
 
 function fetchingProject(state = false, action) {
-    if (action.type == Action.REQUEST_PROJECT_LIST)
+    if (action.type == Action.REQUEST_PROJECTS)
         return true;
-    else if (action.type == Action.RECEIVE_PROJECT_LIST)
+    else if (action.type == Action.RECEIVE_PROJECTS)
         return false;
     else
         return state;
 }
 
-function projectList(state = [], action) {
-    if (action.type == Action.RECEIVE_PROJECT_LIST) {
-        return action.list;
+function projects(state = {}, action) {
+    if (action.type == Action.RECEIVE_PROJECTS) {
+        return Object.assign({}, state, action.data);
     } else
         return state;
 }
+
 
 function addProjectDialogIsOpen(state = false, action: {type: Action, isOpen: boolean}) {
     if (action.type == Action.OPEN_ADD_PROJECT_DIALOG)
@@ -33,11 +34,19 @@ function addProjectDialogIsOpen(state = false, action: {type: Action, isOpen: bo
         return state;
 }
 
+function addIssueDialogIsOpen(state = false, action) {
+    if (action.type == Action.OPEN_ADD_ISSUE_DIALOG)
+        return action.isOpen;
+    else
+        return state;
+}
+
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,
-    projectList,
+    projects,
     addProjectDialogIsOpen,
+    addIssueDialogIsOpen,
 });
 
 export default rootReducer

@@ -50,6 +50,8 @@ class Issue(Base):
     project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
 
+    project = relationship("Project", backref = "issues")
+
 class TimeEntry(Base):
     __tablename__ = 'time_entries'
 
