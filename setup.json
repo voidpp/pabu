@@ -12,6 +12,7 @@
         "alembic~=1.0",
         "SQLAlchemy~=1.3.0",
         "configpp~=0.3.0",
+        "json-rpc~=1.121",
         "loginpass~=0.2"
     ],
     "packages": [

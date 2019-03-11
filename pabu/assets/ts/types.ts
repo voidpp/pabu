@@ -19,6 +19,7 @@ export interface User {
 export interface Project {
     id: number,
     name: string,
+    desc: string,
 }
 
 export type ProjectSubmitCallback = (nane: string, desc: string) => void;

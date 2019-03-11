@@ -13,7 +13,8 @@ import { fetchProjectList } from "./actions";
 
 library.add(fab, fas);
 
-store.dispatch(fetchProjectList());
+if (window['initialData'].isLoggedIn)
+    store.dispatch(fetchProjectList());
 
 ReactDOM.render(
     <React.Fragment>

@@ -31,7 +31,7 @@ def add_api_controllers(app: Flask, db: Database):
         user_id = get_user_id()
         data = []
         with db.session_scope() as conn:
-            data = [{'id': r.id, 'name': r.name} for r in conn.query(Project).filter(User.id == user_id).all()]
+            data = [{'id': r.id, 'name': r.name, 'desc': r.desc} for r in conn.query(Project).filter(User.id == user_id).all()]
         return data
 
     @api.dispatcher.add_method

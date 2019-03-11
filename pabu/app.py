@@ -26,14 +26,13 @@ wsgi_application = DispatcherMiddleware(frontent, {
 
 config = load()
 
-for name, cfg in config.auth.items():
-    auth.config[(name + '_client_id').upper()] = cfg.id
-    auth.config[(name + '_client_secret').upper()] = cfg.secret
-
-
 if not config:
     print('no config!')
     exit(1)
+
+for name, cfg in config.auth.items():
+    auth.config[(name + '_client_id').upper()] = cfg.id
+    auth.config[(name + '_client_secret').upper()] = cfg.secret
 
 db = Database(str(config.database))
 
