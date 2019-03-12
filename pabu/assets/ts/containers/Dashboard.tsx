@@ -1,11 +1,11 @@
 
 import * as React from 'react';
 import Header from '../components/Header';
-import { UserInfo, ProjectSubmitCallback, Project, State } from '../types';
+import { UserInfo, ProjectSubmitCallback, Project, State, TickingStat } from '../types';
 import { Paper, Grid, Button, Typography } from '@material-ui/core';
 import ProjectList from './ProjectList';
 import { connect } from 'react-redux';
-import { sendProject, openAddProjectDialog } from '../actions';
+import { sendProject, openAddProjectDialog, stopTime } from '../actions';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 
 type Props = {
@@ -14,13 +14,22 @@ type Props = {
     addProjectDialogIsOpen: boolean,
     showDialog: () => void,
     hideDialog: () => void,
+    tickingStat: TickingStat,
+    stopTime: (projectId: number) => void,
 }
 
 class Dashboard extends React.Component<Props> {
 
     render() {
-
-        const { userInfo, onProjectSubmit, addProjectDialogIsOpen, showDialog, hideDialog } = this.props;
+        const {
+            userInfo,
+            onProjectSubmit,
+            addProjectDialogIsOpen,
+            showDialog,
+            hideDialog,
+            tickingStat,
+            stopTime,
+        } = this.props;
         return <div>
             <NameDescFormDialog
                 caption="Create project"
@@ -29,7 +38,11 @@ class Dashboard extends React.Component<Props> {
                 opened={addProjectDialogIsOpen}
                 onClose={hideDialog}
             />
-            <Header userInfo={userInfo} />
+            <Header
+                userInfo={userInfo}
+                tickingStat={tickingStat}
+                onStopTime={stopTime.bind(this, tickingStat.ticking ? tickingStat.entry.projectId : null)}
+            />
             <Grid container justify="center">
                 <Paper style={{ minWidth: 1000, marginTop: 20, padding: 20 }}>
                     <div style={{display: 'flex'}}>
@@ -44,9 +57,10 @@ class Dashboard extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: State) => {
-    const { addProjectDialogIsOpen } = state;
+    const { addProjectDialogIsOpen, tickingStat } = state;
     return {
         addProjectDialogIsOpen,
+        tickingStat,
     }
 }
 
@@ -60,7 +74,10 @@ const mapDispatchToProps = dispatch => {
         },
         hideDialog: () => {
             dispatch(openAddProjectDialog(false))
-        }
+        },
+        stopTime: (openedProjectId: number) => {
+            dispatch(stopTime(openedProjectId))
+        },
     }
 }
 

@@ -3,13 +3,19 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import { UserInfo } from '../types';
+import { UserInfo, TickingStat } from '../types';
 import { Avatar, Button } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Popover from '@material-ui/core/Popover';
 
 
-export default class Header extends React.Component<{userInfo: UserInfo}, {anchorEl: HTMLElement}> {
+type Props = {
+    userInfo: UserInfo,
+    tickingStat: TickingStat,
+    onStopTime: () => void,
+}
+
+export default class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
 
     constructor(props) {
         super(props);
@@ -27,7 +33,7 @@ export default class Header extends React.Component<{userInfo: UserInfo}, {ancho
     };
 
     render() {
-        let userInfo = this.props.userInfo;
+        let {userInfo, onStopTime, tickingStat} = this.props;
         let isOpen = Boolean(this.state.anchorEl);
         return <div style={{flexGrow: 1}}>
             <AppBar position="static">
@@ -35,9 +41,12 @@ export default class Header extends React.Component<{userInfo: UserInfo}, {ancho
                     <IconButton color="inherit" aria-label="Menu">
                         <Avatar src="/static/images/pabu-head.png"/>
                     </IconButton>
-                    <Typography variant="h6" color="inherit" style={{flexGrow: 1}}>
+                    <Typography variant="h6" color="inherit">
                         Pabu
                     </Typography>
+                    <div style={{flexGrow: 1, textAlign: 'center'}}>{
+                        tickingStat.ticking ? <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button> : null
+                    }</div>
                     <IconButton
                         aria-owns={isOpen ? 'material-appbar' : undefined}
                         aria-haspopup="true"

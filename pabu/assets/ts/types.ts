@@ -48,6 +48,11 @@ export interface TimeEntry {
     end: Date,
 }
 
+export interface TickingStat {
+    ticking: boolean,
+    entry?: TimeEntry,
+}
+
 export type ProjectSubmitCallback = (nane: string, desc: string) => void;
 
 export type NameDescSubmitCallback = (nane: string, desc: string) => void;
@@ -69,4 +74,5 @@ export interface State {
     addTimeDialogContext: TimeDialogContext,
     addIssueDialogProjectId: number,
     openedProjectId: number,
+    tickingStat: TickingStat,
 }

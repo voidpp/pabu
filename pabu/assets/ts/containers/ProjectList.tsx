@@ -1,11 +1,13 @@
 
 import * as React from 'react';
-import { State, ProjectMap, TimeDialogContext } from '../types';
+import { State, ProjectMap, TimeDialogContext, TickingStat } from '../types';
 import { connect } from 'react-redux';
-import ProjectSummaryRow from '../components/ProjectSummaryRow';
+import ProjectRow from '../components/ProjectRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog,
-         closeProject } from '../actions';
+         closeProject,
+         startTime,
+         stopTime} from '../actions';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 
 type Props = {
@@ -20,7 +22,10 @@ type Props = {
     addTimeDialogContext: TimeDialogContext,
     showAddTimeDialog: (projectId: number) => void,
     hideAddTimeDialog: () => void,
+    startTime: (projectId: number) => void,
+    stopTime: (projectId: number) => void,
     closeProject: Function,
+    tickingStat: TickingStat,
 }
 
 class ProjectList extends React.Component<Props> {
@@ -38,6 +43,9 @@ class ProjectList extends React.Component<Props> {
             openedProjectId,
             openProject,
             closeProject,
+            startTime,
+            tickingStat,
+            stopTime,
         } = this.props;
         return <div>
                    <NameDescFormDialog
@@ -52,7 +60,10 @@ class ProjectList extends React.Component<Props> {
                         onClose={hideAddTimeDialog}
                     />
             <div style={{ marginTop: 20 }}>{
-                Object.values(this.props.projects).map(project => <ProjectSummaryRow
+                Object.values(this.props.projects).map(project => <ProjectRow
+                    tickingStat={tickingStat}
+                    onStopTime={stopTime.bind(this, project.id)}
+                    onStartTime={startTime.bind(this, project.id)}
                     onAddNewIssue={showAddIssueDialog.bind(this, project.id)}
                     onAddNewTime={showAddTimeDialog.bind(this, project.id)}
                     key={project.id}
@@ -72,16 +83,17 @@ class ProjectList extends React.Component<Props> {
 }
 
 function mapStateToProps(state: State) {
-    const { projects, addIssueDialogProjectId, openedProjectId, addTimeDialogContext } = state;
+    const { projects, addIssueDialogProjectId, openedProjectId, addTimeDialogContext, tickingStat } = state;
     return {
         projects,
         addIssueDialogProjectId,
         openedProjectId,
         addTimeDialogContext,
+        tickingStat,
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: Function) => {
     return {
         onIssueSubmit: (name: string, desc: string, projectId: number) => {
             dispatch(sendIssue(name, desc, projectId))
@@ -100,6 +112,12 @@ const mapDispatchToProps = dispatch => {
         },
         onTimeSubmit: (amount: string, projectId: number, issueId: number = null) => {
             dispatch(sendTime(projectId, amount, issueId));
+        },
+        startTime: (projectId: number) => {
+            dispatch(startTime(projectId))
+        },
+        stopTime: (openedProjectId: number) => {
+            dispatch(stopTime(openedProjectId))
         },
         openProject: (projectId: number) => {
             dispatch(fetchIssues(projectId))

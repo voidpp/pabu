@@ -9,12 +9,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import Root, { store } from "./containers/Root";
-import { fetchProjects } from "./actions";
+import { fetchProjects, fetchTickingStat } from "./actions";
 
 library.add(fab, fas);
 
-if (window['initialData'].isLoggedIn)
+if (window['initialData'].isLoggedIn) {
     store.dispatch(fetchProjects());
+    store.dispatch(fetchTickingStat());
+}
 
 ReactDOM.render(
     <React.Fragment>

@@ -55,8 +55,12 @@ class PabuClient {
         return this._send('start_time', [projectId, issueId]);
     }
 
-    async endTime(timeId: number) {
-        return this._send('end_time', [timeId]);
+    async stopTime() {
+        return this._send('stop_time');
+    }
+
+    async getTickingStat() {
+        return this._send('get_ticking_stat');
     }
 }
 

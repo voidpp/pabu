@@ -1,3 +1,5 @@
+import logging
+import logging.config
 
 from flask import Flask, render_template, session
 from werkzeug.wsgi import DispatcherMiddleware
@@ -33,6 +35,12 @@ if not config:
 for name, cfg in config.auth.items():
     auth.config[(name + '_client_id').upper()] = cfg.id
     auth.config[(name + '_client_secret').upper()] = cfg.secret
+
+logging.config.dictConfig(config.logger)
+
+logger = logging.getLogger(__name__)
+
+logger.info("App start")
 
 db = Database(str(config.database))
 

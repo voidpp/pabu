@@ -2,6 +2,7 @@ import client from "./client";
 
 import {Action as RAction, ActionCreator, Dispatch} from 'redux';
 import {ThunkAction} from 'redux-thunk';
+import { TickingStat } from "./types";
 
 export enum Action {
     ADD_PROJECT = 'ADD_PROJECT',
@@ -16,6 +17,7 @@ export enum Action {
     CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
+    RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
 }
 
 export function openProject(id: number){
@@ -150,6 +152,38 @@ export function sendTime(projectId: number, amount: string, issueId: number = nu
             dispatch(closeAddTimeDialog())
             dispatch(fetchProjects(projectId))
             dispatch(fetchIssues(projectId))
+        })
+    }
+}
+
+export function receiveTickingStat(data: TickingStat) {
+    return {
+        type: Action.RECEIVE_TICKING_STAT,
+        data,
+    }
+}
+
+export function fetchTickingStat() {
+    return dispatch => {
+        return client.getTickingStat().then(data => {
+            dispatch(receiveTickingStat(data))
+        })
+    }
+}
+
+export function startTime(projectId: number, issueId: number = null) {
+    return dispatch => {
+        return client.startTime(projectId, issueId).then(() => {
+            dispatch(fetchTickingStat())
+        })
+    }
+}
+
+export function stopTime(openedProjectId: number) {
+    return dispatch => {
+        return client.stopTime().then(() => {
+            dispatch(fetchTickingStat())
+            dispatch(fetchProjects(openedProjectId))
         })
     }
 }

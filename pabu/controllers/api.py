@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 
 from flask import Flask, abort, request
@@ -8,21 +9,25 @@ from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
 from pabu.models import Project, User, Issue, association_table, TimeEntry
 
+logger = logging.getLogger(__name__)
+
 def add_api_controllers(app: Flask, db: Database):
 
     app.add_url_rule('/', 'api', api.as_view(), methods=['POST'])
 
     def entry_stat_from_list(time_entries):
-        time_stat = {
+        stat = {
             'spent': 0,
             'paid': 0,
-            'ongoing': False
+            'lastEntry': 0,
         }
         for entry in time_entries:
-            if not entry.end:
-                time_stat['ongoing'] = True
-            time_stat['spent'] += ((entry.end or datetime.now) - entry.start).total_seconds()
-        return time_stat
+            if entry.end and entry.end.timestamp() > stat['lastEntry']:
+                stat['lastEntry'] = entry.end.timestamp()
+            if entry.start.timestamp() > stat['lastEntry']:
+                stat['lastEntry'] = entry.start.timestamp()
+            stat['spent'] += ((entry.end or datetime.now()) - entry.start).total_seconds()
+        return stat
 
     def project_to_dict(project: Project):
         return {
@@ -54,7 +59,7 @@ def add_api_controllers(app: Flask, db: Database):
 
     @app.before_request
     def common_log(): # pylint: disable=unused-variable
-        print("JSONRPC api call. method: '%s', args: %s" % (request.json['method'], request.json['params']))
+        logger.info("JSONRPC method '%s' called with args: %s" % (request.json['method'], request.json['params']))
 
     def check_project(project_id, conn):
         user_id = get_user_id()
@@ -73,7 +78,7 @@ def add_api_controllers(app: Flask, db: Database):
     def get_projects(id: int = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(Project).filter(User.id == user_id).join(association_table).outerjoin(Issue)
+            qs = conn.query(Project).join(association_table).join(User).filter(User.id == user_id).outerjoin(Issue)
             if id:
                 qs = qs.filter(Project.id == id)
             data = {r.id: project_to_dict(r) for r in qs.all()}
@@ -117,7 +122,7 @@ def add_api_controllers(app: Flask, db: Database):
             conn.add(entry)
 
     @api.dispatcher.add_method
-    def star_time(project_id, issue_id = None): # pylint: disable=unused-variable
+    def start_time(project_id, issue_id = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
             check_project(project_id, conn)
@@ -125,13 +130,34 @@ def add_api_controllers(app: Flask, db: Database):
             conn.add(entry)
 
     @api.dispatcher.add_method
-    def end_time(time_id): # pylint: disable=unused-variable
+    def stop_time(): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            entry = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(TimeEntry.id == time_id).first()
-            if not entry:
-                abort(404)
-            entry.end = datetime.now()
+            entry = conn.query(TimeEntry).filter(TimeEntry.user_id == user_id).filter(TimeEntry.end.is_(None)).first()
+            if entry:
+                entry.end = datetime.now()
+                return True
+            return False
+
+    def time_entry_to_dict(time_entry: TimeEntry):
+        return {
+            'id': time_entry.id,
+            'issueId': time_entry.issue_id,
+            'projectId': time_entry.project_id,
+            'start': time_entry.start.timestamp(),
+            'end': time_entry.end.timestamp() if time_entry.end else None,
+        }
+
+    @api.dispatcher.add_method
+    def get_ticking_stat(): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            entry = conn.query(TimeEntry).filter(TimeEntry.user_id == user_id, TimeEntry.end.is_(None)).first()
+            if entry:
+                return {'ticking': True, 'entry': time_entry_to_dict(entry)}
+            else:
+                return {'ticking': False}
+        return {}
 
     @api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

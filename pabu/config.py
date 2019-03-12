@@ -26,6 +26,8 @@ class PabuConfig():
 
     auth = tree.dict_node(Any(*backend_names), OAuthConfig)
 
+    logger: dict
+
 def load() -> PabuConfig:
     config_loader = Config('pabu.yaml')
 

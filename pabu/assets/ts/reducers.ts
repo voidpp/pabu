@@ -67,6 +67,13 @@ function addTimeDialogContext(state = null, action) {
         return state;
 }
 
+function tickingStat(state = {ticking: false}, action) {
+    if (action.type == Action.RECEIVE_TICKING_STAT)
+        return action.data;
+    else
+        return state;
+}
+
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,
@@ -76,6 +83,7 @@ const rootReducer = combineReducers({
     addTimeDialogContext,
     addIssueDialogProjectId,
     openedProjectId,
+    tickingStat,
 });
 
 export default rootReducer
