@@ -26,7 +26,6 @@ function projects(state = {}, action) {
         return state;
 }
 
-
 function addProjectDialogIsOpen(state = false, action: {type: Action, isOpen: boolean}) {
     if (action.type == Action.OPEN_ADD_PROJECT_DIALOG)
         return action.isOpen;
@@ -34,9 +33,11 @@ function addProjectDialogIsOpen(state = false, action: {type: Action, isOpen: bo
         return state;
 }
 
-function addIssueDialogIsOpen(state = false, action) {
+function addIssueDialogProjectId(state = null, action) {
     if (action.type == Action.OPEN_ADD_ISSUE_DIALOG)
-        return action.isOpen;
+        return action.projectId;
+    else if(action.type == Action.CLOSE_ADD_ISSUE_DIALOG)
+        return null;
     else
         return state;
 }
@@ -55,13 +56,23 @@ function openedProjectId(state = 0, action) {
         return state;
 }
 
+function addTimeDialogContext(state = null, action) {
+    if (action.type == Action.OPEN_ADD_TIME_DIALOG)
+        return action.projectId ? {projectId: action.projectId, issueId: action.issueId} : null;
+    else if(action.type == Action.CLOSE_ADD_TIME_DIALOG)
+        return null;
+    else
+        return state;
+}
+
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,
     projects,
     issues,
     addProjectDialogIsOpen,
-    addIssueDialogIsOpen,
+    addTimeDialogContext,
+    addIssueDialogProjectId,
     openedProjectId,
 });
 

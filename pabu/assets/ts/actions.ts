@@ -11,7 +11,9 @@ export enum Action {
     RECEIVE_ISSUES = 'RECEIVE_ISSUES',
     OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
     OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
+    CLOSE_ADD_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
+    CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
 }
 
@@ -29,17 +31,31 @@ export function openAddProjectDialog(isOpen = true){
     }
 }
 
-export function openAddIssueDialog(isOpen = true){
+export function openAddIssueDialog(projectId: number){
     return {
         type: Action.OPEN_ADD_ISSUE_DIALOG,
-        isOpen,
+        projectId,
     }
 }
 
-export function openAddTimeDialog(isOpen = true){
+export function closeAddIssueDialog(){
+    return {
+        type: Action.CLOSE_ADD_ISSUE_DIALOG,
+    }
+}
+
+
+export function openAddTimeDialog(projectId: number, issueId: number = null){
     return {
         type: Action.OPEN_ADD_TIME_DIALOG,
-        isOpen,
+        projectId,
+        issueId,
+    }
+}
+
+export function closeAddTimeDialog(){
+    return {
+        type: Action.CLOSE_ADD_TIME_DIALOG,
     }
 }
 
@@ -69,6 +85,11 @@ export function fetchProjects(id: number = null) {
         dispatch(requestProjects(id))
         return client.getProjects(id).then(data => {
             dispatch(receiveProjects(data))
+            if (id == null && Object.values(data).length) {
+                let prjId = parseInt(Object.keys(data)[0]);
+                dispatch(openProject(prjId))
+                dispatch(fetchIssues(prjId))
+            }
         })
     }
 }
@@ -109,16 +130,19 @@ export function sendProject(name: string, description: string) {
 export function sendIssue(name: string, description: string, projectId: number) {
     return dispatch => {
         return client.createIssue(name, description, projectId).then(prjId => {
-            dispatch(openAddIssueDialog(false))
+            dispatch(closeAddIssueDialog())
             dispatch(fetchProjects(projectId))
             dispatch(fetchIssues(projectId))
         })
     }
 }
 
-export function sendTime(projectId: number, start: Date, issueId: number = null, end: Date = null) {
+export function sendTime(projectId: number, amount: string, issueId: number = null) {
     return dispatch => {
-        return client.addTime(projectId, start, issueId, end).then(() => {
+        return client.addTime(projectId, amount, issueId).then(() => {
+            dispatch(closeAddTimeDialog())
+            dispatch(fetchProjects(projectId))
+            dispatch(fetchIssues(projectId))
         })
     }
 }

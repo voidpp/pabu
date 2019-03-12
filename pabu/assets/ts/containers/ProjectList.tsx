@@ -1,38 +1,59 @@
 
 import * as React from 'react';
-import { State, ProjectMap } from '../types';
+import { State, ProjectMap, TimeDialogContext } from '../types';
 import { connect } from 'react-redux';
 import ProjectSummaryRow from '../components/ProjectSummaryRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
-import { sendIssue, openAddIssueDialog, fetchIssues, openProject } from '../actions';
+import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog } from '../actions';
+import TimeEntryDialog from '../components/TimeEntryDialog';
 
 type Props = {
     projects: ProjectMap,
-    addIssueDialogIsOpen: boolean
+    addIssueDialogProjectId: number
     onIssueSubmit: (name: string, desc: string, projectId: number) => void,
-    showDialog: () => void,
-    hideDialog: () => void,
+    onTimeSubmit: (amount: string, projectId: number, issueId: number) => void,
+    showAddIssueDialog: (projectId: number) => void,
+    hideAddIssueDialog: () => void,
     onShowProject: (id: number) => void,
     openedProjectId: number,
+    addTimeDialogContext: TimeDialogContext,
+    showAddTimeDialog: (projectId: number) => void,
+    hideAddTimeDialog: () => void,
 }
 
 class ProjectList extends React.Component<Props> {
 
     render() {
-        let {addIssueDialogIsOpen, hideDialog, onIssueSubmit, showDialog} = this.props;
+        let {
+            addIssueDialogProjectId,
+            hideAddIssueDialog,
+            onIssueSubmit,
+            showAddIssueDialog,
+            addTimeDialogContext,
+            showAddTimeDialog,
+            hideAddTimeDialog,
+            onTimeSubmit,
+            openedProjectId,
+        } = this.props;
         return <div>
                    <NameDescFormDialog
                         caption="Create issue"
                         text="text"
-                        onSubmit={(name, desc) => onIssueSubmit(name, desc, this.props.openedProjectId)}
-                        opened={addIssueDialogIsOpen}
-                        onClose={hideDialog} />
+                        onSubmit={(name, desc) => onIssueSubmit(name, desc, openedProjectId)}
+                        opened={addIssueDialogProjectId != null}
+                        onClose={hideAddIssueDialog} />
+                    <TimeEntryDialog
+                        opened={addTimeDialogContext != null}
+                        onSubmit={amount => onTimeSubmit(amount, addTimeDialogContext.projectId, addTimeDialogContext.issueId)}
+                        onClose={hideAddTimeDialog}
+                    />
             <div style={{ marginTop: 20 }}>{
                 Object.values(this.props.projects).map(project => <ProjectSummaryRow
-                    onAddNewIssue={showDialog}
+                    onAddNewIssue={showAddIssueDialog.bind(this, project.id)}
+                    onAddNewTime={showAddTimeDialog.bind(this, project.id)}
                     key={project.id}
                     project={project}
-                    expanded={this.props.openedProjectId === project.id}
+                    expanded={openedProjectId === project.id}
                     handleChange={id => {
                         this.props.onShowProject(id);
                     }}
@@ -44,11 +65,12 @@ class ProjectList extends React.Component<Props> {
 }
 
 function mapStateToProps(state: State) {
-    const { projects, addIssueDialogIsOpen, openedProjectId } = state;
+    const { projects, addIssueDialogProjectId, openedProjectId, addTimeDialogContext } = state;
     return {
         projects,
-        addIssueDialogIsOpen,
+        addIssueDialogProjectId,
         openedProjectId,
+        addTimeDialogContext,
     }
 }
 
@@ -57,11 +79,20 @@ const mapDispatchToProps = dispatch => {
         onIssueSubmit: (name: string, desc: string, projectId: number) => {
             dispatch(sendIssue(name, desc, projectId))
         },
-        showDialog: () => {
-            dispatch(openAddIssueDialog())
+        showAddIssueDialog: (projectId: number) => {
+            dispatch(openAddIssueDialog(projectId))
         },
-        hideDialog: () => {
-            dispatch(openAddIssueDialog(false))
+        hideAddIssueDialog: () => {
+            dispatch(closeAddIssueDialog())
+        },
+        showAddTimeDialog: (projectId) => {
+            dispatch(openAddTimeDialog(projectId))
+        },
+        hideAddTimeDialog: () => {
+            dispatch(closeAddTimeDialog())
+        },
+        onTimeSubmit: (amount: string, projectId: number, issueId: number = null) => {
+            dispatch(sendTime(projectId, amount, issueId));
         },
         onShowProject: (projectId: number) => {
             dispatch(fetchIssues(projectId))

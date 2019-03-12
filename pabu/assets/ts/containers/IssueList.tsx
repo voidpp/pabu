@@ -4,34 +4,31 @@ import { State, ProjectMap, IssueMap } from '../types';
 import { connect } from 'react-redux';
 import ProjectSummaryRow from '../components/ProjectSummaryRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
-import { sendIssue, openAddIssueDialog } from '../actions';
+import { sendIssue, openAddIssueDialog, openAddTimeDialog } from '../actions';
 import IssueRow from '../components/IssueRow';
 
 type Props = {
     issues: IssueMap,
-    projectId: number,
-    // addTimeDialogOpen: boolean
-    // onIssueSubmit: (name: string, desc: string, projectId: number) => void,
-    // showDialog: () => void,
-    // hideDialog: () => void,
+    onAddNewTime: (projectId: number, issueId: number) => void,
 }
 
-class IssueList extends React.Component<Props, {expanded: number}> {
+class IssueList extends React.Component<Props, {openedIssueId: number}> {
 
     state = {
-        expanded: 0,
+        openedIssueId: 0,
     };
 
     render() {
-        // let {addIssueDialogIsOpen, hideDialog, onIssueSubmit, showDialog} = this.props;
+        let {issues, onAddNewTime} = this.props;
         return <div>
                    {
             <div style={{ marginTop: 20 }}>{
-                Object.values(this.props.issues).map(issue => <IssueRow
+                Object.values(issues).map(issue => <IssueRow
+                    onAddNewTime={onAddNewTime.bind(this, issue.projectId, issue.id)}
                     key={issue.id}
                     issue={issue}
-                    expanded={this.state.expanded === issue.id}
-                    handleChange={id => this.setState({expanded: id})}
+                    expanded={this.state.openedIssueId === issue.id}
+                    handleChange={id => this.setState({openedIssueId: id})}
                 />)
             }</div>}
         </div>
@@ -53,9 +50,10 @@ function mapStateToProps(state: State) {
 
 const mapDispatchToProps = dispatch => {
     return {
-
+        onAddNewTime: (projectId: number, issueId: number) => {
+            dispatch(openAddTimeDialog(projectId, issueId));
+        },
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(IssueList);

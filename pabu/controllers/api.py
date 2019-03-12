@@ -1,5 +1,8 @@
+from datetime import datetime, timedelta
+
 from flask import Flask, abort, request
 from jsonrpc.backend.flask import api
+from pytimeparse import parse
 
 from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
@@ -9,11 +12,24 @@ def add_api_controllers(app: Flask, db: Database):
 
     app.add_url_rule('/', 'api', api.as_view(), methods=['POST'])
 
+    def entry_stat_from_list(time_entries):
+        time_stat = {
+            'spent': 0,
+            'paid': 0,
+            'ongoing': False
+        }
+        for entry in time_entries:
+            if not entry.end:
+                time_stat['ongoing'] = True
+            time_stat['spent'] += ((entry.end or datetime.now) - entry.start).total_seconds()
+        return time_stat
+
     def project_to_dict(project: Project):
         return {
             'id': project.id,
             'name': project.name,
             'desc': project.desc,
+            'timeStat': entry_stat_from_list(project.time_entries),
             'issues': [i.id for i in project.issues],
         }
 
@@ -23,6 +39,7 @@ def add_api_controllers(app: Flask, db: Database):
             'name': issue.name,
             'desc': issue.desc,
             'projectId': issue.project_id,
+            'timeStat': entry_stat_from_list(issue.time_entries),
             'timeEntries': [t.id for t in issue.time_entries],
         }
 
@@ -80,27 +97,41 @@ def add_api_controllers(app: Flask, db: Database):
             return [issue_to_dict(r) for r in rows]
 
     @api.dispatcher.add_method
-    def get_time_summary(project_id: int): # pylint: disable=unused-variable
+    def get_times(project_id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
+            check_project(project_id, conn)
             rows = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
             return [{'id': r.id, 'name': r.name} for r in rows]
 
     @api.dispatcher.add_method
-    def add_time(project_id, start, issue_id = None, end = None): # pylint: disable=unused-variable
+    def add_time(project_id: int, amount: str, issue_id = None, end = None): # pylint: disable=unused-variable
+        user_id = get_user_id()
         with db.session_scope() as conn:
             check_project(project_id, conn)
-            entry = TimeEntry(project_id = project_id, issue_id = issue_id, start = start, end = end)
+            seconds = parse(amount)
+            if not end:
+                end = datetime.now()
+            start = end - timedelta(seconds = seconds)
+            entry = TimeEntry(project_id = project_id, issue_id = issue_id, start = start, end = end, user_id = user_id)
             conn.add(entry)
 
     @api.dispatcher.add_method
-    def finish_time(time_id, time): # pylint: disable=unused-variable
+    def star_time(project_id, issue_id = None): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            check_project(project_id, conn)
+            entry = TimeEntry(project_id = project_id, issue_id = issue_id, user_id = user_id)
+            conn.add(entry)
+
+    @api.dispatcher.add_method
+    def end_time(time_id): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
             entry = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(TimeEntry.id == time_id).first()
             if not entry:
                 abort(404)
-            entry.end = time
+            entry.end = datetime.now()
 
     @api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

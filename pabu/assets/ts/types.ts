@@ -1,3 +1,4 @@
+import { number } from "prop-types";
 
 export interface UserInfo {
     name: string,
@@ -16,11 +17,18 @@ export interface User {
     id: number,
 }
 
+export interface TimeSummary {
+    spent: number,
+    paid: number,
+    ongoing: boolean
+}
+
 export interface Project {
     id: number,
     name: string,
     desc: string,
     issues: Array<number>,
+    timeStat: TimeSummary,
 }
 
 export interface Issue {
@@ -29,6 +37,7 @@ export interface Issue {
     desc: string,
     projectId: number,
     timeEntries: Array<number>,
+    timeStat: TimeSummary,
 }
 
 export interface TimeEntry {
@@ -49,13 +58,15 @@ export type ProjectMap = { [n: number]: Project };
 export type IssueMap = { [n: number]: Issue };
 export type TimeEntryMap = { [n: number]: TimeEntry };
 
+export type TimeDialogContext = {projectId: number, issueId: number};
+
 export interface State {
     creatingNewProject: boolean,
     fetchingProject: boolean,
     projects: ProjectMap,
     issues: IssueMap,
     addProjectDialogIsOpen: boolean,
-    addIssueDialogIsOpen: boolean,
-    addTimeDialogIsOpen: boolean,
+    addTimeDialogContext: TimeDialogContext,
+    addIssueDialogProjectId: number,
     openedProjectId: number,
 }
