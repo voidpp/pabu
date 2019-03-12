@@ -41,12 +41,12 @@ type Props = {
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, project, handleChange, classes, onAddNewIssue, onAddNewTime, onStartTime, tickingStat } = props;
+    const { expanded, project, handleChange, classes, onAddNewIssue, onAddNewTime, onStartTime, tickingStat, onStopTime } = props;
 
-    let tickingButton = null;
+    let tickingButton = <Button disabled>Start time</Button>;
     if (tickingStat.ticking) {
         if (tickingStat.entry.projectId == project.id)
-            tickingButton = <Button color="secondary">Stop time</Button>
+            tickingButton = <Button color="secondary" onClick={onStopTime}>Stop time</Button>
     } else
         tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Issue } from '../types';
+import { Issue, TickingStat } from '../types';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -35,10 +35,21 @@ type Props = {
     handleChange: (id: number) => void,
     classes: any,
     onAddNewTime: (issueId: number) => void,
+    onStartTime: () => void,
+    onStopTime: () => void,
+    tickingStat: TickingStat,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, issue, handleChange, classes, onAddNewTime } = props;
+    const { expanded, issue, handleChange, classes, onAddNewTime, onStartTime, onStopTime, tickingStat } = props;
+
+    let tickingButton = <Button disabled>Start time</Button>;
+    if (tickingStat.ticking) {
+        if (tickingStat.entry.issueId == issue.id)
+            tickingButton = <Button color="secondary" onClick={onStopTime}>Stop time</Button>
+    } else
+        tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
+
     return  <ExpansionPanel expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{issue.name}</Typography>
@@ -53,7 +64,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                             <Button style={{marginRight: 10}} color="primary" onClick={onAddNewTime.bind(this, issue.id)}>
                                 Add time
                             </Button>
-                            <Button color="primary">Start time</Button>
+                            {tickingButton}
                         </div>
                     </div>
                     <div>
