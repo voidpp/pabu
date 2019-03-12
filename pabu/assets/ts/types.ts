@@ -20,21 +20,42 @@ export interface Project {
     id: number,
     name: string,
     desc: string,
-    issues: number,
+    issues: Array<number>,
+}
+
+export interface Issue {
+    id: number,
+    name: string,
+    desc: string,
+    projectId: number,
+    timeEntries: Array<number>,
+}
+
+export interface TimeEntry {
+    id: number,
+    issueId: number,
+    projectId: number,
+    start: Date,
+    end: Date,
 }
 
 export type ProjectSubmitCallback = (nane: string, desc: string) => void;
-export type IssueSubmitCallback = (nane: string, desc: string, projectId: number) => void;
 
 export type NameDescSubmitCallback = (nane: string, desc: string) => void;
 
+export type TimeEntrySubmitCallback = (projectId: number, start: Date, issueId?: number, end?: Date) => void;
+
 export type ProjectMap = { [n: number]: Project };
+export type IssueMap = { [n: number]: Issue };
+export type TimeEntryMap = { [n: number]: TimeEntry };
 
 export interface State {
     creatingNewProject: boolean,
     fetchingProject: boolean,
     projects: ProjectMap,
+    issues: IssueMap,
     addProjectDialogIsOpen: boolean,
     addIssueDialogIsOpen: boolean,
     addTimeDialogIsOpen: boolean,
+    openedProjectId: number,
 }

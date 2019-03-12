@@ -8,9 +8,18 @@ export enum Action {
     ADD_PROJECT_DONE = 'ADD_PROJECT_DONE',
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
     RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
+    RECEIVE_ISSUES = 'RECEIVE_ISSUES',
     OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
     OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
+    OPEN_PROJECT = 'OPEN_PROJECT',
+}
+
+export function openProject(id: number){
+    return {
+        type: Action.OPEN_PROJECT,
+        id,
+    }
 }
 
 export function openAddProjectDialog(isOpen = true){
@@ -64,9 +73,24 @@ export function fetchProjects(id: number = null) {
     }
 }
 
+export function fetchIssues(projectId: number) {
+    return dispatch => {
+        return client.getIssues(projectId).then(data => {
+            dispatch(receiveIssues(data))
+        })
+    }
+}
+
 export function receiveProjects(data) {
     return  {
         type: Action.RECEIVE_PROJECTS,
+        data,
+    }
+}
+
+export function receiveIssues(data) {
+    return  {
+        type: Action.RECEIVE_ISSUES,
         data,
     }
 }
@@ -86,7 +110,8 @@ export function sendIssue(name: string, description: string, projectId: number) 
     return dispatch => {
         return client.createIssue(name, description, projectId).then(prjId => {
             dispatch(openAddIssueDialog(false))
-            return dispatch(fetchProjects(projectId))
+            dispatch(fetchProjects(projectId))
+            dispatch(fetchIssues(projectId))
         })
     }
 }

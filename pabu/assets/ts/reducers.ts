@@ -41,12 +41,28 @@ function addIssueDialogIsOpen(state = false, action) {
         return state;
 }
 
+function issues(state = {}, action) {
+    if (action.type == Action.RECEIVE_ISSUES)
+        return Object.assign({}, state, action.data);
+    else
+        return state;
+}
+
+function openedProjectId(state = 0, action) {
+    if (action.type == Action.OPEN_PROJECT)
+        return action.id;
+    else
+        return state;
+}
+
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,
     projects,
+    issues,
     addProjectDialogIsOpen,
     addIssueDialogIsOpen,
+    openedProjectId,
 });
 
 export default rootReducer

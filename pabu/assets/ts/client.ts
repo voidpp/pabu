@@ -35,6 +35,10 @@ class PabuClient {
         return this._send('get_projects', [id]);
     }
 
+    async getIssues(project_id: number) {
+        return this._send('get_issues', [project_id]);
+    }
+
     async createProject(name: string, description: string): Promise<Project> {
         return this._send('create_project', [name, description]);
     }

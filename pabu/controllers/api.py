@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask, abort, request
 from jsonrpc.backend.flask import api
 
 from pabu.db import Database
@@ -14,7 +14,16 @@ def add_api_controllers(app: Flask, db: Database):
             'id': project.id,
             'name': project.name,
             'desc': project.desc,
-            'issues': len(project.issues),
+            'issues': [i.id for i in project.issues],
+        }
+
+    def issue_to_dict(issue: Issue):
+        return {
+            'id': issue.id,
+            'name': issue.name,
+            'desc': issue.desc,
+            'projectId': issue.project_id,
+            'timeEntries': [t.id for t in issue.time_entries],
         }
 
     def get_current_user(conn):
@@ -25,6 +34,10 @@ def add_api_controllers(app: Flask, db: Database):
     def check_login(): # pylint: disable=unused-variable
         if not is_logged_in():
             abort(401)
+
+    @app.before_request
+    def common_log(): # pylint: disable=unused-variable
+        print("JSONRPC api call. method: '%s', args: %s" % (request.json['method'], request.json['params']))
 
     def check_project(project_id, conn):
         user_id = get_user_id()
@@ -64,7 +77,7 @@ def add_api_controllers(app: Flask, db: Database):
         user_id = get_user_id()
         with db.session_scope() as conn:
             rows = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
-            return [{'id': r.id, 'name': r.name} for r in rows]
+            return [issue_to_dict(r) for r in rows]
 
     @api.dispatcher.add_method
     def get_time_summary(project_id: int): # pylint: disable=unused-variable

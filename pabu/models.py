@@ -62,3 +62,13 @@ class TimeEntry(Base):
     start = Column(DateTime, default = datetime.now)
     end = Column(DateTime)
 
+    issue = relationship("Issue", backref = "time_entries")
+    project = relationship("Project", backref = "time_entries")
+
+class ProjectInvitation(Base):
+
+    __tablename__ = 'project_invitations'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
+    token = Column(String, nullable = False)

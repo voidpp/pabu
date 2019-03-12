@@ -2,7 +2,7 @@
 import * as React from 'react';
 import Header from '../components/Header';
 import { UserInfo, ProjectSubmitCallback, Project, State } from '../types';
-import { Paper, Grid, Button } from '@material-ui/core';
+import { Paper, Grid, Button, Typography } from '@material-ui/core';
 import ProjectList from './ProjectList';
 import { connect } from 'react-redux';
 import { sendProject, openAddProjectDialog } from '../actions';
@@ -32,11 +32,10 @@ class Dashboard extends React.Component<Props> {
             <Header userInfo={userInfo} />
             <Grid container justify="center">
                 <Paper style={{ minWidth: 1000, marginTop: 20, padding: 20 }}>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={showDialog}
-                    >Create project</Button>
+                    <div style={{display: 'flex'}}>
+                        <Typography style={{flexGrow: 1}} variant="h6">Projects:</Typography>
+                        <Button color="primary" onClick={showDialog}>Create project</Button>
+                    </div>
                     <ProjectList />
                 </Paper>
             </Grid>

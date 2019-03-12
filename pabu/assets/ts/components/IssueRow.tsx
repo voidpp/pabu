@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Project } from '../types';
+import { Project, Issue } from '../types';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -10,7 +10,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import IssueList from '../containers/IssueList';
 
 const styles = theme => ({
     root: {
@@ -30,31 +29,24 @@ const styles = theme => ({
 
 
 type Props = {
-    project: Project,
+    issue: Issue,
     expanded: boolean,
     handleChange: (id: number) => void,
     classes: any,
-    onAddNewIssue: () => void,
+    // onAddNewIssue: () => void,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, project, handleChange, classes, onAddNewIssue } = props;
-    return  <ExpansionPanel expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
+    const { expanded, issue, handleChange, classes } = props;
+    return  <ExpansionPanel expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={classes.heading}>{project.name}</Typography>
-                    <Typography className={classes.secondaryHeading}>{project.desc} ({project.issues.length})</Typography>
+                    <Typography className={classes.heading}>{issue.name}</Typography>
+                    <Typography className={classes.secondaryHeading}>{issue.desc} ({issue.timeEntries.length})</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails style={{display: 'block'}}>
-                    <div style={{display: 'flex'}}>
-                        <Typography style={{flexGrow: 1}}>Issues:</Typography>
-                        <div>
-                            <Button style={{marginRight: 10}} color="primary" onClick={onAddNewIssue}>
-                                Add new issue
-                            </Button>
-                            <Button color="primary">Add time</Button>
-                        </div>
-                    </div>
-                    <IssueList projectId={project.id}/>
+                <ExpansionPanelDetails>
+                    <Typography>
+                            issue
+                    </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
 }));
