@@ -4,7 +4,8 @@ import { State, ProjectMap, TimeDialogContext } from '../types';
 import { connect } from 'react-redux';
 import ProjectSummaryRow from '../components/ProjectSummaryRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
-import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog } from '../actions';
+import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog,
+         closeProject } from '../actions';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 
 type Props = {
@@ -14,11 +15,12 @@ type Props = {
     onTimeSubmit: (amount: string, projectId: number, issueId: number) => void,
     showAddIssueDialog: (projectId: number) => void,
     hideAddIssueDialog: () => void,
-    onShowProject: (id: number) => void,
+    openProject: (id: number) => void,
     openedProjectId: number,
     addTimeDialogContext: TimeDialogContext,
     showAddTimeDialog: (projectId: number) => void,
     hideAddTimeDialog: () => void,
+    closeProject: Function,
 }
 
 class ProjectList extends React.Component<Props> {
@@ -34,6 +36,8 @@ class ProjectList extends React.Component<Props> {
             hideAddTimeDialog,
             onTimeSubmit,
             openedProjectId,
+            openProject,
+            closeProject,
         } = this.props;
         return <div>
                    <NameDescFormDialog
@@ -55,7 +59,10 @@ class ProjectList extends React.Component<Props> {
                     project={project}
                     expanded={openedProjectId === project.id}
                     handleChange={id => {
-                        this.props.onShowProject(id);
+                        if (id == openedProjectId)
+                            closeProject();
+                        else
+                            openProject(id);
                     }}
                 />)
             }</div>
@@ -94,10 +101,13 @@ const mapDispatchToProps = dispatch => {
         onTimeSubmit: (amount: string, projectId: number, issueId: number = null) => {
             dispatch(sendTime(projectId, amount, issueId));
         },
-        onShowProject: (projectId: number) => {
+        openProject: (projectId: number) => {
             dispatch(fetchIssues(projectId))
             dispatch(openProject(projectId))
         },
+        closeProject: () => {
+            dispatch(closeProject());
+        }
     }
 }
 

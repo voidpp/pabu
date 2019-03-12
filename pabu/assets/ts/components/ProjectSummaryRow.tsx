@@ -47,7 +47,8 @@ export default withStyles(styles)(React.memo((props: Props) => {
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
-                    <div style={{display: 'flex'}}>
+                    <Typography className={classes.secondaryHeading}>{project.desc}</Typography>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         <Typography style={{flexGrow: 1}}>Issues:</Typography>
                         <div>
                             <Button style={{marginRight: 10}} color="primary" onClick={onAddNewIssue}>Add new issue</Button>

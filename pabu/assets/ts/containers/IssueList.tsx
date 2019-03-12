@@ -1,10 +1,8 @@
 
 import * as React from 'react';
-import { State, ProjectMap, IssueMap } from '../types';
+import { State, IssueMap } from '../types';
 import { connect } from 'react-redux';
-import ProjectSummaryRow from '../components/ProjectSummaryRow';
-import NameDescFormDialog from '../components/NameDescFormDialog';
-import { sendIssue, openAddIssueDialog, openAddTimeDialog } from '../actions';
+import { openAddTimeDialog } from '../actions';
 import IssueRow from '../components/IssueRow';
 
 type Props = {
@@ -28,7 +26,7 @@ class IssueList extends React.Component<Props, {openedIssueId: number}> {
                     key={issue.id}
                     issue={issue}
                     expanded={this.state.openedIssueId === issue.id}
-                    handleChange={id => this.setState({openedIssueId: id})}
+                    handleChange={id => this.setState({openedIssueId: id == this.state.openedIssueId ? 0 : id})}
                 />)
             }</div>}
         </div>

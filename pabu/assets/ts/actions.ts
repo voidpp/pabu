@@ -15,12 +15,19 @@ export enum Action {
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
     CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
+    CLOSE_PROJECT = 'CLOSE_PROJECT',
 }
 
 export function openProject(id: number){
     return {
         type: Action.OPEN_PROJECT,
         id,
+    }
+}
+
+export function closeProject() {
+    return {
+        type: Action.CLOSE_PROJECT,
     }
 }
 

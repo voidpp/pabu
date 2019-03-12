@@ -52,6 +52,8 @@ function issues(state = {}, action) {
 function openedProjectId(state = 0, action) {
     if (action.type == Action.OPEN_PROJECT)
         return action.id;
+    else if(action.type == Action.CLOSE_PROJECT)
+        return 0;
     else
         return state;
 }
