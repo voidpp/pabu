@@ -8,22 +8,22 @@ import Typography from '@material-ui/core/Typography';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { withStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IssueList from '../containers/IssueList';
 
-const styles = theme => ({
+const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
         width: '100%',
     },
     heading: {
-        fontSize: theme.typography.pxToRem(15),
+        fontSize: typography.pxToRem(15),
         flexBasis: '33.33%',
         flexShrink: 0,
     },
     secondaryHeading: {
-        fontSize: theme.typography.pxToRem(15),
-        color: theme.palette.text.secondary,
+        fontSize: typography.pxToRem(15),
+        color: palette.text.secondary,
     },
 });
 
@@ -75,7 +75,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
                     <div>
-                        <Button color="primary" onClick={onAddNewIssue}>Add new issue</Button>
+                        <Button color="primary" onClick={onAddNewIssue}>Create issue</Button>
                         <Button color="primary" onClick={onAddNewTime}>Add time</Button>
                         {tickingButton}
                         <Button color="primary" onClick={onAddPayment}>Add payment</Button>
