@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 const styles = theme => ({
     root: {
         width: '100%',
+        backgroundColor: '#f8f8f8',
     },
     heading: {
         fontSize: theme.typography.pxToRem(15),
@@ -52,7 +53,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
 
     let spent = (issue.timeStat.spent/3600).toFixed(1);
 
-    return  <ExpansionPanel expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
+    return  <ExpansionPanel className={classes.root} expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{issue.name}</Typography>
                     <Typography className={classes.secondaryHeading}>{spent} hours</Typography>

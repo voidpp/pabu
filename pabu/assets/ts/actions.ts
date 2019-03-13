@@ -1,6 +1,6 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData } from "./types";
+import { TickingStat, PaymentSubmitData, OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME } from "./types";
 
 export enum Action {
     ADD_PROJECT = 'ADD_PROJECT',
@@ -23,10 +23,14 @@ export enum Action {
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
 }
 
-export function openProject(id: number){
-    return {
-        type: Action.OPEN_PROJECT,
-        id,
+export function openProject(id: number) {
+    return dispatch => {
+        window.localStorage.setItem(OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME, id.toString());
+        dispatch(fetchIssues(id))
+        dispatch({
+            type: Action.OPEN_PROJECT,
+            id,
+        })
     }
 }
 
@@ -109,16 +113,11 @@ export function requestProjects(id: number = null) {
     }
 }
 
-export function fetchProjects(id: number = null) {
+export function fetchProjects(id: number = null, ) {
     return dispatch => {
         dispatch(requestProjects(id))
         return client.getProjects(id).then(data => {
             dispatch(receiveProjects(data))
-            if (id == null && Object.values(data).length) {
-                let prjId = parseInt(Object.keys(data)[0]);
-                dispatch(openProject(prjId))
-                dispatch(fetchIssues(prjId))
-            }
         })
     }
 }

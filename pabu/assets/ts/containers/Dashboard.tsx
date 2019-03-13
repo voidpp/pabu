@@ -33,7 +33,6 @@ class Dashboard extends React.Component<Props> {
         return <div>
             <NameDescFormDialog
                 caption="Create project"
-                text="some desc"
                 onSubmit={onProjectSubmit}
                 opened={addProjectDialogIsOpen}
                 onClose={hideDialog}
@@ -44,7 +43,7 @@ class Dashboard extends React.Component<Props> {
                 onStopTime={stopTime.bind(this, tickingStat.ticking ? tickingStat.entry.projectId : null)}
             />
             <Grid container justify="center">
-                <Paper style={{ minWidth: 1000, marginTop: 20, padding: 20, backgroundColor: '#f6f6f6' }}>
+                <Paper style={{ minWidth: 1000, marginTop: 20, padding: 20, backgroundColor: '#f8f8f8' }}>
                     <div style={{display: 'flex'}}>
                         <Typography style={{flexGrow: 1}} variant="h6">Projects:</Typography>
                         <Button color="primary" onClick={showDialog}>Create project</Button>

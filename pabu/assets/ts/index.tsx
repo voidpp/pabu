@@ -9,13 +9,17 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import Root, { store } from "./containers/Root";
-import { fetchProjects, fetchTickingStat } from "./actions";
+import { fetchProjects, fetchTickingStat, openProject } from "./actions";
+import { OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME } from "./types";
 
 library.add(fab, fas);
 
 if (window['initialData'].isLoggedIn) {
     store.dispatch(fetchProjects());
     store.dispatch(fetchTickingStat());
+    let openedProjectId = parseInt(window.localStorage.getItem(OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME)) || 0;
+    if (openedProjectId)
+        store.dispatch(openProject(openedProjectId));
 }
 
 ReactDOM.render(

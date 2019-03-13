@@ -66,7 +66,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
     let spent = (project.timeStat.spent/3600).toFixed(1);
     let paid = Math.ceil(project.paid/3600);
 
-    return  <ExpansionPanel expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
+    return  <ExpansionPanel className={classes.root} expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{project.name}</Typography>
                     <Typography className={classes.secondaryHeading}>

@@ -1,4 +1,5 @@
-import { number } from "prop-types";
+
+export const OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME = 'OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME'
 
 export interface UserInfo {
     name: string,
@@ -19,7 +20,7 @@ export interface User {
 
 export interface TimeSummary {
     spent: number,
-    ongoing: boolean
+    lastEntry: number,
 }
 
 export interface Project {
