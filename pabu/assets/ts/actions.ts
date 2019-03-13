@@ -9,6 +9,8 @@ export enum Action {
     CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
     CLOSE_PAYMENT_DIALOG = 'CLOSE_PAYMENT_DIALOG',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
+    DELETE_PROJECT = 'DELETE_PROJECT',
+    DELETE_ISSUE = 'DELETE_ISSUE',
     OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
     OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
@@ -226,6 +228,30 @@ export function sendPayment(projectId: number, data: PaymentSubmitData) {
         return client.addPayment(projectId, data.amount, data.user_id, data.note).then(res => {
             dispatch(closePaymentDialog())
             dispatch(fetchProjects(projectId))
+        })
+    }
+}
+
+export function deleteProject(id: number) {
+    return dispatch => {
+        return client.deleteProject(id).then(() => {
+            dispatch(fetchProjects())
+            dispatch({
+                type: Action.DELETE_PROJECT,
+                id,
+            })
+        })
+    }
+}
+
+export function deleteIssue(id: number, openedProjectId: number) {
+    return dispatch => {
+        return client.deleteIssue(id).then(() => {
+            dispatch({
+                type: Action.DELETE_ISSUE,
+                id,
+            })
+            dispatch(fetchProjects(openedProjectId))
         })
     }
 }

@@ -123,7 +123,7 @@ def add_api_controllers(app: Flask, db: Database):
         user_id = get_user_id()
         with db.session_scope() as conn:
             rows = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
-            return [issue_to_dict(r) for r in rows]
+            return {r.id: issue_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
     def get_times(project_id: int): # pylint: disable=unused-variable
@@ -200,13 +200,29 @@ def add_api_controllers(app: Flask, db: Database):
             conn.add(payment)
             return True
 
-
     @jsonrpc_api.dispatcher.add_method
     def get_project_users(project_id: int): # pylint: disable=unused-variable
         with db.session_scope() as conn:
             check_project(project_id, conn)
             rows = conn.query(User).join(association_table).join(Project).filter(Project.id == project_id).all()
             return {r.id: user_to_dict(r) for r in rows}
+
+    @jsonrpc_api.dispatcher.add_method
+    def delete_project(id: int): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            check_project(id, conn)
+            conn.query(Project).filter(Project.id == id).delete()
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
+    def delete_issue(id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            issue = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
+            if not issue:
+                abort(404)
+            conn.delete(issue)
+            return True
 
     @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

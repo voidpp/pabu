@@ -20,8 +20,12 @@ function fetchingProject(state = false, action) {
 }
 
 function projects(state = {}, action) {
-    if (action.type == Action.RECEIVE_PROJECTS) {
+    if (action.type == Action.RECEIVE_PROJECTS)
         return Object.assign({}, state, action.data);
+    if (action.type == Action.DELETE_PROJECT) {
+        let newState = Object.assign({}, state);
+        delete newState[action.id]
+        return newState
     } else
         return state;
 }
@@ -45,7 +49,11 @@ function addIssueDialogProjectId(state = null, action) {
 function issues(state = {}, action) {
     if (action.type == Action.RECEIVE_ISSUES)
         return Object.assign({}, state, action.data);
-    else
+    else if (action.type == Action.DELETE_ISSUE) {
+        let newState = Object.assign({}, state);
+        delete newState[action.id]
+        return newState
+    } else
         return state;
 }
 
@@ -89,6 +97,7 @@ function users(state = {}, action) {
     } else
         return state;
 }
+
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,

@@ -9,8 +9,8 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 association_table = Table('projects_users', Base.metadata,
-    Column('project_id', Integer, ForeignKey('projects.id')),
-    Column('user_id', Integer, ForeignKey('users.id'))
+    Column('project_id', Integer, ForeignKey('projects.id', ondelete = 'CASCADE')),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete = 'CASCADE'))
 )
 
 class User(Base):
@@ -38,7 +38,7 @@ class Source(Base):
     __tablename__ = 'sources'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     type = Column(Enum(SourceType), nullable = False)
     config = Column(JSON, nullable = False)
 
@@ -48,8 +48,8 @@ class Issue(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable = False)
     desc = Column(String, default = '')
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
 
     project = relationship("Project", backref = "issues")
 
@@ -57,9 +57,9 @@ class TimeEntry(Base):
     __tablename__ = 'time_entries'
 
     id = Column(Integer, primary_key=True)
-    issue_id = Column(Integer, ForeignKey('issues.id'))
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    issue_id = Column(Integer, ForeignKey('issues.id', ondelete = 'SET NULL'))
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     start = Column(DateTime, default = datetime.now)
     end = Column(DateTime)
 
@@ -70,9 +70,9 @@ class Payment(Base):
     __tablename__ = 'payments'
 
     id = Column(Integer, primary_key=True)
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
-    payer_user_id = Column(Integer, ForeignKey('users.id'), nullable = False)  # TODO rename this field!!!
-    paid_user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
+    payer_user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)  # TODO rename this field!!!
+    paid_user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     amount = Column(Integer, nullable = False)
     time = Column(DateTime, default = datetime.now)
     note = Column(String, default = '')
@@ -84,5 +84,5 @@ class ProjectInvitation(Base):
     __tablename__ = 'project_invitations'
 
     id = Column(Integer, primary_key=True)
-    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
     token = Column(String, nullable = False)

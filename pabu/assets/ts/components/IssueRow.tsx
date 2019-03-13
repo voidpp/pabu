@@ -36,16 +36,17 @@ type Props = {
     onAddNewTime: (issueId: number) => void,
     onStartTime: () => void,
     onStopTime: () => void,
+    onDeleteIssue: () => void,
     tickingStat: TickingStat,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, issue, handleChange, classes, onAddNewTime, onStartTime, onStopTime, tickingStat } = props;
+    const { expanded, issue, handleChange, classes, onAddNewTime, onStartTime, onStopTime, tickingStat, onDeleteIssue } = props;
 
     let tickingButton = <Button disabled>Start time</Button>;
     if (tickingStat.ticking) {
         if (tickingStat.entry.issueId == issue.id)
-            tickingButton = <Button color="secondary" onClick={onStopTime}>Stop time</Button>
+            tickingButton = <Button color="secondary" variant="contained" onClick={onStopTime}>Stop time</Button>
     } else
         tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
 
@@ -57,17 +58,12 @@ export default withStyles(styles)(React.memo((props: Props) => {
                     <Typography className={classes.secondaryHeading}>{spent} hours</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
-                    <div style={{display: 'flex'}}>
-                        <Typography style={{flexGrow: 1}}>Entries:</Typography>
-                        <div>
-                            <Button style={{marginRight: 10}} color="primary" onClick={onAddNewTime.bind(this, issue.id)}>
-                                Add time
-                            </Button>
-                            {tickingButton}
-                        </div>
-                    </div>
                     <div>
-                    time entry list
+                        <Button style={{marginRight: 10}} color="primary" onClick={onAddNewTime.bind(this, issue.id)}>
+                            Add time
+                        </Button>
+                        {tickingButton}
+                        <Button color="secondary" onClick={onDeleteIssue}>Delete issue</Button>
                     </div>
                 </ExpansionPanelDetails>
             </ExpansionPanel>

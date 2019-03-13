@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import ProjectRow from '../components/ProjectRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog,
-         closeProject, startTime, stopTime, openPaymentDialog, closePaymentDialog, sendPayment} from '../actions';
+         closeProject, startTime, stopTime, openPaymentDialog, closePaymentDialog, sendPayment, deleteProject} from '../actions';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 import PaymentDialog from '../components/PaymentDialog';
 
@@ -16,6 +16,7 @@ type Props = {
     hideAddIssueDialog: () => void,
     hideAddTimeDialog: () => void,
     hidePaymentDialog: () => void,
+    onDeleteProject: (projectId: number) => void,
     onIssueSubmit: (name: string, desc: string, projectId: number) => void,
     onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => void
     onTimeSubmit: (amount: string, projectId: number, issueId: number) => void,
@@ -42,6 +43,7 @@ class ProjectList extends React.Component<Props> {
             hideAddIssueDialog,
             hideAddTimeDialog,
             hidePaymentDialog,
+            onDeleteProject,
             onIssueSubmit,
             onPaymentSubmit,
             onTimeSubmit,
@@ -82,6 +84,7 @@ class ProjectList extends React.Component<Props> {
                     onStartTime={startTime.bind(this, project.id)}
                     onAddNewIssue={showAddIssueDialog.bind(this, project.id)}
                     onAddNewTime={showAddTimeDialog.bind(this, project.id)}
+                    onDeleteProject={onDeleteProject.bind(this, project.id)}
                     key={project.id}
                     project={project}
                     expanded={openedProjectId === project.id}
@@ -152,7 +155,11 @@ const mapDispatchToProps = (dispatch: Function) => {
         },
         closeProject: () => {
             dispatch(closeProject());
-        }
+        },
+        onDeleteProject: (projectId: number) => {
+            if(confirm('Do you really want to delete this project?'))
+                dispatch(deleteProject(projectId));
+        },
     }
 }
 

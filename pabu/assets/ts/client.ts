@@ -67,6 +67,14 @@ class PabuClient {
         return this._send('stop_time');
     }
 
+    async deleteProject(id: number) {
+        return this._send('delete_project', [id]);
+    }
+
+    async deleteIssue(id: number) {
+        return this._send('delete_issue', [id]);
+    }
+
     async getTickingStat() {
         return this._send('get_ticking_stat');
     }
