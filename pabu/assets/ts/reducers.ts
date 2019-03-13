@@ -74,16 +74,33 @@ function tickingStat(state = {ticking: false}, action) {
         return state;
 }
 
+function paymentDialogProjectId(state = null, action) {
+    if (action.type == Action.OPEN_PAYMENT_DIALOG)
+        return action.projectId;
+    else if(action.type == Action.CLOSE_PAYMENT_DIALOG)
+        return null;
+    else
+        return state;
+}
+
+function users(state = {}, action) {
+    if (action.type == Action.RECEIVE_USERS) {
+        return Object.assign({}, state, action.data);
+    } else
+        return state;
+}
 const rootReducer = combineReducers({
     creatingNewProject,
     fetchingProject,
     projects,
     issues,
+    users,
     addProjectDialogIsOpen,
     addTimeDialogContext,
     addIssueDialogProjectId,
     openedProjectId,
     tickingStat,
+    paymentDialogProjectId,
 });
 
 export default rootReducer

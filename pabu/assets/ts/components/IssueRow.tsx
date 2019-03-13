@@ -10,7 +10,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TimeStat from './TimeStat';
 
 const styles = theme => ({
     root: {
@@ -50,12 +49,12 @@ export default withStyles(styles)(React.memo((props: Props) => {
     } else
         tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
 
+    let spent = (issue.timeStat.spent/3600).toFixed(1);
+
     return  <ExpansionPanel expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{issue.name}</Typography>
-                    <Typography className={classes.secondaryHeading}>
-                        <TimeStat stat={issue.timeStat} /> in {issue.timeEntries.length} entries
-                    </Typography>
+                    <Typography className={classes.secondaryHeading}>{spent} hours</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
                     <div style={{display: 'flex'}}>

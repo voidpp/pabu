@@ -19,7 +19,6 @@ export interface User {
 
 export interface TimeSummary {
     spent: number,
-    paid: number,
     ongoing: boolean
 }
 
@@ -28,7 +27,9 @@ export interface Project {
     name: string,
     desc: string,
     issues: Array<number>,
+    users: Array<number>,
     timeStat: TimeSummary,
+    paid: number,
 }
 
 export interface Issue {
@@ -48,20 +49,40 @@ export interface TimeEntry {
     end: Date,
 }
 
+export interface User {
+    id: number,
+    name: number,
+}
+
+export interface PaymentSubmitData {
+    user_id: number,
+    amount: string,
+    note: string,
+}
+
+export interface Payment {
+    id: number,
+    project_id: number,
+    payer_user_id: number,
+    paid_user_id: number,
+    amount: number,
+    time: number,
+    note: string,
+}
+
 export interface TickingStat {
     ticking: boolean,
     entry?: TimeEntry,
 }
 
 export type ProjectSubmitCallback = (nane: string, desc: string) => void;
-
 export type NameDescSubmitCallback = (nane: string, desc: string) => void;
-
 export type TimeEntrySubmitCallback = (projectId: number, start: Date, issueId?: number, end?: Date) => void;
 
 export type ProjectMap = { [n: number]: Project };
 export type IssueMap = { [n: number]: Issue };
 export type TimeEntryMap = { [n: number]: TimeEntry };
+export type UserMap = { [n: number]: User };
 
 export type TimeDialogContext = {projectId: number, issueId: number};
 
@@ -70,9 +91,11 @@ export interface State {
     fetchingProject: boolean,
     projects: ProjectMap,
     issues: IssueMap,
+    users: UserMap,
     addProjectDialogIsOpen: boolean,
     addTimeDialogContext: TimeDialogContext,
     addIssueDialogProjectId: number,
+    paymentDialogProjectId: number,
     openedProjectId: number,
     tickingStat: TickingStat,
 }

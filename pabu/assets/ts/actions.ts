@@ -1,23 +1,24 @@
 import client from "./client";
 
-import {Action as RAction, ActionCreator, Dispatch} from 'redux';
-import {ThunkAction} from 'redux-thunk';
-import { TickingStat } from "./types";
+import { TickingStat, PaymentSubmitData } from "./types";
 
 export enum Action {
     ADD_PROJECT = 'ADD_PROJECT',
     ADD_PROJECT_DONE = 'ADD_PROJECT_DONE',
-    REQUEST_PROJECTS = 'REQUEST_PROJECTS',
-    RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
-    RECEIVE_ISSUES = 'RECEIVE_ISSUES',
-    OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
-    OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
     CLOSE_ADD_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
-    OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
     CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
-    OPEN_PROJECT = 'OPEN_PROJECT',
+    CLOSE_PAYMENT_DIALOG = 'CLOSE_PAYMENT_DIALOG',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
+    OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
+    OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
+    OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
+    OPEN_PAYMENT_DIALOG = 'OPEN_PAYMENT_DIALOG',
+    OPEN_PROJECT = 'OPEN_PROJECT',
+    RECEIVE_ISSUES = 'RECEIVE_ISSUES',
+    RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
+    RECEIVE_USERS = 'RECEIVE_USERS',
+    REQUEST_PROJECTS = 'REQUEST_PROJECTS',
 }
 
 export function openProject(id: number){
@@ -53,6 +54,23 @@ export function closeAddIssueDialog(){
     }
 }
 
+export function openPaymentDialog(projectId: number){
+    return dispatch => {
+        dispatch({
+            type: Action.OPEN_PAYMENT_DIALOG,
+            projectId,
+        })
+        return client.getProjectUsers(projectId).then(data => {
+            dispatch(receiveUsers(data))
+        })
+    }
+}
+
+export function closePaymentDialog(){
+    return {
+        type: Action.CLOSE_PAYMENT_DIALOG,
+    }
+}
 
 export function openAddTimeDialog(projectId: number, issueId: number = null){
     return {
@@ -103,11 +121,26 @@ export function fetchProjects(id: number = null) {
     }
 }
 
+export function fetchProjectUsers(projectId: number) {
+    return dispatch => {
+        return client.getProjectUsers(projectId).then(data => {
+            dispatch(receiveUsers(data))
+        })
+    }
+}
+
 export function fetchIssues(projectId: number) {
     return dispatch => {
         return client.getIssues(projectId).then(data => {
             dispatch(receiveIssues(data))
         })
+    }
+}
+
+export function receiveUsers(data) {
+    return  {
+        type: Action.RECEIVE_USERS,
+        data,
     }
 }
 
@@ -184,6 +217,15 @@ export function stopTime(openedProjectId: number) {
         return client.stopTime().then(() => {
             dispatch(fetchTickingStat())
             dispatch(fetchProjects(openedProjectId))
+        })
+    }
+}
+
+export function sendPayment(projectId: number, data: PaymentSubmitData) {
+    return dispatch => {
+        return client.addPayment(projectId, data.amount, data.user_id, data.note).then(res => {
+            dispatch(closePaymentDialog())
+            dispatch(fetchProjects(projectId))
         })
     }
 }

@@ -11,7 +11,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IssueList from '../containers/IssueList';
-import TimeStat from './TimeStat';
 
 const styles = theme => ({
     root: {
@@ -37,11 +36,12 @@ type Props = {
     onAddNewTime: () => void,
     onStartTime: () => void,
     onStopTime: () => void,
+    onAddPayment: () => void,
     tickingStat: TickingStat,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, project, handleChange, classes, onAddNewIssue, onAddNewTime, onStartTime, tickingStat, onStopTime } = props;
+    const { expanded, project, handleChange, classes, onAddNewIssue, onAddNewTime, onStartTime, tickingStat, onStopTime, onAddPayment } = props;
 
     let tickingButton = <Button disabled>Start time</Button>;
     if (tickingStat.ticking) {
@@ -50,11 +50,14 @@ export default withStyles(styles)(React.memo((props: Props) => {
     } else
         tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
 
+    let spent = (project.timeStat.spent/3600).toFixed(1);
+    let paid = Math.ceil(project.paid/3600);
+
     return  <ExpansionPanel expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className={classes.heading}>{project.name}</Typography>
                     <Typography className={classes.secondaryHeading}>
-                        <TimeStat stat={project.timeStat} /> in {project.issues.length} issues
+                        Spent {spent} hours in {project.issues.length} issues ({paid} hours paid)
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
@@ -65,6 +68,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                             <Button style={{marginRight: 10}} color="primary" onClick={onAddNewIssue}>Add new issue</Button>
                             <Button color="primary" onClick={onAddNewTime}>Add time</Button>
                             {tickingButton}
+                            <Button color="primary" onClick={onAddPayment}>Add payment</Button>
                         </div>
                     </div>
                     <IssueList/>

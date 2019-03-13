@@ -19,6 +19,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     sub = Column(String, nullable = False)
     email = Column(String)
+    name = Column(String)
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -64,6 +65,19 @@ class TimeEntry(Base):
 
     issue = relationship("Issue", backref = "time_entries")
     project = relationship("Project", backref = "time_entries")
+
+class Payment(Base):
+    __tablename__ = 'payments'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey('projects.id'), nullable = False)
+    payer_user_id = Column(Integer, ForeignKey('users.id'), nullable = False)  # TODO rename this field!!!
+    paid_user_id = Column(Integer, ForeignKey('users.id'), nullable = False)
+    amount = Column(Integer, nullable = False)
+    time = Column(DateTime, default = datetime.now)
+    note = Column(String, default = '')
+
+    project = relationship("Project", backref = "payments")
 
 class ProjectInvitation(Base):
 

@@ -43,6 +43,7 @@ export default class NameDescFormDialog extends React.Component<Props, {name: st
                             id="description"
                             label="Description"
                             type="text"
+                            multiline
                             onChange={ev => {this.setState({desc: ev.target.value})}}
                             fullWidth
                         />

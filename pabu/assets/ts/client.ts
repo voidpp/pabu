@@ -39,6 +39,10 @@ class PabuClient {
         return this._send('get_issues', [project_id]);
     }
 
+    async getProjectUsers(project_id: number) {
+        return this._send('get_project_users', [project_id]);
+    }
+
     async createProject(name: string, description: string): Promise<Project> {
         return this._send('create_project', [name, description]);
     }
@@ -53,6 +57,10 @@ class PabuClient {
 
     async startTime(projectId: number, issueId: number = null) {
         return this._send('start_time', [projectId, issueId]);
+    }
+
+    async addPayment(projectId: number, amount: string, paidUserId: number, note: string) {
+        return this._send('add_payment', [projectId, amount, paidUserId, note]);
     }
 
     async stopTime() {
