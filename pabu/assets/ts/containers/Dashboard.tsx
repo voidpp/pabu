@@ -1,19 +1,20 @@
 
 import * as React from 'react';
 import Header from '../components/Header';
-import { UserInfo, ProjectSubmitCallback, Project, State, TickingStat } from '../types';
+import { UserInfo, ProjectSubmitCallback, Project, Store, TickingStat, ProjectDialogContext, ThunkDispatcher } from '../types';
 import { Paper, Grid, Button, Typography } from '@material-ui/core';
 import ProjectList from './ProjectList';
 import { connect } from 'react-redux';
-import { sendProject, openAddProjectDialog, stopTime } from '../actions';
+import { openProjectDialog, stopTime, closeProjectDialog, receiveProjects, sendProject } from '../actions';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 
 type Props = {
     userInfo: UserInfo,
     onProjectSubmit: ProjectSubmitCallback,
-    addProjectDialogIsOpen: boolean,
+    projectDialogContext: ProjectDialogContext,
     showDialog: () => void,
     hideDialog: () => void,
+    projectData: Project,
     tickingStat: TickingStat,
     stopTime: (projectId: number) => void,
 }
@@ -24,17 +25,19 @@ class Dashboard extends React.Component<Props> {
         const {
             userInfo,
             onProjectSubmit,
-            addProjectDialogIsOpen,
+            projectDialogContext,
             showDialog,
             hideDialog,
             tickingStat,
             stopTime,
+            projectData,
         } = this.props;
         return <div>
             <NameDescFormDialog
-                caption="Create project"
-                onSubmit={onProjectSubmit}
-                opened={addProjectDialogIsOpen}
+                caption={(projectDialogContext && projectDialogContext.id) ? "Update project" : "Create project"}
+                onSubmit={onProjectSubmit.bind(this, projectDialogContext ? projectDialogContext.id : null)}
+                opened={projectDialogContext != null}
+                initialData={projectData}
                 onClose={hideDialog}
             />
             <Header
@@ -55,24 +58,32 @@ class Dashboard extends React.Component<Props> {
     }
 }
 
-const mapStateToProps = (state: State) => {
-    const { addProjectDialogIsOpen, tickingStat } = state;
+const mapStateToProps = (state: Store) => {
+    const { projectDialogContext, tickingStat, projects } = state;
+    let projectData = {name: '', desc: ''};
+    if (projectDialogContext && projectDialogContext.id) {
+        projectData = projects[projectDialogContext.id];
+    }
     return {
-        addProjectDialogIsOpen,
+        projectDialogContext,
         tickingStat,
+        projectData,
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
-        onProjectSubmit: (name: string, desc: string) => {
-            dispatch(sendProject(name, desc))
+        onProjectSubmit: (id: number, name: string, desc: string) => {
+            dispatch(sendProject(name, desc, id)).then(project => {
+                dispatch(closeProjectDialog())
+                dispatch(receiveProjects({[project.id]: project}))
+            })
         },
         showDialog: () => {
-            dispatch(openAddProjectDialog())
+            dispatch(openProjectDialog())
         },
         hideDialog: () => {
-            dispatch(openAddProjectDialog(false))
+            dispatch(closeProjectDialog())
         },
         stopTime: (openedProjectId: number) => {
             dispatch(stopTime(openedProjectId))

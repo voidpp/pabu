@@ -1,14 +1,7 @@
 import { combineReducers } from 'redux';
 import { Action } from './actions';
+import { Store } from './types';
 
-function creatingNewProject(state = false, action) {
-    if (action.type == Action.ADD_PROJECT)
-        return true;
-    else if (action.type == Action.ADD_PROJECT_DONE)
-        return false;
-    else
-        return state;
-}
 
 function fetchingProject(state = false, action) {
     if (action.type == Action.REQUEST_PROJECTS)
@@ -30,17 +23,19 @@ function projects(state = {}, action) {
         return state;
 }
 
-function addProjectDialogIsOpen(state = false, action: {type: Action, isOpen: boolean}) {
-    if (action.type == Action.OPEN_ADD_PROJECT_DIALOG)
-        return action.isOpen;
+function projectDialogContext(state = null, action) {
+    if (action.type == Action.OPEN_PROJECT_DIALOG)
+        return action.context;
+    else if (action.type == Action.CLOSE_PROJECT_DIALOG)
+        return null;
     else
         return state;
 }
 
-function addIssueDialogProjectId(state = null, action) {
-    if (action.type == Action.OPEN_ADD_ISSUE_DIALOG)
-        return action.projectId;
-    else if(action.type == Action.CLOSE_ADD_ISSUE_DIALOG)
+function issueDialogContext(state = null, action) {
+    if (action.type == Action.OPEN_ISSUE_DIALOG)
+        return action.context;
+    else if(action.type == Action.CLOSE_ISSUE_DIALOG)
         return null;
     else
         return state;
@@ -98,15 +93,14 @@ function users(state = {}, action) {
         return state;
 }
 
-const rootReducer = combineReducers({
-    creatingNewProject,
+const rootReducer = combineReducers<Store>({
     fetchingProject,
     projects,
     issues,
     users,
-    addProjectDialogIsOpen,
+    projectDialogContext,
     addTimeDialogContext,
-    addIssueDialogProjectId,
+    issueDialogContext,
     openedProjectId,
     tickingStat,
     paymentDialogProjectId,

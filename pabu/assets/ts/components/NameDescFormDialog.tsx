@@ -3,14 +3,29 @@ import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
 import { NameDescSubmitCallback } from '../types';
 
+type State = {
+    name: string,
+    desc: string,
+}
+
 type Props = {
     opened: boolean,
     onSubmit: NameDescSubmitCallback,
     caption: string,
+    initialData: State,
     onClose: () => void,
 }
 
-export default class NameDescFormDialog extends React.Component<Props, {name: string, desc:string}> {
+export default class NameDescFormDialog extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props);
+        this.state = props.initialData;
+    }
+
+    componentWillReceiveProps(props: Props) {
+        this.setState(props.initialData)
+    }
 
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
@@ -18,6 +33,7 @@ export default class NameDescFormDialog extends React.Component<Props, {name: st
     }
 
     render() {
+        let {name, desc} = this.state;
         return <Dialog
             open={this.props.opened}
             onClose={this.props.onClose}
@@ -33,6 +49,7 @@ export default class NameDescFormDialog extends React.Component<Props, {name: st
                         label="Name"
                         type="text"
                         required
+                        value={name || ''}
                         onChange={ev => {this.setState({name: ev.target.value})}}
                         fullWidth
                     />
@@ -41,6 +58,7 @@ export default class NameDescFormDialog extends React.Component<Props, {name: st
                         id="description"
                         label="Description"
                         type="text"
+                        value={desc || ''}
                         multiline
                         onChange={ev => {this.setState({desc: ev.target.value})}}
                         fullWidth
@@ -50,7 +68,7 @@ export default class NameDescFormDialog extends React.Component<Props, {name: st
                     <Button onClick={this.props.onClose} color="primary">
                         Cancel
                     </Button>
-                    <Button type="submit" color="primary">Create</Button>
+                    <Button type="submit" color="primary">Submit</Button>
                 </DialogActions>
             </form>
         </Dialog>

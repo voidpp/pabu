@@ -99,6 +99,15 @@ def add_api_controllers(app: Flask, db: Database):
             return project_to_dict(prj)
 
     @jsonrpc_api.dispatcher.add_method
+    def update_project(id: int, name: str, desc: str): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            check_project(id, conn)
+            project = conn.query(Project).filter(Project.id == id).first() # type: Project
+            project.name = name
+            project.desc = desc
+            return project_to_dict(project)
+
+    @jsonrpc_api.dispatcher.add_method
     def get_projects(id: int = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
@@ -116,7 +125,20 @@ def add_api_controllers(app: Flask, db: Database):
             issue = Issue(name = name, desc = desc, project_id = project_id, user_id = user_id)
             conn.add(issue)
             conn.flush()
-            return issue.id
+            return issue_to_dict(issue)
+
+
+    @jsonrpc_api.dispatcher.add_method
+    def update_issue(id: int, name: str, desc: str, project_id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            issue = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
+            if not issue:
+                abort(404)
+            issue.name = name
+            issue.desc = desc
+            # update project_id is not supported yet
+            return issue_to_dict(issue)
 
     @jsonrpc_api.dispatcher.add_method
     def get_issues(project_id: int): # pylint: disable=unused-variable

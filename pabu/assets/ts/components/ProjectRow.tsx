@@ -37,49 +37,43 @@ type Props = {
     onDeleteProject: () => void,
     onStartTime: () => void,
     onStopTime: () => void,
+    onUpdateProject: () => void,
     project: Project,
     tickingStat: TickingStat,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const {
-        classes,
-        expanded,
-        handleChange,
-        onAddNewIssue,
-        onAddNewTime,
-        onAddPayment,
-        onDeleteProject,
-        onStartTime,
-        onStopTime,
-        project,
-        tickingStat,
-    } = props;
 
     let tickingButton = <Button disabled>Start time</Button>;
-    if (tickingStat.ticking) {
-        if (tickingStat.entry.projectId == project.id)
-            tickingButton = <Button color="secondary" variant="contained" onClick={onStopTime}>Stop time</Button>
+    if (props.tickingStat.ticking) {
+        if (props.tickingStat.entry.projectId == props.project.id)
+            tickingButton = <Button color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
     } else
-        tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
+        tickingButton = <Button color="primary" onClick={props.onStartTime}>Start time</Button>
 
-    let spent = (project.timeStat.spent/3600).toFixed(1);
-    let paid = Math.ceil(project.paid/3600);
+    let spent = (props.project.timeStat.spent/3600).toFixed(1);
+    let paid = Math.ceil(props.project.paid/3600);
 
-    return  <ExpansionPanel className={classes.root} expanded={expanded} key={project.id} onChange={handleChange.bind(this, project.id)}>
+    return  <ExpansionPanel
+                className={props.classes.root}
+                expanded={props.expanded}
+                key={props.project.id}
+                onChange={props.handleChange.bind(this, props.project.id)}
+            >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={classes.heading}>{project.name}</Typography>
-                    <Typography className={classes.secondaryHeading}>
-                        Spent {spent} hours in {project.issues.length} issues ({paid} hours paid)
+                    <Typography className={props.classes.heading}>{props.project.name}</Typography>
+                    <Typography className={props.classes.secondaryHeading}>
+                        Spent {spent} hours in {props.project.issues.length} issues ({paid} hours paid)
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
                     <div>
-                        <Button color="primary" onClick={onAddNewIssue}>Create issue</Button>
-                        <Button color="primary" onClick={onAddNewTime}>Add time</Button>
+                        <Button color="primary" onClick={props.onAddNewIssue}>Create issue</Button>
+                        <Button color="primary" onClick={props.onAddNewTime}>Add time</Button>
                         {tickingButton}
-                        <Button color="primary" onClick={onAddPayment}>Add payment</Button>
-                        <Button color="secondary" onClick={onDeleteProject}>Delete project</Button>
+                        <Button color="primary" onClick={props.onAddPayment}>Add payment</Button>
+                        <Button color="primary" onClick={props.onUpdateProject}>Update project</Button>
+                        <Button color="secondary" onClick={props.onDeleteProject}>Delete project</Button>
                     </div>
                     <IssueList/>
                 </ExpansionPanelDetails>

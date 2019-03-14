@@ -1,3 +1,5 @@
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
 
 export const OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME = 'OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME'
 
@@ -76,8 +78,8 @@ export interface TickingStat {
     entry?: TimeEntry,
 }
 
-export type ProjectSubmitCallback = (nane: string, desc: string) => void;
-export type NameDescSubmitCallback = (nane: string, desc: string) => void;
+export type ProjectSubmitCallback = (id: number, name: string, desc: string) => void;
+export type NameDescSubmitCallback = (name: string, desc: string) => void;
 export type TimeEntrySubmitCallback = (projectId: number, start: Date, issueId?: number, end?: Date) => void;
 
 export type ProjectMap = { [n: number]: Project };
@@ -85,18 +87,21 @@ export type IssueMap = { [n: number]: Issue };
 export type TimeEntryMap = { [n: number]: TimeEntry };
 export type UserMap = { [n: number]: User };
 
+export type ProjectDialogContext = {id?: number};
+export type IssueDialogContext = {projectId: number, id?: number};
 export type TimeDialogContext = {projectId: number, issueId: number};
 
-export interface State {
-    creatingNewProject: boolean,
-    fetchingProject: boolean,
-    projects: ProjectMap,
-    issues: IssueMap,
-    users: UserMap,
-    addProjectDialogIsOpen: boolean,
+export interface Store {
     addTimeDialogContext: TimeDialogContext,
-    addIssueDialogProjectId: number,
-    paymentDialogProjectId: number,
+    fetchingProject: boolean,
+    issueDialogContext: IssueDialogContext,
+    issues: IssueMap,
     openedProjectId: number,
+    paymentDialogProjectId: number,
+    projectDialogContext: ProjectDialogContext,
+    projects: ProjectMap,
     tickingStat: TickingStat,
+    users: UserMap,
 }
+
+export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

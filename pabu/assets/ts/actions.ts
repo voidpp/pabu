@@ -1,18 +1,17 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData, OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME } from "./types";
+import { TickingStat, PaymentSubmitData, OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME, Issue } from "./types";
 
 export enum Action {
-    ADD_PROJECT = 'ADD_PROJECT',
-    ADD_PROJECT_DONE = 'ADD_PROJECT_DONE',
-    CLOSE_ADD_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
+    CLOSE_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
     CLOSE_ADD_TIME_DIALOG = 'CLOSE_ADD_TIME_DIALOG',
+    CLOSE_PROJECT_DIALOG = 'CLOSE_PROJECT_DIALOG',
     CLOSE_PAYMENT_DIALOG = 'CLOSE_PAYMENT_DIALOG',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
     DELETE_PROJECT = 'DELETE_PROJECT',
     DELETE_ISSUE = 'DELETE_ISSUE',
-    OPEN_ADD_ISSUE_DIALOG = 'OPEN_ADD_ISSUE_DIALOG',
-    OPEN_ADD_PROJECT_DIALOG = 'OPEN_ADD_PROJECT_DIALOG',
+    OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG',
+    OPEN_PROJECT_DIALOG = 'OPEN_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
     OPEN_PAYMENT_DIALOG = 'OPEN_PAYMENT_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
@@ -40,23 +39,29 @@ export function closeProject() {
     }
 }
 
-export function openAddProjectDialog(isOpen = true){
+export function openProjectDialog(id: number = null) {
     return {
-        type: Action.OPEN_ADD_PROJECT_DIALOG,
-        isOpen,
+        type: Action.OPEN_PROJECT_DIALOG,
+        context: {id},
     }
 }
 
-export function openAddIssueDialog(projectId: number){
+export function closeProjectDialog() {
     return {
-        type: Action.OPEN_ADD_ISSUE_DIALOG,
-        projectId,
+        type: Action.CLOSE_PROJECT_DIALOG,
     }
 }
 
-export function closeAddIssueDialog(){
+export function openIssueDialog(projectId: number, id: number = null){
     return {
-        type: Action.CLOSE_ADD_ISSUE_DIALOG,
+        type: Action.OPEN_ISSUE_DIALOG,
+        context: {projectId, id},
+    }
+}
+
+export function closeIssueDialog() {
+    return {
+        type: Action.CLOSE_ISSUE_DIALOG,
     }
 }
 
@@ -89,20 +94,6 @@ export function openAddTimeDialog(projectId: number, issueId: number = null){
 export function closeAddTimeDialog(){
     return {
         type: Action.CLOSE_ADD_TIME_DIALOG,
-    }
-}
-
-export function addProject(name: string, description: string) {
-    return {
-        type: Action.ADD_PROJECT,
-        name,
-        description,
-    }
-}
-
-export function addProjectDone() {
-    return {
-        type: Action.ADD_PROJECT_DONE,
     }
 }
 
@@ -159,25 +150,13 @@ export function receiveIssues(data) {
     }
 }
 
-export function sendProject(name: string, description: string) {
-    return dispatch => {
-        dispatch(addProject(name, description));
-        return client.createProject(name, description).then(project => {
-            dispatch(addProjectDone());
-            dispatch(openAddProjectDialog(false))
-            return dispatch(receiveProjects({[project.id]: project}))
-        })
-    }
+export function sendProject(name: string, description: string, id: number = null) {
+    return () => id ? client.updateProject(id, name, description) : client.createProject(name, description);
 }
 
-export function sendIssue(name: string, description: string, projectId: number) {
-    return dispatch => {
-        return client.createIssue(name, description, projectId).then(prjId => {
-            dispatch(closeAddIssueDialog())
-            dispatch(fetchProjects(projectId))
-            dispatch(fetchIssues(projectId))
-        })
-    }
+
+export function sendIssue(name: string, description: string, projectId: number, id: number = null) {
+    return dispatch => id ? client.updateIssue(id, name, description, projectId) : client.createIssue(name, description, projectId)
 }
 
 export function sendTime(projectId: number, amount: string, issueId: number = null) {

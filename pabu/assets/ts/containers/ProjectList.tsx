@@ -1,37 +1,45 @@
 
-import { State, PaymentSubmitData, Project } from '../types';
+import { Store, PaymentSubmitData, Project, ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
-import { sendIssue, openAddIssueDialog, fetchIssues, openProject, openAddTimeDialog, sendTime, closeAddIssueDialog, closeAddTimeDialog,
-         closeProject, startTime, stopTime, openPaymentDialog, closePaymentDialog, sendPayment, deleteProject} from '../actions';
+import { sendIssue, openIssueDialog, openProject, openAddTimeDialog, sendTime, closeIssueDialog, closeAddTimeDialog,
+         closeProject, startTime, stopTime, openPaymentDialog, closePaymentDialog, sendPayment, deleteProject, openProjectDialog, fetchProjects, fetchIssues, receiveIssues} from '../actions';
 import ProjectList from '../components/ProjectList';
 
-function mapStateToProps(state: State) {
-    const { projects, addIssueDialogProjectId, openedProjectId, addTimeDialogContext, tickingStat, paymentDialogProjectId, users } = state;
+function mapStateToProps(state: Store) {
+    const { issueDialogContext, openedProjectId, addTimeDialogContext, tickingStat, paymentDialogProjectId, users, issues } = state;
+    let issueData = {name: '', desc: ''};
+    if (issueDialogContext && issueDialogContext.id) {
+        issueData = issues[issueDialogContext.id];
+    }
     return {
-        addIssueDialogProjectId,
+        issueDialogContext,
         addTimeDialogContext,
         openedProjectId,
         paymentDialogProjectId,
-        projects: Object.values(projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
-        // projects: Object.values(projects),
+        projects: Object.values(state.projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
         tickingStat,
         users,
+        issueData,
     }
 }
 
-const mapDispatchToProps = (dispatch: Function) => {
+const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
-        onIssueSubmit: (name: string, desc: string, projectId: number) => {
-            dispatch(sendIssue(name, desc, projectId))
+        onIssueSubmit: (name: string, desc: string, projectId: number, id: number) => {
+            dispatch(sendIssue(name, desc, projectId, id)).then(issue => {
+                dispatch(closeIssueDialog())
+                dispatch(fetchProjects(projectId))
+                dispatch(receiveIssues({[issue.id]: issue}))
+            })
         },
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {
             dispatch(sendPayment(projectId, data));
         },
         showAddIssueDialog: (projectId: number) => {
-            dispatch(openAddIssueDialog(projectId))
+            dispatch(openIssueDialog(projectId))
         },
         hideAddIssueDialog: () => {
-            dispatch(closeAddIssueDialog())
+            dispatch(closeIssueDialog())
         },
         showPaymentDialog: (projectId: number) => {
             dispatch(openPaymentDialog(projectId))
@@ -63,6 +71,9 @@ const mapDispatchToProps = (dispatch: Function) => {
         onDeleteProject: (projectId: number) => {
             if(confirm('Do you really want to delete this project?'))
                 dispatch(deleteProject(projectId));
+        },
+        onUpdateProject: (projectId: number) => {
+            dispatch(openProjectDialog(projectId))
         },
     }
 }

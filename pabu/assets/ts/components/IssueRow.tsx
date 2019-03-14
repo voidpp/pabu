@@ -37,31 +37,37 @@ type Props = {
     onStartTime: () => void,
     onStopTime: () => void,
     onDeleteIssue: () => void,
+    onUpdateIssue: () => void,
     tickingStat: TickingStat,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
-    const { expanded, issue, handleChange, classes, onAddNewTime, onStartTime, onStopTime, tickingStat, onDeleteIssue } = props;
 
     let tickingButton = <Button disabled>Start time</Button>;
-    if (tickingStat.ticking) {
-        if (tickingStat.entry.issueId == issue.id)
-            tickingButton = <Button color="secondary" variant="contained" onClick={onStopTime}>Stop time</Button>
+    if (props.tickingStat.ticking) {
+        if (props.tickingStat.entry.issueId == props.issue.id)
+            tickingButton = <Button color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
     } else
-        tickingButton = <Button color="primary" onClick={onStartTime}>Start time</Button>
+        tickingButton = <Button color="primary" onClick={props.onStartTime}>Start time</Button>
 
-    let spent = (issue.timeStat.spent / 3600).toFixed(1);
+    let spent = (props.issue.timeStat.spent / 3600).toFixed(1);
 
-    return <ExpansionPanel className={classes.root} expanded={expanded} key={issue.id} onChange={handleChange.bind(this, issue.id)}>
+    return <ExpansionPanel
+                className={props.classes.root}
+                expanded={props.expanded}
+                key={props.issue.id}
+                onChange={props.handleChange.bind(this, props.issue.id)}
+            >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={classes.heading}>{issue.name}</Typography>
-                    <Typography className={classes.secondaryHeading}>{spent} hours</Typography>
+                    <Typography className={props.classes.heading}>{props.issue.name}</Typography>
+                    <Typography className={props.classes.secondaryHeading}>{spent} hours</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{ display: 'block' }}>
                     <div>
-                        <Button color="primary" onClick={onAddNewTime.bind(this, issue.id)}>Add time</Button>
+                        <Button color="primary" onClick={props.onAddNewTime.bind(this, props.issue.id)}>Add time</Button>
                         {tickingButton}
-                        <Button color="secondary" onClick={onDeleteIssue}>Delete issue</Button>
+                        <Button color="primary" onClick={props.onUpdateIssue}>Update issue</Button>
+                        <Button color="secondary" onClick={props.onDeleteIssue}>Delete issue</Button>
                     </div>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
