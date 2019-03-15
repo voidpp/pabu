@@ -16,6 +16,7 @@ export enum Action {
     OPEN_PAYMENT_DIALOG = 'OPEN_PAYMENT_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
     RECEIVE_ISSUES = 'RECEIVE_ISSUES',
+    RECEIVE_TIME_ENTRIES = 'RECEIVE_TIME_ENTRIES',
     RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
     RECEIVE_USERS = 'RECEIVE_USERS',
@@ -27,6 +28,7 @@ export function openProject(id: number) {
     return dispatch => {
         window.localStorage.setItem(LocalStorageKey.OPENED_PROJECTID, id.toString());
         dispatch(fetchIssues(id))
+        dispatch(fetchTimeEntries(id))
         dispatch({
             type: Action.OPEN_PROJECT,
             id,
@@ -130,6 +132,10 @@ export function fetchIssues(projectId: number) {
     }
 }
 
+export function fetchTimeEntries(projectId: number) {
+    return dispatch => client.getTimeEntries(projectId).then(data => dispatch(receiveTimeEntries(data)))
+}
+
 export function receiveUsers(data) {
     return  {
         type: Action.RECEIVE_USERS,
@@ -147,6 +153,13 @@ export function receiveProjects(data) {
 export function receiveIssues(data) {
     return  {
         type: Action.RECEIVE_ISSUES,
+        data,
+    }
+}
+
+export function receiveTimeEntries(data) {
+    return  {
+        type: Action.RECEIVE_TIME_ENTRIES,
         data,
     }
 }

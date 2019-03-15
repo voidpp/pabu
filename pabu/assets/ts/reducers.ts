@@ -91,6 +91,12 @@ function isDarkTheme(state = false, action) {
     return state;
 }
 
+function timeEntries(state = {}, action) {
+    if (action.type == Action.RECEIVE_TIME_ENTRIES)
+        return Object.assign({}, state, action.data);
+    return state;
+}
+
 const rootReducer = combineReducers<Store>({
     fetchingProject,
     projects,
@@ -103,6 +109,7 @@ const rootReducer = combineReducers<Store>({
     tickingStat,
     paymentDialogProjectId,
     isDarkTheme,
+    timeEntries,
 });
 
 export default rootReducer

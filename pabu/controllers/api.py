@@ -148,12 +148,11 @@ def add_api_controllers(app: Flask, db: Database):
             return {r.id: issue_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
-    def get_times(project_id: int): # pylint: disable=unused-variable
-        user_id = get_user_id()
+    def get_time_entries(project_id: int): # pylint: disable=unused-variable
         with db.session_scope() as conn:
             check_project(project_id, conn)
-            rows = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
-            return [{'id': r.id, 'name': r.name} for r in rows]
+            rows = conn.query(TimeEntry).filter(Project.id == project_id).all()
+            return {r.id: time_entry_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
     def add_time(project_id: int, amount: str, issue_id = None, end = None): # pylint: disable=unused-variable
@@ -190,6 +189,7 @@ def add_api_controllers(app: Flask, db: Database):
             'id': time_entry.id,
             'issueId': time_entry.issue_id,
             'projectId': time_entry.project_id,
+            'userId': time_entry.user_id,
             'start': time_entry.start.timestamp(),
             'end': time_entry.end.timestamp() if time_entry.end else None,
         }

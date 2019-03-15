@@ -51,8 +51,9 @@ export interface TimeEntry {
     id: number,
     issueId: number,
     projectId: number,
-    start: Date,
-    end: Date,
+    start: number,
+    end: number,
+    userId: number,
 }
 
 export interface User {
@@ -97,6 +98,7 @@ export type TimeDialogContext = {projectId: number, issueId: number};
 export interface Store {
     addTimeDialogContext: TimeDialogContext,
     fetchingProject: boolean,
+    isDarkTheme: boolean,
     issueDialogContext: IssueDialogContext,
     issues: IssueMap,
     openedProjectId: number,
@@ -104,8 +106,8 @@ export interface Store {
     projectDialogContext: ProjectDialogContext,
     projects: ProjectMap,
     tickingStat: TickingStat,
+    timeEntries: TimeEntryMap,
     users: UserMap,
-    isDarkTheme: boolean,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

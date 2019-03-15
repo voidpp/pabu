@@ -15,7 +15,6 @@ import Button from '@material-ui/core/Button';
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
         width: '100%',
-        // backgroundColor: '#f8f8f8',
     },
     heading: {
         fontSize: typography.pxToRem(15),

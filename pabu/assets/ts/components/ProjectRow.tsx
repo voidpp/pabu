@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Project, TickingStat } from '../types';
+import { Project, TickingStat, TimeEntry } from '../types';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IssueList from '../containers/IssueList';
+import TimeEntryList from '../containers/TimeEntryList';
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
@@ -40,6 +41,7 @@ type Props = {
     project: Project,
     tickingStat: TickingStat,
     openedProjectId: number,
+    timeEntries: Array<TimeEntry>,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
@@ -78,7 +80,22 @@ export default withStyles(styles)(React.memo((props: Props) => {
                         <Button size="small" color="primary" onClick={props.onUpdateProject.bind(this, id)}>Update project</Button>
                         <Button size="small" color="secondary" onClick={props.onDeleteProject.bind(this, id)}>Delete project</Button>
                     </div>
-                    <IssueList/>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography className={props.classes.heading}>Time entries</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails >
+                            <TimeEntryList entries={props.timeEntries} />
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography className={props.classes.heading}>Issues</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails >
+                            <IssueList/>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
 }));

@@ -1,4 +1,4 @@
-import { Project, Issue } from "./types";
+import { Project, Issue, TimeEntryMap } from "./types";
 
 class PabuClient {
 
@@ -37,6 +37,10 @@ class PabuClient {
 
     async getIssues(project_id: number) {
         return this._send('get_issues', [project_id]);
+    }
+
+    async getTimeEntries(project_id: number): Promise<TimeEntryMap> {
+        return this._send('get_time_entries', [project_id]);
     }
 
     async getProjectUsers(project_id: number) {

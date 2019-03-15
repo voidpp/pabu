@@ -1,14 +1,15 @@
 
 import { connect } from 'react-redux';
 import { deleteProject, openAddTimeDialog, openIssueDialog, openPaymentDialog, openProjectDialog, startTime, stopTime } from '../actions';
-import { Store, ThunkDispatcher } from '../types';
+import { Store, ThunkDispatcher, TimeEntry } from '../types';
 import ProjectRow from '../components/ProjectRow';
 
 function mapStateToProps(state: Store) {
-    const {tickingStat, openedProjectId} = state;
+    const {tickingStat, openedProjectId, timeEntries} = state;
     return {
         tickingStat,
         openedProjectId,
+        timeEntries: Object.values(timeEntries).filter((entry: TimeEntry) => entry.projectId == openedProjectId)
     }
 }
 
