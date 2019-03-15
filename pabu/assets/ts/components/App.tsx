@@ -5,8 +5,7 @@ import Login from './Login';
 import { UserInfo } from '../types';
 import { Paper } from '@material-ui/core';
 
-import blue from '@material-ui/core/colors/blue';
-import lightBlue from '@material-ui/core/colors/lightBlue';
+import {blue, cyan, pink} from '@material-ui/core/colors';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
@@ -15,13 +14,20 @@ const lightTheme = createMuiTheme({
         type: 'light',
         primary: blue,
     },
+    typography: {
+        useNextVariants: true,
+    }
 });
 
 const darkTheme = createMuiTheme({
     palette: {
         type: 'dark',
-        primary: lightBlue,
+        primary: cyan,
+        secondary: pink,
     },
+    typography: {
+        useNextVariants: true,
+    }
 });
 
 // #006699

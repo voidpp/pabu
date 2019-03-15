@@ -86,8 +86,8 @@ function users(state = {}, action) {
 }
 
 function isDarkTheme(state = false, action) {
-    if (action.type == Action.TOGGLE_DARK_THEME)
-        return !state;
+    if (action.type == Action.SET_DARK_THEME)
+        return action.isSet;
     return state;
 }
 

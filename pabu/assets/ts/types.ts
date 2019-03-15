@@ -1,7 +1,10 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
-export const OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME = 'OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME'
+export enum LocalStorageKey {
+    OPENED_PROJECTID = 'OPENED_PROJECTID',
+    IS_DARK_THEME  = 'IS_DARK_THEME',
+}
 
 export interface UserInfo {
     name: string,

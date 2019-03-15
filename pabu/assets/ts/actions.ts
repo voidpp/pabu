@@ -1,6 +1,6 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData, OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME, Issue } from "./types";
+import { TickingStat, PaymentSubmitData, LocalStorageKey, Issue } from "./types";
 
 export enum Action {
     CLOSE_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
@@ -20,12 +20,12 @@ export enum Action {
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
     RECEIVE_USERS = 'RECEIVE_USERS',
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
-    TOGGLE_DARK_THEME = 'SET_DARK_THEME',
+    SET_DARK_THEME = 'SET_DARK_THEME',
 }
 
 export function openProject(id: number) {
     return dispatch => {
-        window.localStorage.setItem(OPENED_PROJECTID_LOCAL_STORAGE_KEY_NAME, id.toString());
+        window.localStorage.setItem(LocalStorageKey.OPENED_PROJECTID, id.toString());
         dispatch(fetchIssues(id))
         dispatch({
             type: Action.OPEN_PROJECT,
@@ -235,8 +235,10 @@ export function deleteIssue(id: number, openedProjectId: number) {
     }
 }
 
-export function toggleTheme() {
+export function setDarkTheme(isSet: boolean) {
+    window.localStorage.setItem(LocalStorageKey.IS_DARK_THEME, isSet ? '1' : '0')
     return {
-        type: Action.TOGGLE_DARK_THEME,
+        type: Action.SET_DARK_THEME,
+        isSet,
     }
 }

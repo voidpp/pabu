@@ -5,7 +5,7 @@ import { UserInfo, ProjectSubmitCallback, Project, Store, TickingStat, ProjectDi
 import { Paper, Grid, Button, Typography } from '@material-ui/core';
 import ProjectList from './ProjectList';
 import { connect } from 'react-redux';
-import { openProjectDialog, stopTime, closeProjectDialog, receiveProjects, sendProject, toggleTheme } from '../actions';
+import { openProjectDialog, stopTime, closeProjectDialog, receiveProjects, sendProject, setDarkTheme } from '../actions';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
     projectData: Project,
     tickingStat: TickingStat,
     stopTime: (projectId: number) => void,
-    onThemeClick: () => void,
+    onThemeClick: (isDark: boolean) => void,
     isDarkTheme: boolean,
 }
 
@@ -95,8 +95,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         stopTime: (openedProjectId: number) => {
             dispatch(stopTime(openedProjectId))
         },
-        onThemeClick: () => {
-            dispatch(toggleTheme())
+        onThemeClick: (isDark: boolean) => {
+            dispatch(setDarkTheme(isDark))
         }
     }
 }

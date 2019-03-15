@@ -14,7 +14,7 @@ type Props = {
     userInfo: UserInfo,
     tickingStat: TickingStat,
     onStopTime: () => void,
-    onThemeClick: () => void,
+    onThemeClick: (isDark: boolean) => void,
     isDarkTheme: boolean,
 }
 
@@ -50,7 +50,7 @@ export default class Header extends React.Component<Props, {anchorEl: HTMLElemen
                     <div style={{flexGrow: 1, textAlign: 'center'}}>{
                         tickingStat.ticking ? <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button> : null
                     }</div>
-                    <IconButton style={{width: 40, height: 40}} onClick={onThemeClick}>
+                    <IconButton style={{width: 40, height: 40}} onClick={onThemeClick.bind(this, !isDarkTheme)}>
                         <FontAwesomeIcon icon={{iconName: 'moon', prefix: isDarkTheme ? 'fas' : 'far'}} style={{fontSize: 15}}/>
                     </IconButton>
                     <IconButton
