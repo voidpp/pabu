@@ -29,34 +29,37 @@ const styles = ({ palette, typography }: Theme) => createStyles({
 
 type Props = {
     classes: any,
-    expanded: boolean,
     handleChange: (id: number) => void,
-    onAddNewIssue: () => void,
-    onAddNewTime: () => void,
-    onAddPayment: () => void,
-    onDeleteProject: () => void,
-    onStartTime: () => void,
-    onStopTime: () => void,
-    onUpdateProject: () => void,
+    onAddNewIssue: (projectId: number) => void,
+    onAddNewTime: (projectId: number) => void,
+    onAddPayment: (projectId: number) => void,
+    onDeleteProject: (projectId: number) => void,
+    onStartTime: (projectId: number) => void,
+    onStopTime: (projectId: number) => void,
+    onUpdateProject: (projectId: number) => void,
     project: Project,
     tickingStat: TickingStat,
+    openedProjectId: number,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
 
+    const id = props.project.id;
+
     let tickingButton = <Button size="small" disabled>Start time</Button>;
     if (props.tickingStat.ticking) {
         if (props.tickingStat.entry.projectId == props.project.id)
-            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
+            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={props.onStopTime.bind(this, id)}>Stop time</Button>
     } else
-        tickingButton = <Button size="small" color="primary" onClick={props.onStartTime}>Start time</Button>
+        tickingButton = <Button size="small" color="primary" onClick={props.onStartTime.bind(this, id)}>Start time</Button>
 
     let spent = (props.project.timeStat.spent/3600).toFixed(1);
     let paid = Math.ceil(props.project.paid/3600);
+    const expanded = props.openedProjectId == id;
 
     return  <ExpansionPanel
                 className={props.classes.root}
-                expanded={props.expanded}
+                expanded={expanded}
                 key={props.project.id}
                 onChange={props.handleChange.bind(this, props.project.id)}
             >
@@ -68,12 +71,12 @@ export default withStyles(styles)(React.memo((props: Props) => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
                     <div>
-                        <Button size="small" color="primary" onClick={props.onAddNewIssue}>Create issue</Button>
-                        <Button size="small" color="primary" onClick={props.onAddNewTime}>Add time</Button>
+                        <Button size="small" color="primary" onClick={props.onAddNewIssue.bind(this, id)}>Create issue</Button>
+                        <Button size="small" color="primary" onClick={props.onAddNewTime.bind(this, id)}>Add time</Button>
                         {tickingButton}
-                        <Button size="small" color="primary" onClick={props.onAddPayment}>Add payment</Button>
-                        <Button size="small" color="primary" onClick={props.onUpdateProject}>Update project</Button>
-                        <Button size="small" color="secondary" onClick={props.onDeleteProject}>Delete project</Button>
+                        <Button size="small" color="primary" onClick={props.onAddPayment.bind(this, id)}>Add payment</Button>
+                        <Button size="small" color="primary" onClick={props.onUpdateProject.bind(this, id)}>Update project</Button>
+                        <Button size="small" color="secondary" onClick={props.onDeleteProject.bind(this, id)}>Delete project</Button>
                     </div>
                     <IssueList/>
                 </ExpansionPanelDetails>

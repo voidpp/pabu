@@ -1,12 +1,11 @@
 
-import { Store, PaymentSubmitData, Project, ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
-import { sendIssue, openIssueDialog, openProject, openAddTimeDialog, sendTime, closeIssueDialog, closeAddTimeDialog,
-         closeProject, startTime, stopTime, openPaymentDialog, closePaymentDialog, sendPayment, deleteProject, openProjectDialog, fetchProjects, fetchIssues, receiveIssues} from '../actions';
+import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendIssue, sendPayment, sendTime } from '../actions';
 import ProjectList from '../components/ProjectList';
+import { PaymentSubmitData, Project, Store, ThunkDispatcher } from '../types';
 
 function mapStateToProps(state: Store) {
-    const { issueDialogContext, openedProjectId, addTimeDialogContext, tickingStat, paymentDialogProjectId, users, issues } = state;
+    const { issueDialogContext, openedProjectId, addTimeDialogContext, paymentDialogProjectId, users, issues } = state;
     let issueData = {name: '', desc: ''};
     if (issueDialogContext && issueDialogContext.id) {
         issueData = issues[issueDialogContext.id];
@@ -17,7 +16,6 @@ function mapStateToProps(state: Store) {
         openedProjectId,
         paymentDialogProjectId,
         projects: Object.values(state.projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
-        tickingStat,
         users,
         issueData,
     }
@@ -35,20 +33,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {
             dispatch(sendPayment(projectId, data));
         },
-        showAddIssueDialog: (projectId: number) => {
-            dispatch(openIssueDialog(projectId))
-        },
         hideAddIssueDialog: () => {
             dispatch(closeIssueDialog())
         },
-        showPaymentDialog: (projectId: number) => {
-            dispatch(openPaymentDialog(projectId))
-        },
         hidePaymentDialog: () => {
             dispatch(closePaymentDialog())
-        },
-        showAddTimeDialog: (projectId) => {
-            dispatch(openAddTimeDialog(projectId))
         },
         hideAddTimeDialog: () => {
             dispatch(closeAddTimeDialog())
@@ -56,24 +45,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onTimeSubmit: (amount: string, projectId: number, issueId: number = null) => {
             dispatch(sendTime(projectId, amount, issueId));
         },
-        startTime: (projectId: number) => {
-            dispatch(startTime(projectId))
-        },
-        stopTime: (openedProjectId: number) => {
-            dispatch(stopTime(openedProjectId))
-        },
         openProject: (projectId: number) => {
             dispatch(openProject(projectId))
         },
         closeProject: () => {
             dispatch(closeProject());
-        },
-        onDeleteProject: (projectId: number) => {
-            if(confirm('Do you really want to delete this project?'))
-                dispatch(deleteProject(projectId));
-        },
-        onUpdateProject: (projectId: number) => {
-            dispatch(openProjectDialog(projectId))
         },
     }
 }
