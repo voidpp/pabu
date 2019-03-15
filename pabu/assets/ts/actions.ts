@@ -20,6 +20,7 @@ export enum Action {
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
     RECEIVE_USERS = 'RECEIVE_USERS',
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
+    TOGGLE_DARK_THEME = 'SET_DARK_THEME',
 }
 
 export function openProject(id: number) {
@@ -231,5 +232,11 @@ export function deleteIssue(id: number, openedProjectId: number) {
             })
             dispatch(fetchProjects(openedProjectId))
         })
+    }
+}
+
+export function toggleTheme() {
+    return {
+        type: Action.TOGGLE_DARK_THEME,
     }
 }

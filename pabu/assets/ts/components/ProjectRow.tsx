@@ -44,12 +44,12 @@ type Props = {
 
 export default withStyles(styles)(React.memo((props: Props) => {
 
-    let tickingButton = <Button disabled>Start time</Button>;
+    let tickingButton = <Button size="small" disabled>Start time</Button>;
     if (props.tickingStat.ticking) {
         if (props.tickingStat.entry.projectId == props.project.id)
-            tickingButton = <Button color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
+            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
     } else
-        tickingButton = <Button color="primary" onClick={props.onStartTime}>Start time</Button>
+        tickingButton = <Button size="small" color="primary" onClick={props.onStartTime}>Start time</Button>
 
     let spent = (props.project.timeStat.spent/3600).toFixed(1);
     let paid = Math.ceil(props.project.paid/3600);
@@ -68,12 +68,12 @@ export default withStyles(styles)(React.memo((props: Props) => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{display: 'block'}}>
                     <div>
-                        <Button color="primary" onClick={props.onAddNewIssue}>Create issue</Button>
-                        <Button color="primary" onClick={props.onAddNewTime}>Add time</Button>
+                        <Button size="small" color="primary" onClick={props.onAddNewIssue}>Create issue</Button>
+                        <Button size="small" color="primary" onClick={props.onAddNewTime}>Add time</Button>
                         {tickingButton}
-                        <Button color="primary" onClick={props.onAddPayment}>Add payment</Button>
-                        <Button color="primary" onClick={props.onUpdateProject}>Update project</Button>
-                        <Button color="secondary" onClick={props.onDeleteProject}>Delete project</Button>
+                        <Button size="small" color="primary" onClick={props.onAddPayment}>Add payment</Button>
+                        <Button size="small" color="primary" onClick={props.onUpdateProject}>Update project</Button>
+                        <Button size="small" color="secondary" onClick={props.onDeleteProject}>Delete project</Button>
                     </div>
                     <IssueList/>
                 </ExpansionPanelDetails>

@@ -102,6 +102,7 @@ export interface Store {
     projects: ProjectMap,
     tickingStat: TickingStat,
     users: UserMap,
+    isDarkTheme: boolean,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
         width: '100%',
-        backgroundColor: '#f8f8f8',
+        // backgroundColor: '#f8f8f8',
     },
     heading: {
         fontSize: typography.pxToRem(15),
@@ -43,12 +43,12 @@ type Props = {
 
 export default withStyles(styles)(React.memo((props: Props) => {
 
-    let tickingButton = <Button disabled>Start time</Button>;
+    let tickingButton = <Button size="small" disabled>Start time</Button>;
     if (props.tickingStat.ticking) {
         if (props.tickingStat.entry.issueId == props.issue.id)
-            tickingButton = <Button color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
+            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={props.onStopTime}>Stop time</Button>
     } else
-        tickingButton = <Button color="primary" onClick={props.onStartTime}>Start time</Button>
+        tickingButton = <Button size="small" color="primary" onClick={props.onStartTime}>Start time</Button>
 
     let spent = (props.issue.timeStat.spent / 3600).toFixed(1);
 
@@ -64,10 +64,10 @@ export default withStyles(styles)(React.memo((props: Props) => {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{ display: 'block' }}>
                     <div>
-                        <Button color="primary" onClick={props.onAddNewTime.bind(this, props.issue.id)}>Add time</Button>
+                        <Button size="small" color="primary" onClick={props.onAddNewTime.bind(this, props.issue.id)}>Add time</Button>
                         {tickingButton}
-                        <Button color="primary" onClick={props.onUpdateIssue}>Update issue</Button>
-                        <Button color="secondary" onClick={props.onDeleteIssue}>Delete issue</Button>
+                        <Button size="small" color="primary" onClick={props.onUpdateIssue}>Update issue</Button>
+                        <Button size="small" color="secondary" onClick={props.onDeleteIssue}>Delete issue</Button>
                     </div>
                 </ExpansionPanelDetails>
             </ExpansionPanel>

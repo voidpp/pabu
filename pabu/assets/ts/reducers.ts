@@ -8,8 +8,7 @@ function fetchingProject(state = false, action) {
         return true;
     else if (action.type == Action.RECEIVE_PROJECTS)
         return false;
-    else
-        return state;
+    return state;
 }
 
 function projects(state = {}, action) {
@@ -19,8 +18,8 @@ function projects(state = {}, action) {
         let newState = Object.assign({}, state);
         delete newState[action.id]
         return newState
-    } else
-        return state;
+    }
+    return state;
 }
 
 function projectDialogContext(state = null, action) {
@@ -28,8 +27,7 @@ function projectDialogContext(state = null, action) {
         return action.context;
     else if (action.type == Action.CLOSE_PROJECT_DIALOG)
         return null;
-    else
-        return state;
+    return state;
 }
 
 function issueDialogContext(state = null, action) {
@@ -37,8 +35,7 @@ function issueDialogContext(state = null, action) {
         return action.context;
     else if(action.type == Action.CLOSE_ISSUE_DIALOG)
         return null;
-    else
-        return state;
+    return state;
 }
 
 function issues(state = {}, action) {
@@ -48,8 +45,8 @@ function issues(state = {}, action) {
         let newState = Object.assign({}, state);
         delete newState[action.id]
         return newState
-    } else
-        return state;
+    }
+    return state;
 }
 
 function openedProjectId(state = 0, action) {
@@ -57,8 +54,7 @@ function openedProjectId(state = 0, action) {
         return action.id;
     else if(action.type == Action.CLOSE_PROJECT)
         return 0;
-    else
-        return state;
+    return state;
 }
 
 function addTimeDialogContext(state = null, action) {
@@ -66,15 +62,13 @@ function addTimeDialogContext(state = null, action) {
         return action.projectId ? {projectId: action.projectId, issueId: action.issueId} : null;
     else if(action.type == Action.CLOSE_ADD_TIME_DIALOG)
         return null;
-    else
-        return state;
+    return state;
 }
 
 function tickingStat(state = {ticking: false}, action) {
     if (action.type == Action.RECEIVE_TICKING_STAT)
         return action.data;
-    else
-        return state;
+    return state;
 }
 
 function paymentDialogProjectId(state = null, action) {
@@ -82,15 +76,19 @@ function paymentDialogProjectId(state = null, action) {
         return action.projectId;
     else if(action.type == Action.CLOSE_PAYMENT_DIALOG)
         return null;
-    else
-        return state;
+    return state;
 }
 
 function users(state = {}, action) {
-    if (action.type == Action.RECEIVE_USERS) {
+    if (action.type == Action.RECEIVE_USERS)
         return Object.assign({}, state, action.data);
-    } else
-        return state;
+    return state;
+}
+
+function isDarkTheme(state = false, action) {
+    if (action.type == Action.TOGGLE_DARK_THEME)
+        return !state;
+    return state;
 }
 
 const rootReducer = combineReducers<Store>({
@@ -104,6 +102,7 @@ const rootReducer = combineReducers<Store>({
     openedProjectId,
     tickingStat,
     paymentDialogProjectId,
+    isDarkTheme,
 });
 
 export default rootReducer
