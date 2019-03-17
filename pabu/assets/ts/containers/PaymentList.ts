@@ -41,7 +41,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
             if (confirm('Do you really want to delete this payment?'))
                 dispatch(deletePayment(payment.id)).then(() => {
                     dispatch(fetchProjects(projectId))
-                    // dispatch((projectId))
                 })
         }
     }

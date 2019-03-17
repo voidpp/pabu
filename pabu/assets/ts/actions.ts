@@ -29,6 +29,7 @@ export enum Action {
 
 export function fetchAllProjectData(id: number) {
     return dispatch => {
+        dispatch(fetchProjects(id))
         dispatch(fetchIssues(id))
         dispatch(fetchTimeEntries(id))
         dispatch(fetchProjectUsers(id))
@@ -265,7 +266,7 @@ export function deletePayment(id: number) {
             type: Action.DELETE_PAYMENT,
             id,
         })
-        return new Promise(() => {})
+        return new Promise((resolve, reject) => resolve())
     })
 }
 
@@ -275,7 +276,7 @@ export function deleteTimeEntry(id: number) {
             type: Action.DELETE_TIME_ENTRY,
             id,
         })
-        return new Promise(() => {})
+        return new Promise((resolve, reject) => resolve())
     })
 }
 
