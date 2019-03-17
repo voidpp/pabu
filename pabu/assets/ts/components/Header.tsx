@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { UserInfo, TickingStat } from '../types';
-import { Avatar, Button, Switch } from '@material-ui/core';
+import { Avatar, Button, Paper, Divider, withStyles, Theme, createStyles } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Popover from '@material-ui/core/Popover';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,9 +16,28 @@ type Props = {
     onStopTime: () => void,
     onThemeClick: (isDark: boolean) => void,
     isDarkTheme: boolean,
+    classes: any,
 }
 
-export default class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
+const styles = ({ palette, typography }: Theme) => createStyles({
+    profileActions: {
+        padding: 10,
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+    },
+    profileContent: {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 20,
+    }
+});
+
+
+class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
 
     constructor(props) {
         super(props);
@@ -36,7 +55,7 @@ export default class Header extends React.Component<Props, {anchorEl: HTMLElemen
     };
 
     render() {
-        let {userInfo, onStopTime, tickingStat, onThemeClick, isDarkTheme} = this.props;
+        let {userInfo, onStopTime, tickingStat, onThemeClick, isDarkTheme, classes} = this.props;
         let isOpen = Boolean(this.state.anchorEl);
         return <div style={{flexGrow: 1}}>
             <AppBar position="static">
@@ -80,24 +99,28 @@ export default class Header extends React.Component<Props, {anchorEl: HTMLElemen
                     horizontal: 'center',
                 }}
                 >
-                <div className="profile-popover-content">
-                    <div>
-                        {userInfo.picture ?
-                            <Avatar className="avatar" src={userInfo.picture}/> :
-                            <AccountCircle className="avatar"/>
-                        }
+                <Paper>
+                    <div className={classes.profileContent}>
+                        <div>
+                            {userInfo.picture ?
+                                <Avatar className={classes.avatar} src={userInfo.picture}/> :
+                                <AccountCircle className={classes.avatar}/>
+                            }
+                        </div>
+                        <div style={{padding: 10}}>
+                            <Typography variant="h6">{userInfo.name}</Typography>
+                            <Typography>{userInfo.email}</Typography>
+                            <Typography>(Provider: {userInfo.providerName})</Typography>
+                        </div>
                     </div>
-                    <div className="info-container">
-                        <div className="name">{userInfo.name}</div>
-                        <div className="email">{userInfo.email}</div>
-                        <div className="provider">(Provider: {userInfo.providerName})</div>
-                        <div className="summary"></div>
+                    <Divider/>
+                    <div className={classes.profileActions}>
+                        <Button variant="contained" color="secondary" component="a" href="/auth/logout">Logout</Button>
                     </div>
-                </div>
-                <div className="profile-popover-actions">
-                    <Button variant="contained" color="secondary" component="a" href="/auth/logout">Logout</Button>
-                </div>
+                </Paper>
                 </Popover>
         </div>
     }
 }
+
+export default withStyles(styles)(Header);
