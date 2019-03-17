@@ -7,6 +7,11 @@ const durationDesc = [
 
 export function formatDuration(value: number): string {
 
+    let isNeg = value < 0;
+
+    if (isNeg)
+        value = -value;
+
     let resValue = 0;
     let resUnit = 'second';
 
@@ -18,6 +23,9 @@ export function formatDuration(value: number): string {
             break;
         }
     }
+
+    if (isNeg)
+        resValue = -resValue;
 
     return `${resValue.toFixed(1)} ${resUnit}` + (resValue > 1 ? 's' : '');
 }

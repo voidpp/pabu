@@ -71,7 +71,7 @@ class Payment(Base):
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
-    payer_user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)  # TODO rename this field!!!
+    created_user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     paid_user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     amount = Column(Integer, nullable = False)
     time = Column(DateTime, default = datetime.now)

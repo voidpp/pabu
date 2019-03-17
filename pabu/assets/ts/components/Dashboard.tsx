@@ -2,7 +2,7 @@
 import * as React from 'react';
 import Header from '../components/Header';
 import { UserInfo, ProjectSubmitCallback, Project, TickingStat, ProjectDialogContext } from '../types';
-import { Paper, Grid, Button, Typography } from '@material-ui/core';
+import { Paper, Grid, Button, Typography, Theme, createStyles, withStyles } from '@material-ui/core';
 import ProjectList from '../containers/ProjectList';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 
@@ -17,9 +17,20 @@ type Props = {
     stopTime: (projectId: number) => void,
     onThemeClick: (isDark: boolean) => void,
     isDarkTheme: boolean,
+    classes: any,
 }
 
-export default React.memo((props: Props) => {
+const styles = ({ palette }: Theme) => createStyles({
+    body: {
+        backgroundColor: palette.background.default,
+        minWidth: 1000,
+        marginTop: 20,
+        padding: 20,
+    }
+});
+
+
+export default withStyles(styles)(React.memo((props: Props) => {
 
     return <div>
         <NameDescFormDialog
@@ -37,7 +48,7 @@ export default React.memo((props: Props) => {
             onStopTime={props.stopTime.bind(this, props.tickingStat.ticking ? props.tickingStat.entry.projectId : null)}
         />
         <Grid container justify="center">
-            <Paper style={{ minWidth: 1000, marginTop: 20, padding: 20 }}>
+            <Paper className={props.classes.body}>
                 <div style={{display: 'flex'}}>
                     <Typography style={{flexGrow: 1}} variant="h6">Projects:</Typography>
                     <Button color="primary" onClick={props.showDialog}>Create project</Button>
@@ -46,4 +57,4 @@ export default React.memo((props: Props) => {
             </Paper>
         </Grid>
     </div>
-})
+}))

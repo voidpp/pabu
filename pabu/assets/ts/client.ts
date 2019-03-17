@@ -39,6 +39,10 @@ class PabuClient {
         return this._send('get_issues', [project_id]);
     }
 
+    async getPayments(project_id: number) {
+        return this._send('get_payments', [project_id]);
+    }
+
     async getTimeEntries(project_id: number): Promise<TimeEntryMap> {
         return this._send('get_time_entries', [project_id]);
     }

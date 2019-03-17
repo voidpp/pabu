@@ -57,9 +57,9 @@ def add_api_controllers(app: Flask, db: Database):
     def payment_to_dict(payment: Payment):
         return {
             'id': payment.id,
-            'project_id': payment.project_id,
-            'payer_user_id': payment.payer_user_id,
-            'paid_user_id': payment.paid_user_id,
+            'projectId': payment.project_id,
+            'createdUserId': payment.created_user_id,
+            'paidUserId': payment.paid_user_id,
             'amount': payment.amount,
             'time': payment.time,
             'note': payment.note,
@@ -217,7 +217,7 @@ def add_api_controllers(app: Flask, db: Database):
         user_id = get_user_id()
         with db.session_scope() as conn:
             check_project(project_id, conn)
-            payment = Payment(project_id = project_id, amount = parse(amount), paid_user_id = paid_user_id, payer_user_id = user_id,
+            payment = Payment(project_id = project_id, amount = parse(amount), paid_user_id = paid_user_id, created_user_id = user_id,
                               note = note)
             conn.add(payment)
             return True

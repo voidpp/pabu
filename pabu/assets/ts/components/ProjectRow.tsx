@@ -12,6 +12,8 @@ import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IssueList from '../containers/IssueList';
 import TimeEntryList from '../containers/TimeEntryList';
+import { Tabs, Tab } from '@material-ui/core';
+import ProjectSummary from '../containers/ProjectSummary';
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
@@ -25,6 +27,13 @@ const styles = ({ palette, typography }: Theme) => createStyles({
     secondaryHeading: {
         fontSize: typography.pxToRem(15),
         color: palette.text.secondary,
+    },
+    tabLabel: {
+        color: palette.text.primary,
+    },
+    tabHeader: {
+        backgroundColor: palette.background.default,
+        marginTop: 10,
     },
 });
 
@@ -43,58 +52,71 @@ type Props = {
     openedProjectId: number,
 }
 
-export default withStyles(styles)(React.memo((props: Props) => {
+type State = {
+    currentTab: number,
+}
 
-    const id = props.project.id;
+class ProjectRow extends React.Component<Props, State> {
 
-    let tickingButton = <Button size="small" disabled>Start time</Button>;
-    if (props.tickingStat.ticking) {
-        if (props.tickingStat.entry.projectId == props.project.id)
-            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={props.onStopTime.bind(this, id)}>Stop time</Button>
-    } else
-        tickingButton = <Button size="small" color="primary" onClick={props.onStartTime.bind(this, id)}>Start time</Button>
+    constructor(props: Props) {
+        super(props)
+        this.state = {currentTab: 0};
+    }
 
-    let spent = (props.project.timeStat.spent/3600).toFixed(1);
-    let paid = Math.ceil(props.project.paid/3600);
-    const expanded = props.openedProjectId == id;
+    render() {
+        const {classes, handleChange, onAddNewIssue, onAddNewTime, onAddPayment, onDeleteProject, onStartTime, onStopTime, onUpdateProject,
+               project, tickingStat, openedProjectId} = this.props
 
-    return  <ExpansionPanel
-                className={props.classes.root}
-                expanded={expanded}
-                key={props.project.id}
-                onChange={props.handleChange.bind(this, props.project.id)}
-            >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className={props.classes.heading}>{props.project.name}</Typography>
-                    <Typography className={props.classes.secondaryHeading}>
-                        Spent {spent} hours in {props.project.issues.length} issues ({paid} hours paid)
-                    </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails style={{display: 'block'}}>
-                    <div>
-                        <Button size="small" color="primary" onClick={props.onAddNewIssue.bind(this, id)}>Create issue</Button>
-                        <Button size="small" color="primary" onClick={props.onAddNewTime.bind(this, id)}>Add time</Button>
-                        {tickingButton}
-                        <Button size="small" color="primary" onClick={props.onAddPayment.bind(this, id)}>Add payment</Button>
-                        <Button size="small" color="primary" onClick={props.onUpdateProject.bind(this, id)}>Update project</Button>
-                        <Button size="small" color="secondary" onClick={props.onDeleteProject.bind(this, id)}>Delete project</Button>
-                    </div>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography className={props.classes.heading}>Time entries</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails >
-                            <TimeEntryList />
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography className={props.classes.heading}>Issues</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails >
-                            <IssueList/>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
-}));
+        const id = project.id;
+
+        let tickingButton = <Button size="small" disabled>Start time</Button>;
+        if (tickingStat.ticking) {
+            if (tickingStat.entry.projectId == project.id)
+                tickingButton = <Button size="small" color="secondary" variant="contained" onClick={onStopTime.bind(this, id)}>Stop time</Button>
+        } else
+            tickingButton = <Button size="small" color="primary" onClick={onStartTime.bind(this, id)}>Start time</Button>
+
+        let spent = (project.timeStat.spent/3600).toFixed(1);
+        let paid = Math.ceil(project.paid/3600);
+        const expanded = openedProjectId == id;
+
+        return  <ExpansionPanel
+                    className={classes.root}
+                    expanded={expanded}
+                    key={project.id}
+                    onChange={handleChange.bind(this, project.id)}
+                >
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>{project.name}</Typography>
+                        <Typography className={classes.secondaryHeading}>
+                            Spent {spent} hours in {project.issues.length} issues ({paid} hours paid)
+                        </Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails style={{display: 'block'}}>
+                        <div>
+                            <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create issue</Button>
+                            <Button size="small" color="primary" onClick={onAddNewTime.bind(this, id)}>Add time</Button>
+                            {tickingButton}
+                            <Button size="small" color="primary" onClick={onAddPayment.bind(this, id)}>Add payment</Button>
+                            <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
+                            <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
+                        </div>
+                        <Tabs
+                            value={this.state.currentTab}
+                            onChange={(ev, val) => this.setState({currentTab: val})}
+                            className={classes.tabHeader}
+                        >
+                            <Tab label="Summary" className={classes.tabLabel} />
+                            <Tab label="Time entries" className={classes.tabLabel} />
+                            <Tab label="Issues" className={classes.tabLabel} />
+                            <Tab label="Payments" className={classes.tabLabel} />
+                        </Tabs>
+                        {this.state.currentTab == 0 && <ProjectSummary id={id} />}
+                        {this.state.currentTab == 1 && <TimeEntryList />}
+                        {this.state.currentTab == 2 && <IssueList/>}
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+    }
+};
+
+export default withStyles(styles)(ProjectRow);

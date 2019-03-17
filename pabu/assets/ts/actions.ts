@@ -11,6 +11,7 @@ export enum Action {
     DELETE_PROJECT = 'DELETE_PROJECT',
     DELETE_ISSUE = 'DELETE_ISSUE',
     DELETE_TIME_ENTRY = 'DELETE_TIME_ENTRY',
+    DELETE_PAYMENT = 'DELETE_PAYMENT',
     OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG',
     OPEN_PROJECT_DIALOG = 'OPEN_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
@@ -21,16 +22,22 @@ export enum Action {
     RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
     RECEIVE_USERS = 'RECEIVE_USERS',
+    RECEIVE_PAYMENTS = 'RECEIVE_PAYMENTS',
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
     SET_DARK_THEME = 'SET_DARK_THEME',
+}
+
+function fetchAllProjectData(dispatch: Function, id: number) {
+    dispatch(fetchIssues(id))
+    dispatch(fetchTimeEntries(id))
+    dispatch(fetchProjectUsers(id))
+    dispatch(fetchPayments(id))
 }
 
 export function openProject(id: number) {
     return dispatch => {
         window.localStorage.setItem(LocalStorageKey.OPENED_PROJECTID, id.toString());
-        dispatch(fetchIssues(id))
-        dispatch(fetchTimeEntries(id))
-        dispatch(fetchProjectUsers(id))
+        fetchAllProjectData(dispatch, id);
         dispatch({
             type: Action.OPEN_PROJECT,
             id,
@@ -138,6 +145,10 @@ export function fetchTimeEntries(projectId: number) {
     return dispatch => client.getTimeEntries(projectId).then(data => dispatch(receiveTimeEntries(data)))
 }
 
+export function fetchPayments(projectId: number) {
+    return dispatch => client.getPayments(projectId).then(data => dispatch(receivePayments(data)))
+}
+
 export function receiveUsers(data) {
     return  {
         type: Action.RECEIVE_USERS,
@@ -166,6 +177,13 @@ export function receiveTimeEntries(data) {
     }
 }
 
+export function receivePayments(data) {
+    return  {
+        type: Action.RECEIVE_PAYMENTS,
+        data,
+    }
+}
+
 export function sendProject(name: string, description: string, id: number = null) {
     return () => id ? client.updateProject(id, name, description) : client.createProject(name, description);
 }
@@ -179,8 +197,7 @@ export function sendTime(projectId: number, amount: string, issueId: number = nu
     return dispatch => {
         return client.addTime(projectId, amount, issueId).then(() => {
             dispatch(closeAddTimeDialog())
-            dispatch(fetchProjects(projectId))
-            dispatch(fetchIssues(projectId))
+            fetchAllProjectData(dispatch, projectId)
         })
     }
 }
@@ -204,6 +221,7 @@ export function startTime(projectId: number, issueId: number = null) {
     return dispatch => {
         return client.startTime(projectId, issueId).then(() => {
             dispatch(fetchTickingStat())
+            dispatch(fetchTimeEntries(projectId))
         })
     }
 }
@@ -213,6 +231,7 @@ export function stopTime(openedProjectId: number) {
         return client.stopTime().then(() => {
             dispatch(fetchTickingStat())
             dispatch(fetchProjects(openedProjectId))
+            dispatch(fetchTimeEntries(openedProjectId))
         })
     }
 }
@@ -221,7 +240,7 @@ export function sendPayment(projectId: number, data: PaymentSubmitData) {
     return dispatch => {
         return client.addPayment(projectId, data.amount, data.user_id, data.note).then(res => {
             dispatch(closePaymentDialog())
-            dispatch(fetchProjects(projectId))
+            fetchAllProjectData(dispatch, projectId)
         })
     }
 }
@@ -235,6 +254,11 @@ export function deleteProject(id: number) {
                 id,
             })
         })
+    }
+}
+
+export function deletePayment(id: number) {
+    return dispatch => {
     }
 }
 

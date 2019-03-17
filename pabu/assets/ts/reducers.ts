@@ -11,17 +11,6 @@ function fetchingProject(state = false, action) {
     return state;
 }
 
-function projects(state = {}, action) {
-    if (action.type == Action.RECEIVE_PROJECTS)
-        return Object.assign({}, state, action.data);
-    if (action.type == Action.DELETE_PROJECT) {
-        let newState = Object.assign({}, state);
-        delete newState[action.id]
-        return newState
-    }
-    return state;
-}
-
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
         return action.context;
@@ -35,17 +24,6 @@ function issueDialogContext(state = null, action) {
         return action.context;
     else if(action.type == Action.CLOSE_ISSUE_DIALOG)
         return null;
-    return state;
-}
-
-function issues(state = {}, action) {
-    if (action.type == Action.RECEIVE_ISSUES)
-        return Object.assign({}, state, action.data);
-    else if (action.type == Action.DELETE_ISSUE) {
-        let newState = Object.assign({}, state);
-        delete newState[action.id]
-        return newState
-    }
     return state;
 }
 
@@ -79,42 +57,39 @@ function paymentDialogProjectId(state = null, action) {
     return state;
 }
 
-function users(state = {}, action) {
-    if (action.type == Action.RECEIVE_USERS)
-        return Object.assign({}, state, action.data);
-    return state;
-}
-
 function isDarkTheme(state = false, action) {
     if (action.type == Action.SET_DARK_THEME)
         return action.isSet;
     return state;
 }
 
-function timeEntries(state = {}, action) {
-    if (action.type == Action.RECEIVE_TIME_ENTRIES)
-        return Object.assign({}, state, action.data);
-    if (action.type == Action.DELETE_TIME_ENTRY) {
-        let newState = Object.assign({}, state);
-        delete newState[action.id]
-        return newState
+function resourceReducerFactory(receiveAction: Action, deleteAction: Action = null) {
+    return (state = {}, action) => {
+        if (action.type == receiveAction)
+            return Object.assign({}, state, action.data);
+        if (deleteAction && action.type == deleteAction) {
+            let newState = Object.assign({}, state);
+            delete newState[action.id]
+            return newState
+        }
+        return state;
     }
-    return state;
 }
 
 const rootReducer = combineReducers<Store>({
-    fetchingProject,
-    projects,
-    issues,
-    users,
-    projectDialogContext,
     addTimeDialogContext,
-    issueDialogContext,
-    openedProjectId,
-    tickingStat,
-    paymentDialogProjectId,
+    fetchingProject,
     isDarkTheme,
-    timeEntries,
+    issueDialogContext,
+    issues: resourceReducerFactory(Action.RECEIVE_ISSUES, Action.DELETE_ISSUE),
+    openedProjectId,
+    paymentDialogProjectId,
+    payments: resourceReducerFactory(Action.RECEIVE_PAYMENTS, Action.DELETE_PAYMENT),
+    projectDialogContext,
+    projects: resourceReducerFactory(Action.RECEIVE_PROJECTS, Action.DELETE_PROJECT),
+    tickingStat,
+    timeEntries: resourceReducerFactory(Action.RECEIVE_TIME_ENTRIES, Action.DELETE_TIME_ENTRY),
+    users: resourceReducerFactory(Action.RECEIVE_USERS),
 });
 
 export default rootReducer
