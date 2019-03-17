@@ -28,8 +28,11 @@ export interface TimeSummary {
     lastEntry: number,
 }
 
-export interface Project {
+export interface PabuModel {
     id: number,
+}
+
+export interface Project extends PabuModel {
     name: string,
     desc: string,
     issues: Array<number>,
@@ -38,8 +41,7 @@ export interface Project {
     paid: number,
 }
 
-export interface Issue {
-    id: number,
+export interface Issue extends PabuModel {
     name: string,
     desc: string,
     projectId: number,
@@ -47,8 +49,7 @@ export interface Issue {
     timeStat: TimeSummary,
 }
 
-export interface TimeEntry {
-    id: number,
+export interface TimeEntry extends PabuModel {
     issueId: number,
     projectId: number,
     start: number,
@@ -114,6 +115,20 @@ export interface Store {
     tickingStat: TickingStat,
     timeEntries: TimeEntryMap,
     users: UserMap,
+}
+
+export type TableCellFormatter = (v: any) => string;
+
+export class TableRowDesriptor {
+    name: string
+    label:  string
+    formatter: TableCellFormatter
+
+    constructor(name: string, label: string, formatter: TableCellFormatter = v => v) {
+        this.name = name;
+        this.label = label;
+        this.formatter = formatter;
+    }
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

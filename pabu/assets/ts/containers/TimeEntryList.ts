@@ -1,8 +1,10 @@
 
+import * as moment from 'moment';
 import { connect } from 'react-redux';
-import { Store, ThunkDispatcher, ExpandedTimeEntry } from '../types';
-import TimeEntryList from '../components/TimeEntryList';
+import { Store, ThunkDispatcher, ExpandedTimeEntry, TableRowDesriptor } from '../types';
 import { deleteTimeEntry, fetchProjects } from '../actions';
+import PabuTable from '../components/PabuTable';
+import { formatDuration } from '../tools';
 
 function mapStateToProps(state: Store) {
     const {issues, timeEntries, openedProjectId, users} = state;
@@ -22,19 +24,26 @@ function mapStateToProps(state: Store) {
         entries.push(exEntry)
     }
 
+    const rowDescriptors = [
+        new TableRowDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
+        new TableRowDesriptor('spentHours' , 'Length', formatDuration),
+        new TableRowDesriptor('issueName', 'Issue'),
+        new TableRowDesriptor('userName', 'User'),
+    ]
+
     return {
-        issues,
-        entries,
+        rows: entries,
+        rowDescriptors,
     }
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
-        onDelete: (id: number, projectId: number) => {
+        onDelete: (entry: ExpandedTimeEntry) => {
             if (confirm('Do you really want to delete this time entry?'))
-                dispatch(deleteTimeEntry(id)).then(() => dispatch(fetchProjects(projectId)))
+                dispatch(deleteTimeEntry(entry.id)).then(() => dispatch(fetchProjects(entry.projectId)))
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimeEntryList);
+export default connect(mapStateToProps, mapDispatchToProps)(PabuTable);
