@@ -30,6 +30,7 @@ export function openProject(id: number) {
         window.localStorage.setItem(LocalStorageKey.OPENED_PROJECTID, id.toString());
         dispatch(fetchIssues(id))
         dispatch(fetchTimeEntries(id))
+        dispatch(fetchProjectUsers(id))
         dispatch({
             type: Action.OPEN_PROJECT,
             id,
