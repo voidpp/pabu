@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withStyles, Theme, createStyles, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { withStyles, Theme, createStyles, Table, TableHead, TableRow, TableCell, TableBody, TableFooter } from '@material-ui/core';
 import { User, Project } from '../types';
 import { formatDuration } from '../tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,9 +25,15 @@ const styles = ({ palette }: Theme) => createStyles({
 });
 
 export default withStyles(styles)(React.memo((props: OwnProps & StateProps) => {
-    let {id, userStat, project} = props;
+    let {id, userStat} = props;
 
-    const sum = {spent: 0, paid: 0, ticking: 0};
+    const sum = {spent: 0, paid: 0, ticking: false};
+    for (let stat of userStat) {
+        sum.spent += stat.spent;
+        sum.paid += stat.paid;
+        if (stat.ticking)
+            sum.ticking = true;
+    }
 
     return (
         <Table>
@@ -49,6 +55,15 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps) => {
                     <TableCell><FontAwesomeIcon icon={stat.ticking ? 'check' : 'times'}/></TableCell>
                 </TableRow>)}
             </TableBody>
+            <TableFooter>
+                <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>{formatDuration(sum.spent)}</TableCell>
+                    <TableCell>{formatDuration(sum.paid)}</TableCell>
+                    <TableCell>{formatDuration(sum.paid - sum.spent)}</TableCell>
+                    <TableCell><FontAwesomeIcon icon={sum.ticking ? 'check' : 'times'}/></TableCell>
+                </TableRow>
+            </TableFooter>
         </Table>
     )
 }))
