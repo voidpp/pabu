@@ -83,6 +83,10 @@ class PabuClient {
         return this._send('delete_project', [id]);
     }
 
+    async deleteTimeEntry(id: number) {
+        return this._send('delete_time_entry', [id]);
+    }
+
     async deleteIssue(id: number) {
         return this._send('delete_issue', [id]);
     }

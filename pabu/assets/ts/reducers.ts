@@ -94,6 +94,11 @@ function isDarkTheme(state = false, action) {
 function timeEntries(state = {}, action) {
     if (action.type == Action.RECEIVE_TIME_ENTRIES)
         return Object.assign({}, state, action.data);
+    if (action.type == Action.DELETE_TIME_ENTRY) {
+        let newState = Object.assign({}, state);
+        delete newState[action.id]
+        return newState
+    }
     return state;
 }
 

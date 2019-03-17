@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { Store, ThunkDispatcher, ExpandedTimeEntry } from '../types';
 import TimeEntryList from '../components/TimeEntryList';
+import { deleteTimeEntry, fetchProjects } from '../actions';
 
 function mapStateToProps(state: Store) {
     const {issues, timeEntries, openedProjectId, users} = state;
@@ -21,7 +22,6 @@ function mapStateToProps(state: Store) {
         entries.push(exEntry)
     }
 
-
     return {
         issues,
         entries,
@@ -30,6 +30,10 @@ function mapStateToProps(state: Store) {
 
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
+        onDelete: (id: number, projectId: number) => {
+            if (confirm('Do you really want to delete this time entry?'))
+                dispatch(deleteTimeEntry(id)).then(() => dispatch(fetchProjects(projectId)))
+        }
     }
 }
 

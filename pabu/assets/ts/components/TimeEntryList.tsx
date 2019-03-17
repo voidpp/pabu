@@ -17,6 +17,7 @@ type Props = {
     entries: Array<ExpandedTimeEntry>,
     issues: IssueMap,
     classes: any,
+    onDelete: (id: number, projectId: number) => void,
 }
 
 type State = {
@@ -76,7 +77,7 @@ class TimeEntryList extends React.Component<Props, State> {
     }
 
     render() {
-        const { entries, classes } = this.props;
+        const { entries, classes, onDelete } = this.props;
 
         return <Table>
             <TableHead>
@@ -97,7 +98,7 @@ class TimeEntryList extends React.Component<Props, State> {
                 this.getEntries().map(entry => <TableRow key={entry.id}>
                     {headerFields.map(field => <TableCell>{field.formatter(entry[field.name])}</TableCell>)}
                     <TableCell>
-                        <IconButton className={classes.icon}>
+                        <IconButton className={classes.icon} onClick={onDelete.bind(this, entry.id, entry.projectId)}>
                             <FontAwesomeIcon icon="trash" style={{ fontSize: 12 }} />
                         </IconButton>
                     </TableCell>

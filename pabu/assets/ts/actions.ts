@@ -10,6 +10,7 @@ export enum Action {
     CLOSE_PROJECT = 'CLOSE_PROJECT',
     DELETE_PROJECT = 'DELETE_PROJECT',
     DELETE_ISSUE = 'DELETE_ISSUE',
+    DELETE_TIME_ENTRY = 'DELETE_TIME_ENTRY',
     OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG',
     OPEN_PROJECT_DIALOG = 'OPEN_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
@@ -234,6 +235,16 @@ export function deleteProject(id: number) {
             })
         })
     }
+}
+
+export function deleteTimeEntry(id: number) {
+    return dispatch => client.deleteTimeEntry(id).then(() => {
+        dispatch({
+            type: Action.DELETE_TIME_ENTRY,
+            id,
+        })
+        return new Promise(() => {})
+    })
 }
 
 export function deleteIssue(id: number, openedProjectId: number) {

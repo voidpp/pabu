@@ -247,5 +247,16 @@ def add_api_controllers(app: Flask, db: Database):
             return True
 
     @jsonrpc_api.dispatcher.add_method
+    def delete_time_entry(id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            qs = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(TimeEntry.id == id)
+            entry = qs.first()
+            if not entry:
+                abort(404)
+            conn.delete(entry)
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable
         return 1/0
