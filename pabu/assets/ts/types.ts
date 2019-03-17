@@ -56,9 +56,15 @@ export interface TimeEntry {
     userId: number,
 }
 
+export interface ExpandedTimeEntry extends TimeEntry {
+    issueName: string,
+    userName: string,
+    spentHours: number,
+}
+
 export interface User {
     id: number,
-    name: number,
+    name: string,
 }
 
 export interface PaymentSubmitData {

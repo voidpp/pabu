@@ -41,7 +41,6 @@ type Props = {
     project: Project,
     tickingStat: TickingStat,
     openedProjectId: number,
-    timeEntries: Array<TimeEntry>,
 }
 
 export default withStyles(styles)(React.memo((props: Props) => {
@@ -85,7 +84,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                             <Typography className={props.classes.heading}>Time entries</Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails >
-                            <TimeEntryList entries={props.timeEntries} />
+                            <TimeEntryList />
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                     <ExpansionPanel>
