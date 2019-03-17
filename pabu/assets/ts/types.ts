@@ -83,6 +83,12 @@ export interface Payment extends PabuModel{
     note: string,
 }
 
+export interface ExpandedPayment extends Payment {
+    createdUserName: string,
+    paidUserName: string,
+}
+
+
 export interface TickingStat {
     ticking: boolean,
     entry?: TimeEntry,

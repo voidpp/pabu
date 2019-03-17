@@ -61,7 +61,7 @@ def add_api_controllers(app: Flask, db: Database):
             'createdUserId': payment.created_user_id,
             'paidUserId': payment.paid_user_id,
             'amount': payment.amount,
-            'time': payment.time,
+            'time': payment.time.timestamp(),
             'note': payment.note,
         }
 
@@ -255,6 +255,17 @@ def add_api_controllers(app: Flask, db: Database):
             if not entry:
                 abort(404)
             conn.delete(entry)
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
+    def delete_payment(id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            qs = conn.query(Payment).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Payment.id == id)
+            payment = qs.first()
+            if not payment:
+                abort(404)
+            conn.delete(payment)
             return True
 
     @jsonrpc_api.dispatcher.add_method

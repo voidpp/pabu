@@ -91,6 +91,10 @@ class PabuClient {
         return this._send('delete_time_entry', [id]);
     }
 
+    async deletePayment(id: number) {
+        return this._send('delete_payment', [id]);
+    }
+
     async deleteIssue(id: number) {
         return this._send('delete_issue', [id]);
     }

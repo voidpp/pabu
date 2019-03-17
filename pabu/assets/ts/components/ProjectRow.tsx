@@ -14,6 +14,7 @@ import IssueList from '../containers/IssueList';
 import TimeEntryList from '../containers/TimeEntryList';
 import { Tabs, Tab } from '@material-ui/core';
 import ProjectSummary from '../containers/ProjectSummary';
+import PaymentList from '../containers/PaymentList';
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
@@ -112,8 +113,9 @@ class ProjectRow extends React.Component<Props, State> {
                             <Tab label="Payments" className={classes.tabLabel} />
                         </Tabs>
                         {this.state.currentTab == 0 && <ProjectSummary id={id} />}
-                        {this.state.currentTab == 1 && <TimeEntryList />}
+                        {this.state.currentTab == 1 && <TimeEntryList id={id}/>}
                         {this.state.currentTab == 2 && <IssueList/>}
+                        {this.state.currentTab == 3 && <PaymentList id={id}/> }
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
     }

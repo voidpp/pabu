@@ -6,13 +6,13 @@ import { deleteTimeEntry, fetchProjects } from '../actions';
 import PabuTable from '../components/PabuTable';
 import { formatDuration } from '../tools';
 
-function mapStateToProps(state: Store) {
-    const {issues, timeEntries, openedProjectId, users} = state;
+function mapStateToProps(state: Store, props: {id: number}) {
+    const {issues, timeEntries, users} = state;
 
     let entries = [];
     for (const id in timeEntries) {
         const entry = timeEntries[id];
-        if (entry.projectId != openedProjectId)
+        if (entry.projectId != props.id)
             continue
 
         let exEntry: ExpandedTimeEntry = {

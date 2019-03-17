@@ -17,15 +17,12 @@ export function formatDuration(value: number): string {
 
     for (let d of durationDesc) {
         let dv = value / d.divider;
-        if (dv > 1) {
+        if (dv >= 1) {
             resValue = dv;
             resUnit = d.unit;
             break;
         }
     }
 
-    if (isNeg)
-        resValue = -resValue;
-
-    return `${resValue.toFixed(1)} ${resUnit}` + (resValue > 1 ? 's' : '');
+    return `${(isNeg ? -resValue : resValue).toFixed(1)} ${resUnit}` + (resValue > 1 ? 's' : '');
 }
