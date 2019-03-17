@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Project, TickingStat, TimeEntry } from '../types';
+import { Project, TickingStat, TimeEntry, LocalStorageKey } from '../types';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -61,7 +61,12 @@ class ProjectRow extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        this.state = {currentTab: 0};
+        this.state = {currentTab: parseInt(window.localStorage.getItem(LocalStorageKey.OPENED_PROJECT_TAB)) || 0};
+    }
+
+    handleTabChange = (ev, val:number) => {
+        this.setState({currentTab: val});
+        window.localStorage.setItem(LocalStorageKey.OPENED_PROJECT_TAB, val.toString());
     }
 
     render() {
@@ -104,7 +109,7 @@ class ProjectRow extends React.Component<Props, State> {
                         </div>
                         <Tabs
                             value={this.state.currentTab}
-                            onChange={(ev, val) => this.setState({currentTab: val})}
+                            onChange={this.handleTabChange}
                             className={classes.tabHeader}
                         >
                             <Tab label="Summary" className={classes.tabLabel} />

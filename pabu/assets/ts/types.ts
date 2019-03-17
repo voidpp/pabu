@@ -1,9 +1,10 @@
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
 export enum LocalStorageKey {
     OPENED_PROJECTID = 'OPENED_PROJECTID',
     IS_DARK_THEME  = 'IS_DARK_THEME',
+    OPENED_PROJECT_TAB  = 'OPENED_PROJECT_TAB',
 }
 
 export interface UserInfo {
