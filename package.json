@@ -1,6 +1,6 @@
 {
   "name": "pabu",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "client side pabu",
   "repository": "https://github.com/voidpp/pabu",
   "main": "index.js",
