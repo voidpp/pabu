@@ -111,6 +111,7 @@ class ProjectRow extends React.Component<Props, State> {
                             value={this.state.currentTab}
                             onChange={this.handleTabChange}
                             className={classes.tabHeader}
+                            indicatorColor="primary"
                         >
                             <Tab label="Summary" className={classes.tabLabel} />
                             <Tab label="Time entries" className={classes.tabLabel} />
