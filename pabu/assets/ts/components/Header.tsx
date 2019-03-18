@@ -33,6 +33,11 @@ const styles = ({ palette, typography }: Theme) => createStyles({
         display: 'flex',
         flexDirection: 'row',
         padding: 20,
+    },
+    version: {
+        opacity: 0.6,
+        paddingLeft: 5,
+        fontSize: '0.8em',
     }
 });
 
@@ -63,9 +68,8 @@ class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
                     <IconButton color="inherit" aria-label="Menu">
                         <Avatar src="/static/images/pabu-head.png"/>
                     </IconButton>
-                    <Typography variant="h6" color="inherit">
-                        Pabu
-                    </Typography>
+                    <Typography variant="h6" color="inherit">Pabu</Typography>
+                    <Typography variant="subtitle2" color="inherit" className={classes.version}>(beta)</Typography>
                     <div style={{flexGrow: 1, textAlign: 'center'}}>{
                         tickingStat.ticking ? <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button> : null
                     }</div>

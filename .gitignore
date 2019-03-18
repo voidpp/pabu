@@ -62,3 +62,4 @@ pabu.yaml
 node_modules
 pabu/static/bundle.js
 pabu/static/bundle.js.map
+alembic.ini

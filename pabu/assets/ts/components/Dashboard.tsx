@@ -50,7 +50,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
         <Grid container justify="center">
             <Paper className={props.classes.body}>
                 <div style={{display: 'flex'}}>
-                    <Typography style={{flexGrow: 1}} variant="h6">Projects:</Typography>
+                    <Typography style={{flexGrow: 1}} variant="h6">Projects</Typography>
                     <Button color="primary" onClick={props.showDialog}>Create project</Button>
                 </div>
                 <ProjectList />
