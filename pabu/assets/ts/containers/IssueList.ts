@@ -1,19 +1,8 @@
 
-import * as React from 'react';
-import { Store, IssueMap, TickingStat, ThunkDispatcher } from '../types';
+import { Store,  ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
-import { openAddTimeDialog, startTime, stopTime, deleteIssue, sendIssue, openIssueDialog } from '../actions';
+import { openAddTimeDialog, startTime, stopTime, deleteIssue,  openIssueDialog } from '../actions';
 import IssueList from '../components/IssueList';
-
-type Props = {
-    issues: IssueMap,
-    onAddNewTime: (projectId: number, issueId: number) => void,
-    onDeleteIssue: (projectId: number, issueId: number) => void,
-    onUpdateIssue: (projectId: number, issueId: number) => void,
-    startTime: (projectId: number, issueId: number) => void,
-    stopTime: (projectId: number) => void,
-    tickingStat: TickingStat,
-}
 
 function mapStateToProps(state: Store) {
     let {issues, openedProjectId, tickingStat} = state;

@@ -79,10 +79,10 @@ class Payment(Base):
 
     project = relationship("Project", backref = "payments")
 
-class ProjectInvitation(Base):
+class ProjectInvitationToken(Base):
 
-    __tablename__ = 'project_invitations'
+    __tablename__ = 'project_invitation_tokens'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key = True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
     token = Column(String, nullable = False)

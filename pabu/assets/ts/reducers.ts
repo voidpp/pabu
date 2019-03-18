@@ -87,6 +87,7 @@ const rootReducer = combineReducers<Store>({
     payments: resourceReducerFactory(Action.RECEIVE_PAYMENTS, Action.DELETE_PAYMENT),
     projectDialogContext,
     projects: resourceReducerFactory(Action.RECEIVE_PROJECTS, Action.DELETE_PROJECT),
+    projectInvitationTokens: resourceReducerFactory(Action.RECEIVE_PROJECT_TOKENS, Action.DELETE_PROJECT_TOKEN),
     tickingStat,
     timeEntries: resourceReducerFactory(Action.RECEIVE_TIME_ENTRIES, Action.DELETE_TIME_ENTRY),
     users: resourceReducerFactory(Action.RECEIVE_USERS),

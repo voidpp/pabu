@@ -1,4 +1,4 @@
-import { Project, Issue, TimeEntryMap } from "./types";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap } from "./types";
 
 class PabuClient {
 
@@ -101,6 +101,18 @@ class PabuClient {
 
     async getTickingStat() {
         return this._send('get_ticking_stat');
+    }
+
+    async getProjectTokens(project_id: number): Promise<ProjectInvitationTokenMap> {
+        return this._send('get_project_tokens', [project_id]);
+    }
+
+    async createProjectToken(project_id: number): Promise<ProjectInvitationToken> {
+        return this._send('create_project_token', [project_id]);
+    }
+
+    async deleteProjectToken(id: number) {
+        return this._send('delete_project_token', [id]);
     }
 }
 

@@ -15,6 +15,7 @@ import TimeEntryList from '../containers/TimeEntryList';
 import { Tabs, Tab } from '@material-ui/core';
 import ProjectSummary from '../containers/ProjectSummary';
 import PaymentList from '../containers/PaymentList';
+import ProjectInviteTokenList from '../containers/ProjectInviteTokenList';
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
@@ -44,6 +45,7 @@ type Props = {
     onAddNewIssue: (projectId: number) => void,
     onAddNewTime: (projectId: number) => void,
     onAddPayment: (projectId: number) => void,
+    onCreateProjectToken: (projectId: number) => void,
     onDeleteProject: (projectId: number) => void,
     onStartTime: (projectId: number) => void,
     onStopTime: (projectId: number) => void,
@@ -71,7 +73,7 @@ class ProjectRow extends React.Component<Props, State> {
 
     render() {
         const {classes, handleChange, onAddNewIssue, onAddNewTime, onAddPayment, onDeleteProject, onStartTime, onStopTime, onUpdateProject,
-               project, tickingStat, openedProjectId} = this.props
+               project, tickingStat, openedProjectId, onCreateProjectToken} = this.props
 
         const id = project.id;
 
@@ -104,6 +106,7 @@ class ProjectRow extends React.Component<Props, State> {
                             <Button size="small" color="primary" onClick={onAddNewTime.bind(this, id)}>Add time</Button>
                             {tickingButton}
                             <Button size="small" color="primary" onClick={onAddPayment.bind(this, id)}>Add payment</Button>
+                            <Button size="small" color="primary" onClick={onCreateProjectToken.bind(this, id)}>Generate invite token</Button>
                             <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
                             <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
                         </div>
@@ -117,11 +120,13 @@ class ProjectRow extends React.Component<Props, State> {
                             <Tab label="Time entries" className={classes.tabLabel} />
                             <Tab label="Issues" className={classes.tabLabel} />
                             <Tab label="Payments" className={classes.tabLabel} />
+                            <Tab label="Invite tokens" className={classes.tabLabel} />
                         </Tabs>
                         {this.state.currentTab == 0 && <ProjectSummary id={id} />}
                         {this.state.currentTab == 1 && <TimeEntryList id={id}/>}
                         {this.state.currentTab == 2 && <IssueList/>}
                         {this.state.currentTab == 3 && <PaymentList id={id}/> }
+                        {this.state.currentTab == 4 && <ProjectInviteTokenList id={id}/> }
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
     }

@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { deleteProject, openAddTimeDialog, openIssueDialog, openPaymentDialog, openProjectDialog, startTime, stopTime } from '../actions';
+import { deleteProject, openAddTimeDialog, openIssueDialog, openPaymentDialog, openProjectDialog, startTime, stopTime, createProjectToken } from '../actions';
 import { Store, ThunkDispatcher } from '../types';
 import ProjectRow from '../components/ProjectRow';
 
@@ -37,6 +37,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onUpdateProject: (projectId: number) => {
             dispatch(openProjectDialog(projectId))
         },
+        onCreateProjectToken: (projectId: number) => {
+            dispatch(createProjectToken(projectId))
+        }
     }
 }
 

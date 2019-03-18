@@ -75,13 +75,18 @@ export interface PaymentSubmitData {
     note: string,
 }
 
-export interface Payment extends PabuModel{
+export interface Payment extends PabuModel {
     projectId: number,
     createdUserId: number,
     paidUserId: number,
     amount: number,
     time: number,
     note: string,
+}
+
+export interface ProjectInvitationToken extends PabuModel {
+    projectId: number,
+    token: string,
 }
 
 export interface ExpandedPayment extends Payment {
@@ -104,6 +109,7 @@ export type IssueMap = { [n: number]: Issue };
 export type TimeEntryMap = { [n: number]: TimeEntry };
 export type UserMap = { [n: number]: User };
 export type PaymentMap = { [n: number]: Payment };
+export type ProjectInvitationTokenMap = { [n: number]: ProjectInvitationToken };
 
 export type ProjectDialogContext = {id?: number};
 export type IssueDialogContext = {projectId: number, id?: number};
@@ -123,6 +129,7 @@ export interface Store {
     tickingStat: TickingStat,
     timeEntries: TimeEntryMap,
     users: UserMap,
+    projectInvitationTokens: ProjectInvitationTokenMap,
 }
 
 export type TableCellFormatter = (v: any) => string;

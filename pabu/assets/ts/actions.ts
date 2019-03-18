@@ -12,6 +12,7 @@ export enum Action {
     DELETE_ISSUE = 'DELETE_ISSUE',
     DELETE_TIME_ENTRY = 'DELETE_TIME_ENTRY',
     DELETE_PAYMENT = 'DELETE_PAYMENT',
+    DELETE_PROJECT_TOKEN = 'DELETE_PROJECT_TOKEN',
     OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG',
     OPEN_PROJECT_DIALOG = 'OPEN_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
@@ -23,6 +24,7 @@ export enum Action {
     RECEIVE_TICKING_STAT = 'RECEIVE_TICKING_STAT',
     RECEIVE_USERS = 'RECEIVE_USERS',
     RECEIVE_PAYMENTS = 'RECEIVE_PAYMENTS',
+    RECEIVE_PROJECT_TOKENS = 'RECEIVE_PROJECT_TOKENS',
     REQUEST_PROJECTS = 'REQUEST_PROJECTS',
     SET_DARK_THEME = 'SET_DARK_THEME',
 }
@@ -34,6 +36,7 @@ export function fetchAllProjectData(id: number) {
         dispatch(fetchTimeEntries(id))
         dispatch(fetchProjectUsers(id))
         dispatch(fetchPayments(id))
+        dispatch(fetchProjectTokens(id))
     }
 }
 
@@ -143,6 +146,13 @@ export function fetchIssues(projectId: number) {
         })
     }
 }
+export function fetchProjectTokens(projectId: number) {
+    return dispatch => {
+        return client.getProjectTokens(projectId).then(data => {
+            dispatch(receiveProjectTokens(data))
+        })
+    }
+}
 
 export function fetchTimeEntries(projectId: number) {
     return dispatch => client.getTimeEntries(projectId).then(data => dispatch(receiveTimeEntries(data)))
@@ -150,6 +160,13 @@ export function fetchTimeEntries(projectId: number) {
 
 export function fetchPayments(projectId: number) {
     return dispatch => client.getPayments(projectId).then(data => dispatch(receivePayments(data)))
+}
+
+export function receiveProjectTokens(data) {
+    return  {
+        type: Action.RECEIVE_PROJECT_TOKENS,
+        data,
+    }
 }
 
 export function receiveUsers(data) {
@@ -203,6 +220,19 @@ export function sendTime(projectId: number, amount: string, issueId: number = nu
             dispatch(fetchAllProjectData(projectId));
         })
     }
+}
+
+export function createProjectToken(projectId: number) {
+    return dispatch => client.createProjectToken(projectId).then(t => dispatch(receiveProjectTokens({[t.id]: t})));
+}
+
+export function deleteProjectToken(id: number) {
+    return dispatch => client.deleteProjectToken(id).then(() => {
+        dispatch({
+            type: Action.DELETE_PROJECT_TOKEN,
+            id,
+        })
+    });
 }
 
 export function receiveTickingStat(data: TickingStat) {

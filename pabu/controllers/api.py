@@ -1,5 +1,7 @@
 import logging
 from datetime import datetime, timedelta
+import random
+import string
 
 from flask import Flask, abort, request
 from jsonrpc.backend.flask import JSONRPCAPI
@@ -7,9 +9,12 @@ from pytimeparse import parse
 
 from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
-from pabu.models import Project, User, Issue, association_table, TimeEntry, Payment
+from pabu.models import Project, User, Issue, association_table, TimeEntry, Payment, ProjectInvitationToken
 
 logger = logging.getLogger(__name__)
+
+def random_str(len: int):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(len))
 
 def add_api_controllers(app: Flask, db: Database):
 
@@ -69,6 +74,13 @@ def add_api_controllers(app: Flask, db: Database):
         return {
             'id': user.id,
             'name': user.name,
+        }
+
+    def project_token_to_dict(prj_token: ProjectInvitationToken):
+        return {
+            'id': prj_token.id,
+            'token': prj_token.token,
+            'projectId': prj_token.project_id,
         }
 
     def get_current_user(conn):
@@ -267,6 +279,32 @@ def add_api_controllers(app: Flask, db: Database):
                 abort(404)
             conn.delete(payment)
             return True
+
+    @jsonrpc_api.dispatcher.add_method
+    def create_project_token(id: int): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            proj_token = ProjectInvitationToken(project_id = id, token = random_str(32))
+            conn.add(proj_token)
+            conn.flush()
+            return project_token_to_dict(proj_token)
+
+    @jsonrpc_api.dispatcher.add_method
+    def delete_project_token(id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            qs = conn.query(ProjectInvitationToken).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(ProjectInvitationToken.id == id)
+            prj_token = qs.first()
+            if not prj_token:
+                abort(404)
+            conn.delete(prj_token)
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
+    def get_project_tokens(id: int): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            check_project(id, conn)
+            rows = conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.project_id == id).all()
+            return {r.id: project_token_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable
