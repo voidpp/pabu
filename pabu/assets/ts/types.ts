@@ -27,6 +27,7 @@ export interface User {
 export interface TimeSummary {
     spent: number,
     lastEntry: number,
+    count: number,
 }
 
 export interface PabuModel {
@@ -38,6 +39,8 @@ export interface Project extends PabuModel {
     desc: string,
     issues: Array<number>,
     users: Array<number>,
+    payments: Array<number>,
+    tokens: Array<number>,
     timeStat: TimeSummary,
     paid: number,
 }

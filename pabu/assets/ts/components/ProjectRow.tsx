@@ -86,13 +86,14 @@ class ProjectRow extends React.Component<Props, State> {
                             onChange={this.handleTabChange}
                             className={classes.tabHeader}
                             indicatorColor="primary"
+                            variant="fullWidth"
                         >
                             <Tab label="Summary" className={classes.tabLabel} />
-                            <Tab label="Time entries" className={classes.tabLabel} />
-                            <Tab label="Issues" className={classes.tabLabel} />
-                            <Tab label="Payments" className={classes.tabLabel} />
-                            <Tab label="Invite tokens" className={classes.tabLabel} />
-                            <Tab label="Users" className={classes.tabLabel} />
+                            <Tab label={`Time entries (${project.timeStat.count})`} className={classes.tabLabel} />
+                            <Tab label={`Issues (${project.issues.length})`} className={classes.tabLabel} />
+                            <Tab label={`Payments (${project.payments.length})`} className={classes.tabLabel} />
+                            <Tab label={`Invite tokens (${project.tokens.length})`} className={classes.tabLabel} />
+                            <Tab label={`Users (${project.users.length})`} className={classes.tabLabel} />
                         </Tabs>
                         {this.state.currentTab == 0 && <ProjectSummary id={id} />}
                         {this.state.currentTab == 1 && <TimeEntryList id={id} />}

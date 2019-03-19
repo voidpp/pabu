@@ -86,3 +86,5 @@ class ProjectInvitationToken(Base):
     id = Column(Integer, primary_key = True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
     token = Column(String, nullable = False)
+
+    project = relationship("Project", backref = "tokens")

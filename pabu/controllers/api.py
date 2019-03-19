@@ -26,6 +26,7 @@ def add_api_controllers(app: Flask, db: Database):
         stat = {
             'spent': 0,
             'lastEntry': 0,
+            'count': len(time_entries),
         }
         for entry in time_entries:
             if entry.end and entry.end.timestamp() > stat['lastEntry']:
@@ -46,7 +47,9 @@ def add_api_controllers(app: Flask, db: Database):
             'timeStat': entry_stat_from_list(project.time_entries),
             'issues': [i.id for i in project.issues],
             'paid': paid,
-            'users': [u.id for u in project.users]
+            'users': [u.id for u in project.users],
+            'payments': [p.id for p in project.payments],
+            'tokens': [t.id for t in project.tokens],
         }
 
     def issue_to_dict(issue: Issue):

@@ -75,9 +75,9 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps & Dis
         </Table>
         <div className={classes.buttonBar}>
             <Button size="small" color="primary" disabled={project.users.length == 1}
-                    onClick={onLeaveProject.bind(this, id)}>Leave project</Button>
-            <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
-            <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
+                    onClick={onLeaveProject.bind(this, id)}>Leave</Button>
+            <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update</Button>
+            <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete</Button>
         </div>
     </div>
 }))
