@@ -15,7 +15,7 @@ type Props = {
     hidePaymentDialog: () => void,
     onIssueSubmit: (name: string, desc: string, projectId: number, id: number) => void,
     onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => void
-    onTimeSubmit: (amount: string, projectId: number, issueId: number) => void,
+    onTimeSubmit: (amount: string, time: string, projectId: number, issueId: number) => void,
     openedProjectId: number,
     openProject: (id: number) => void,
     paymentDialogProjectId: number,
@@ -35,7 +35,7 @@ export default React.memo((props: Props) => {
                     onClose={props.hideAddIssueDialog} />
                 <TimeEntryDialog
                     opened={props.addTimeDialogContext != null}
-                    onSubmit={amount => props.onTimeSubmit(amount, props.addTimeDialogContext.projectId, props.addTimeDialogContext.issueId)}
+                    onSubmit={(amount, time) => props.onTimeSubmit(amount, time, props.addTimeDialogContext.projectId, props.addTimeDialogContext.issueId)}
                     onClose={props.hideAddTimeDialog}
                 />
                 <PaymentDialog

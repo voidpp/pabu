@@ -245,9 +245,9 @@ export function sendIssue(name: string, description: string, projectId: number, 
     return dispatch => id ? client.updateIssue(id, name, description, projectId) : client.createIssue(name, description, projectId)
 }
 
-export function sendTime(projectId: number, amount: string, issueId: number = null) {
+export function sendTime(projectId: number, time: string, amount: string, issueId: number = null) {
     return dispatch => {
-        return client.addTime(projectId, amount, issueId).then(() => {
+        return client.addTime(projectId, amount, time, issueId).then(() => {
             dispatch(closeAddTimeDialog())
             dispatch(fetchAllProjectData(projectId));
         })

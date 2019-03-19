@@ -67,8 +67,8 @@ class PabuClient {
         return this._send('create_issue', [name, description, projectId]);
     }
 
-    async addTime(projectId: number, amount:string, issueId: number = null) {
-        return this._send('add_time', [projectId, amount, issueId]);
+    async addTime(projectId: number, amount: string, time: string, issueId: number = null) {
+        return this._send('add_time', [projectId, amount, time, issueId]);
     }
 
     async startTime(projectId: number, issueId: number = null) {

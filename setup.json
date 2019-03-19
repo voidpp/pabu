@@ -14,6 +14,7 @@
         "configpp~=0.3.0",
         "json-rpc~=1.12",
         "pytimeparse~=1.1",
+        "python-dateutil~=1.12",
         "loginpass~=0.2"
     ],
     "packages": [

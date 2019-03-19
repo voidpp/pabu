@@ -6,6 +6,7 @@ import string
 from flask import Flask, abort, request
 from jsonrpc.backend.flask import JSONRPCAPI
 from pytimeparse import parse
+from dateutil.parser import parse as dateparser
 
 from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
@@ -170,14 +171,13 @@ def add_api_controllers(app: Flask, db: Database):
             return {r.id: time_entry_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
-    def add_time(project_id: int, amount: str, issue_id = None, end = None): # pylint: disable=unused-variable
+    def add_time(project_id: int, amount: str, start: str, issue_id = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
             check_project(project_id, conn)
             seconds = parse(amount)
-            if not end:
-                end = datetime.now()
-            start = end - timedelta(seconds = seconds)
+            start = dateparser(start) if start else (datetime.now() - timedelta(seconds = seconds))
+            end = start + timedelta(seconds = seconds)
             entry = TimeEntry(project_id = project_id, issue_id = issue_id, start = start, end = end, user_id = user_id)
             conn.add(entry)
 

@@ -42,8 +42,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         hideAddTimeDialog: () => {
             dispatch(closeAddTimeDialog())
         },
-        onTimeSubmit: (amount: string, projectId: number, issueId: number = null) => {
-            dispatch(sendTime(projectId, amount, issueId));
+        onTimeSubmit: (amount: string, time: string, projectId: number, issueId: number = null) => {
+            dispatch(sendTime(projectId, time, amount, issueId));
         },
         openProject: (projectId: number) => {
             dispatch(openProject(projectId))

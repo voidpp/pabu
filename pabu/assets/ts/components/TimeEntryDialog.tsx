@@ -1,18 +1,19 @@
 
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
+import moment = require('moment');
 
 type Props = {
     opened: boolean,
-    onSubmit: (amount: string) => void,
+    onSubmit: (amount: string, time: string) => void,
     onClose: () => void,
 }
 
-export default class TimeEntryDialog extends React.Component<Props, {amount: string}> {
+export default class TimeEntryDialog extends React.Component<Props, {amount: string, time: string}> {
 
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
-        this.props.onSubmit(this.state.amount);
+        this.props.onSubmit(this.state.amount, this.state.time);
     }
 
     render() {
@@ -33,6 +34,17 @@ export default class TimeEntryDialog extends React.Component<Props, {amount: str
                             type="text"
                             required
                             onChange={ev => {this.setState({amount: ev.target.value})}}
+                            fullWidth
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="time"
+                            label="Time"
+                            type="datetime-local"
+                            defaultValue={moment().format("YYYY-MM-DDTHH:mm")}
+                            required
+                            onChange={ev => {this.setState({time: ev.target.value})}}
                             fullWidth
                         />
                 </DialogContent>
