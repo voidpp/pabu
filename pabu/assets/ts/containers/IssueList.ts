@@ -4,15 +4,10 @@ import { connect } from 'react-redux';
 import { openAddTimeDialog, startTime, stopTime, deleteIssue,  openIssueDialog } from '../actions';
 import IssueList from '../components/IssueList';
 
-function mapStateToProps(state: Store) {
-    let {issues, openedProjectId, tickingStat} = state;
-    let filteredIssues = [];
-    for (let issue of Object.values(issues)) {
-        if (issue.projectId == openedProjectId)
-            filteredIssues.push(issue);
-    }
+function mapStateToProps(state: Store, props: {id: number}) {
+    let {issues, tickingStat} = state;
     return {
-        issues: filteredIssues,
+        issues: Object.values(issues).filter(i => i.projectId == props.id),
         tickingStat,
     }
 }

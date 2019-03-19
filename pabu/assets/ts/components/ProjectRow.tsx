@@ -79,7 +79,7 @@ class ProjectRow extends React.Component<Props, State> {
 
         let tickingButton = <Button size="small" disabled>Start time</Button>;
         if (tickingStat.ticking) {
-            if (tickingStat.entry.projectId == project.id)
+            if (tickingStat.entry.projectId == id)
                 tickingButton = <Button size="small" color="secondary" variant="contained" onClick={onStopTime.bind(this, id)}>Stop time</Button>
         } else
             tickingButton = <Button size="small" color="primary" onClick={onStartTime.bind(this, id)}>Start time</Button>
@@ -91,8 +91,8 @@ class ProjectRow extends React.Component<Props, State> {
         return  <ExpansionPanel
                     className={classes.root}
                     expanded={expanded}
-                    key={project.id}
-                    onChange={handleChange.bind(this, project.id)}
+                    key={id}
+                    onChange={handleChange.bind(this, id)}
                 >
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography className={classes.heading}>{project.name}</Typography>
@@ -123,10 +123,10 @@ class ProjectRow extends React.Component<Props, State> {
                             <Tab label="Invite tokens" className={classes.tabLabel} />
                         </Tabs>
                         {this.state.currentTab == 0 && <ProjectSummary id={id} />}
-                        {this.state.currentTab == 1 && <TimeEntryList id={id}/>}
-                        {this.state.currentTab == 2 && <IssueList/>}
-                        {this.state.currentTab == 3 && <PaymentList id={id}/> }
-                        {this.state.currentTab == 4 && <ProjectInviteTokenList id={id}/> }
+                        {this.state.currentTab == 1 && <TimeEntryList id={id} />}
+                        {this.state.currentTab == 2 && <IssueList id={id} />}
+                        {this.state.currentTab == 3 && <PaymentList id={id} /> }
+                        {this.state.currentTab == 4 && <ProjectInviteTokenList id={id} /> }
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
     }
