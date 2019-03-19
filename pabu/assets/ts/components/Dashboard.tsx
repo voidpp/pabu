@@ -23,6 +23,7 @@ type Props = {
     isDarkTheme: boolean,
     classes: any,
     inviteDialogIsOpen: boolean,
+    version: string,
 }
 
 const styles = ({ palette }: Theme) => createStyles({
@@ -56,6 +57,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
             userInfo={props.userInfo}
             tickingStat={props.tickingStat}
             onStopTime={props.stopTime.bind(this, props.tickingStat.ticking ? props.tickingStat.entry.projectId : null)}
+            version={props.version}
         />
         <Grid container justify="center">
             <Paper className={props.classes.body}>

@@ -17,6 +17,7 @@ type Props = {
     onThemeClick: (isDark: boolean) => void,
     isDarkTheme: boolean,
     classes: any,
+    version: string,
 }
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -60,7 +61,7 @@ class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
     };
 
     render() {
-        let {userInfo, onStopTime, tickingStat, onThemeClick, isDarkTheme, classes} = this.props;
+        let {userInfo, onStopTime, tickingStat, onThemeClick, isDarkTheme, classes, version} = this.props;
         let isOpen = Boolean(this.state.anchorEl);
         return <div style={{flexGrow: 1}}>
             <AppBar position="static">
@@ -69,7 +70,7 @@ class Header extends React.Component<Props, {anchorEl: HTMLElement}> {
                         <Avatar src="/static/images/pabu-head.png"/>
                     </IconButton>
                     <Typography variant="h6" color="inherit">Pabu</Typography>
-                    <Typography variant="subtitle2" color="inherit" className={classes.version}>(beta)</Typography>
+                    <Typography variant="subtitle2" color="inherit" className={classes.version}>(v{version})</Typography>
                     <div style={{flexGrow: 1, textAlign: 'center'}}>{
                         tickingStat.ticking ? <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button> : null
                     }</div>

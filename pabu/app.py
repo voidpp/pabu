@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import pkg_resources
 
 from flask import Flask, render_template, session
 from werkzeug.wsgi import DispatcherMiddleware
@@ -52,6 +53,7 @@ def index(path = None):
             'userInfo': session.get('user_info'),
             'isLoggedIn': is_logged_in(),
             'authBackendNames': list(config.auth.keys()),
+            'version': pkg_resources.get_distribution('pabu').version,
         }
     )
 

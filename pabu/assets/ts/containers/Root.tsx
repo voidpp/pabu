@@ -10,7 +10,7 @@ export default class Root extends React.Component {
         let data = window['initialData'];
         return (
             <Provider store={store}>
-                <App isLoggedIn={data.isLoggedIn} userInfo={data.userInfo} authBackendNames={data.authBackendNames} />
+                <App isLoggedIn={data.isLoggedIn} userInfo={data.userInfo} authBackendNames={data.authBackendNames} version={data.version} />
             </Provider>
         )
     }
