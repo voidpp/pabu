@@ -8,12 +8,14 @@ export enum Action {
     CLOSE_PROJECT_DIALOG = 'CLOSE_PROJECT_DIALOG',
     CLOSE_PAYMENT_DIALOG = 'CLOSE_PAYMENT_DIALOG',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
+    CLOSE_INVITE_DIALOG = 'CLOSE_INVITE_DIALOG',
     DELETE_PROJECT = 'DELETE_PROJECT',
     DELETE_ISSUE = 'DELETE_ISSUE',
     DELETE_TIME_ENTRY = 'DELETE_TIME_ENTRY',
     DELETE_PAYMENT = 'DELETE_PAYMENT',
     DELETE_PROJECT_TOKEN = 'DELETE_PROJECT_TOKEN',
     OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG',
+    OPEN_INVITE_DIALOG = 'OPEN_INVITE_DIALOG',
     OPEN_PROJECT_DIALOG = 'OPEN_PROJECT_DIALOG',
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
     OPEN_PAYMENT_DIALOG = 'OPEN_PAYMENT_DIALOG',
@@ -55,6 +57,22 @@ export function closeProject() {
     return {
         type: Action.CLOSE_PROJECT,
     }
+}
+
+export function openInviteDialog() {
+    return {
+        type: Action.OPEN_INVITE_DIALOG,
+    }
+}
+
+export function closeInviteDialog() {
+    return {
+        type: Action.CLOSE_INVITE_DIALOG,
+    }
+}
+
+export function joinToProject(token: string) {
+    return dispatch => client.joinToProject(token);
 }
 
 export function openProjectDialog(id: number = null) {

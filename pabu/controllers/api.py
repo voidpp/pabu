@@ -9,12 +9,12 @@ from pytimeparse import parse
 
 from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
-from pabu.models import Project, User, Issue, association_table, TimeEntry, Payment, ProjectInvitationToken
+from pabu.models import Project, User, Issue, projects_users, TimeEntry, Payment, ProjectInvitationToken
 
 logger = logging.getLogger(__name__)
 
 def random_str(len: int):
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(len))
+    return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(len))
 
 def add_api_controllers(app: Flask, db: Database):
 
@@ -98,7 +98,7 @@ def add_api_controllers(app: Flask, db: Database):
 
     def check_project(project_id, conn):
         user_id = get_user_id()
-        if conn.query(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).count() != 1:
+        if conn.query(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Project.id == project_id).count() != 1:
             logger.error("check_project failed! project: %s, user: %s", project_id, user_id)
             abort(404)
 
@@ -123,7 +123,7 @@ def add_api_controllers(app: Flask, db: Database):
     def get_projects(id: int = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(Project).outerjoin(Payment).join(association_table).join(User).filter(User.id == user_id).outerjoin(Issue)
+            qs = conn.query(Project).outerjoin(Payment).join(projects_users).join(User).filter(User.id == user_id).outerjoin(Issue)
             if id:
                 qs = qs.filter(Project.id == id)
             data = {r.id: project_to_dict(r) for r in qs.all()}
@@ -144,7 +144,7 @@ def add_api_controllers(app: Flask, db: Database):
     def update_issue(id: int, name: str, desc: str, project_id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            issue = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
+            issue = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
             if not issue:
                 abort(404)
             issue.name = name
@@ -156,7 +156,7 @@ def add_api_controllers(app: Flask, db: Database):
     def get_issues(project_id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            rows = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
+            rows = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
             return {r.id: issue_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
@@ -238,7 +238,7 @@ def add_api_controllers(app: Flask, db: Database):
     def get_project_users(project_id: int): # pylint: disable=unused-variable
         with db.session_scope() as conn:
             check_project(project_id, conn)
-            rows = conn.query(User).join(association_table).join(Project).filter(Project.id == project_id).all()
+            rows = conn.query(User).join(projects_users).join(Project).filter(Project.id == project_id).all()
             return {r.id: user_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
@@ -252,7 +252,7 @@ def add_api_controllers(app: Flask, db: Database):
     def delete_issue(id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            issue = conn.query(Issue).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
+            issue = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
             if not issue:
                 abort(404)
             conn.delete(issue)
@@ -262,7 +262,7 @@ def add_api_controllers(app: Flask, db: Database):
     def delete_time_entry(id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(TimeEntry).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(TimeEntry.id == id)
+            qs = conn.query(TimeEntry).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(TimeEntry.id == id)
             entry = qs.first()
             if not entry:
                 abort(404)
@@ -273,7 +273,7 @@ def add_api_controllers(app: Flask, db: Database):
     def delete_payment(id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(Payment).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(Payment.id == id)
+            qs = conn.query(Payment).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Payment.id == id)
             payment = qs.first()
             if not payment:
                 abort(404)
@@ -292,7 +292,7 @@ def add_api_controllers(app: Flask, db: Database):
     def delete_project_token(id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(ProjectInvitationToken).join(Project).join(association_table).join(User).filter(User.id == user_id).filter(ProjectInvitationToken.id == id)
+            qs = conn.query(ProjectInvitationToken).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(ProjectInvitationToken.id == id)
             prj_token = qs.first()
             if not prj_token:
                 abort(404)
@@ -305,6 +305,19 @@ def add_api_controllers(app: Flask, db: Database):
             check_project(id, conn)
             rows = conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.project_id == id).all()
             return {r.id: project_token_to_dict(r) for r in rows}
+
+    @jsonrpc_api.dispatcher.add_method
+    def join_to_project(token: str): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            user_id = get_user_id()
+            prj_token = conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.token == token).first()
+            if not prj_token:
+                abort(404)
+            project = conn.query(Project).filter(Project.id == prj_token.project_id).first() # type: Project
+            user = conn.query(User).filter(User.id == user_id).first()
+            if user not in project.users:
+                project.users.append(user)
+            return True
 
     @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

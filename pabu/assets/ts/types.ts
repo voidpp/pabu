@@ -130,6 +130,7 @@ export interface Store {
     timeEntries: TimeEntryMap,
     users: UserMap,
     projectInvitationTokens: ProjectInvitationTokenMap,
+    inviteDialogIsOpen: boolean,
 }
 
 export type TableCellFormatter = (v: any) => string;

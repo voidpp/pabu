@@ -114,6 +114,10 @@ class PabuClient {
     async deleteProjectToken(id: number) {
         return this._send('delete_project_token', [id]);
     }
+
+    async joinToProject(token: string) {
+        return this._send('join_to_project', [token]);
+    }
 }
 
 export default new PabuClient();

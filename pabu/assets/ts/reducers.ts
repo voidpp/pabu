@@ -6,7 +6,7 @@ import { Store } from './types';
 function fetchingProject(state = false, action) {
     if (action.type == Action.REQUEST_PROJECTS)
         return true;
-    else if (action.type == Action.RECEIVE_PROJECTS)
+    if (action.type == Action.RECEIVE_PROJECTS)
         return false;
     return state;
 }
@@ -14,7 +14,7 @@ function fetchingProject(state = false, action) {
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
         return action.context;
-    else if (action.type == Action.CLOSE_PROJECT_DIALOG)
+    if (action.type == Action.CLOSE_PROJECT_DIALOG)
         return null;
     return state;
 }
@@ -22,7 +22,7 @@ function projectDialogContext(state = null, action) {
 function issueDialogContext(state = null, action) {
     if (action.type == Action.OPEN_ISSUE_DIALOG)
         return action.context;
-    else if(action.type == Action.CLOSE_ISSUE_DIALOG)
+    if (action.type == Action.CLOSE_ISSUE_DIALOG)
         return null;
     return state;
 }
@@ -30,7 +30,7 @@ function issueDialogContext(state = null, action) {
 function openedProjectId(state = 0, action) {
     if (action.type == Action.OPEN_PROJECT)
         return action.id;
-    else if(action.type == Action.CLOSE_PROJECT)
+    if (action.type == Action.CLOSE_PROJECT)
         return 0;
     return state;
 }
@@ -38,7 +38,7 @@ function openedProjectId(state = 0, action) {
 function addTimeDialogContext(state = null, action) {
     if (action.type == Action.OPEN_ADD_TIME_DIALOG)
         return action.projectId ? {projectId: action.projectId, issueId: action.issueId} : null;
-    else if(action.type == Action.CLOSE_ADD_TIME_DIALOG)
+    if (action.type == Action.CLOSE_ADD_TIME_DIALOG)
         return null;
     return state;
 }
@@ -52,7 +52,7 @@ function tickingStat(state = {ticking: false}, action) {
 function paymentDialogProjectId(state = null, action) {
     if (action.type == Action.OPEN_PAYMENT_DIALOG)
         return action.projectId;
-    else if(action.type == Action.CLOSE_PAYMENT_DIALOG)
+    if (action.type == Action.CLOSE_PAYMENT_DIALOG)
         return null;
     return state;
 }
@@ -76,6 +76,14 @@ function resourceReducerFactory(receiveAction: Action, deleteAction: Action = nu
     }
 }
 
+function inviteDialogIsOpen(state = false, action) {
+    if (action.type == Action.OPEN_INVITE_DIALOG)
+        return true;
+    if (action.type == Action.CLOSE_INVITE_DIALOG)
+        return false;
+    return state;
+}
+
 const rootReducer = combineReducers<Store>({
     addTimeDialogContext,
     fetchingProject,
@@ -91,6 +99,7 @@ const rootReducer = combineReducers<Store>({
     tickingStat,
     timeEntries: resourceReducerFactory(Action.RECEIVE_TIME_ENTRIES, Action.DELETE_TIME_ENTRY),
     users: resourceReducerFactory(Action.RECEIVE_USERS),
+    inviteDialogIsOpen,
 });
 
 export default rootReducer

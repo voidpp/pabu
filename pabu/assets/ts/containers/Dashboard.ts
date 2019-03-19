@@ -1,11 +1,11 @@
 
-import { Store, ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
-import { openProjectDialog, stopTime, closeProjectDialog, receiveProjects, sendProject, setDarkTheme } from '../actions';
+import { closeInviteDialog, closeProjectDialog, fetchProjects, joinToProject, openInviteDialog, openProjectDialog, receiveProjects, sendProject, setDarkTheme, stopTime } from '../actions';
 import Dashboard from '../components/Dashboard';
+import { Store, ThunkDispatcher } from '../types';
 
 const mapStateToProps = (state: Store) => {
-    const { projectDialogContext, tickingStat, projects, isDarkTheme } = state;
+    const { projectDialogContext, tickingStat, projects, isDarkTheme, inviteDialogIsOpen } = state;
     let projectData = {name: '', desc: ''};
     if (projectDialogContext && projectDialogContext.id) {
         projectData = projects[projectDialogContext.id];
@@ -15,6 +15,7 @@ const mapStateToProps = (state: Store) => {
         tickingStat,
         projectData,
         isDarkTheme,
+        inviteDialogIsOpen,
     }
 }
 
@@ -25,6 +26,18 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
                 dispatch(closeProjectDialog())
                 dispatch(receiveProjects({[project.id]: project}))
             })
+        },
+        onInviteSubmit: (token: string) => {
+            dispatch(joinToProject(token)).then(() => {
+                dispatch(closeInviteDialog())
+                dispatch(fetchProjects())
+            })
+        },
+        showInviteDialog: () => {
+            dispatch(openInviteDialog())
+        },
+        hideInviteDialog: () => {
+            dispatch(closeInviteDialog())
         },
         showDialog: () => {
             dispatch(openProjectDialog())

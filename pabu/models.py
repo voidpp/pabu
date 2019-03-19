@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-association_table = Table('projects_users', Base.metadata,
+projects_users = Table('projects_users', Base.metadata,
     Column('project_id', Integer, ForeignKey('projects.id', ondelete = 'CASCADE')),
     Column('user_id', Integer, ForeignKey('users.id', ondelete = 'CASCADE'))
 )
@@ -28,7 +28,7 @@ class Project(Base):
     name = Column(String, nullable = False)
     desc = Column(String)
 
-    users = relationship("User", secondary = association_table)
+    users = relationship("User", secondary = projects_users)
 
 class SourceType(enum.Enum):
 
