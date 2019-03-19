@@ -1,12 +1,10 @@
 
-import * as moment from 'moment';
 import { connect } from 'react-redux';
-import { Store, ThunkDispatcher, TableRowDesriptor, ExpandedPayment } from '../types';
-import PabuTable from '../components/PabuTable';
-import { formatDuration } from '../tools';
-import { deletePayment, fetchAllProjectData, fetchProjects } from '../actions';
+import { deletePayment, fetchProjects, openPaymentDialog } from '../actions';
+import { ExpandedPayment, Store, ThunkDispatcher } from '../types';
+import PaymentList, {OwnProps, StateProps, DispatchProps} from '../components/PaymentList';
 
-function mapStateToProps(state: Store, props: {id: number}) {
+function mapStateToProps(state: Store, props: OwnProps) {
     const {payments, users} = state;
 
     let paymentRows = [];
@@ -19,18 +17,8 @@ function mapStateToProps(state: Store, props: {id: number}) {
         }
         paymentRows.push(exPayment)
     }
-
-    const rowDescriptors = [
-        new TableRowDesriptor('time', 'Time', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
-        new TableRowDesriptor('amount' , 'Amount', formatDuration),
-        new TableRowDesriptor('createdUserName', 'Created'),
-        new TableRowDesriptor('paidUserName', 'Paid'),
-        new TableRowDesriptor('note', 'Note'),
-    ]
-
     return {
         rows: paymentRows,
-        rowDescriptors,
     }
 }
 
@@ -42,8 +30,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
                 dispatch(deletePayment(payment.id)).then(() => {
                     dispatch(fetchProjects(projectId))
                 })
-        }
+        },
+        onAddPayment: (projectId: number) => {
+            dispatch(openPaymentDialog(projectId))
+        },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PabuTable);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PaymentList);

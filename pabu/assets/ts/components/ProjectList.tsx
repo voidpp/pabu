@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { TimeDialogContext, UserMap, PaymentSubmitData, Project, IssueDialogContext, Issue } from '../types';
-import ProjectRow from '../containers/ProjectRow';
+import ProjectRow from '../components/ProjectRow';
 import NameDescFormDialog from '../components/NameDescFormDialog';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 import PaymentDialog from '../components/PaymentDialog';
@@ -48,6 +48,7 @@ export default React.memo((props: Props) => {
             props.projects.map(project => <ProjectRow
                 key={project.id}
                 project={project}
+                expanded={project.id == props.openedProjectId}
                 handleChange={id => {
                     if (id == props.openedProjectId)
                         props.closeProject();

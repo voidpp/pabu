@@ -2,12 +2,12 @@
 import * as moment from 'moment';
 import { connect } from 'react-redux';
 import { Store, ThunkDispatcher, ExpandedTimeEntry, TableRowDesriptor } from '../types';
-import { deleteTimeEntry, fetchProjects } from '../actions';
-import PabuTable from '../components/PabuTable';
+import { deleteTimeEntry, fetchProjects, openAddTimeDialog, startTime, stopTime } from '../actions';
 import { formatDuration } from '../tools';
+import TimeEntryList, {OwnProps, StateProps, DispatchProps} from '../components/TimeEntryList';
 
-function mapStateToProps(state: Store, props: {id: number}) {
-    const {issues, timeEntries, users} = state;
+function mapStateToProps(state: Store, props: OwnProps) {
+    const {issues, timeEntries, users, tickingStat} = state;
 
     let entries = [];
     for (const id in timeEntries) {
@@ -19,21 +19,14 @@ function mapStateToProps(state: Store, props: {id: number}) {
             ...entry,
             issueName: (entry.issueId in issues) ? issues[entry.issueId].name : '',
             userName: (entry.userId in users) ? users[entry.userId].name : '',
-            spentHours: entry.end - entry.start,
+            spentHours: (entry.end || new Date().getTime()/1000) - entry.start,
         }
         entries.push(exEntry)
     }
 
-    const rowDescriptors = [
-        new TableRowDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
-        new TableRowDesriptor('spentHours' , 'Length', formatDuration),
-        new TableRowDesriptor('issueName', 'Issue'),
-        new TableRowDesriptor('userName', 'User'),
-    ]
-
     return {
         rows: entries,
-        rowDescriptors,
+        tickingStat
     }
 }
 
@@ -42,8 +35,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onDelete: (entry: ExpandedTimeEntry) => {
             if (confirm('Do you really want to delete this time entry?'))
                 dispatch(deleteTimeEntry(entry.id)).then(() => dispatch(fetchProjects(entry.projectId)))
-        }
+        },
+        onAddNewTime: (projectId) => {
+            dispatch(openAddTimeDialog(projectId))
+        },
+        onStartTime: (projectId: number) => {
+            dispatch(startTime(projectId))
+        },
+        onStopTime: (openedProjectId: number) => {
+            dispatch(stopTime(openedProjectId))
+        },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PabuTable);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(TimeEntryList);

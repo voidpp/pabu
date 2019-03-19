@@ -10,13 +10,18 @@ const styles = ({ palette, typography }: Theme) => createStyles({
         width: 35,
         height: 35,
     },
+    controlCell: {
+        textAlign: 'center',
+    }
 });
 
 type Props = {
     rows: Array<PabuModel>,
     classes: any,
-    onDelete: (row: PabuModel) => void,
     rowDescriptors: Array<TableRowDesriptor>,
+    onDelete?: (row: PabuModel) => void,
+    controllCellHeader?: React.ReactNode,
+    controllCellFactory?: (row: PabuModel) => React.Component,
 }
 
 type State = {
@@ -64,7 +69,7 @@ class PabuTable extends React.Component<Props, State> {
     }
 
     render() {
-        const { rows, classes, onDelete, rowDescriptors } = this.props;
+        const { rows, classes, onDelete, rowDescriptors, controllCellHeader, controllCellFactory } = this.props;
 
         return <Table>
             <TableHead>
@@ -78,16 +83,18 @@ class PabuTable extends React.Component<Props, State> {
                             {field.label}
                         </TableSortLabel>
                     </TableCell>)}
-                    <TableCell></TableCell>
+                    <TableCell className={classes.controlCell}>{controllCellHeader}</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>{
                 this.getRows().map(row => <TableRow key={row.id}>
                     {rowDescriptors.map(field => <TableCell key={field.name}>{field.formatter(row[field.name])}</TableCell>)}
-                    <TableCell>
-                        <IconButton className={classes.icon} onClick={onDelete.bind(this, row)}>
-                            <FontAwesomeIcon icon="trash" style={{ fontSize: 12 }} />
-                        </IconButton>
+                    <TableCell className={classes.controlCell}>
+                        {controllCellFactory ? controllCellFactory(row) :
+                            <IconButton className={classes.icon} onClick={onDelete.bind(this, row)}>
+                                <FontAwesomeIcon icon="trash" style={{ fontSize: 12 }} />
+                            </IconButton>
+                        }
                     </TableCell>
                 </TableRow>)
             }</TableBody>

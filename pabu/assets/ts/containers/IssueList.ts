@@ -2,9 +2,9 @@
 import { Store,  ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
 import { openAddTimeDialog, startTime, stopTime, deleteIssue,  openIssueDialog } from '../actions';
-import IssueList from '../components/IssueList';
+import IssueList, { StateProps, DispatchProps, OwnProps } from '../components/IssueList';
 
-function mapStateToProps(state: Store, props: {id: number}) {
+function mapStateToProps(state: Store, props: OwnProps) {
     let {issues, tickingStat} = state;
     return {
         issues: Object.values(issues).filter(i => i.projectId == props.id),
@@ -29,8 +29,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         },
         onUpdateIssue: (projectId: number, id: number) => {
             dispatch(openIssueDialog(projectId, id))
-        }
+        },
+        onAddNewIssue: (projectId: number) => {
+            dispatch(openIssueDialog(projectId))
+        },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IssueList);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(IssueList);

@@ -1,19 +1,14 @@
 
 import { connect } from 'react-redux';
-import { Store, ThunkDispatcher, TableRowDesriptor, ProjectInvitationToken } from '../types';
-import PabuTable from '../components/PabuTable';
-import { fetchProjects, deleteProjectToken } from '../actions';
+import { createProjectToken, deleteProjectToken, fetchProjects } from '../actions';
+import ProjectInviteTokenList, { DispatchProps, OwnProps, StateProps } from '../components/ProjectInviteTokenList';
+import { ProjectInvitationToken, Store, ThunkDispatcher } from '../types';
 
-function mapStateToProps(state: Store, props: {id: number}) {
+function mapStateToProps(state: Store, props: OwnProps) {
     const {projectInvitationTokens} = state;
-
-    const rowDescriptors = [
-        new TableRowDesriptor('token' , 'Token'),
-    ]
 
     return {
         rows: Object.values(projectInvitationTokens).filter(t => t.projectId == props.id),
-        rowDescriptors,
     }
 }
 
@@ -25,8 +20,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
                 dispatch(deleteProjectToken(prjToken.id)).then(() => {
                     dispatch(fetchProjects(projectId))
                 })
+        },
+        onCreateProjectToken: (projectId: number) => {
+            dispatch(createProjectToken(projectId))
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PabuTable);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(ProjectInviteTokenList);

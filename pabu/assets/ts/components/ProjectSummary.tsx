@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withStyles, Theme, createStyles, Table, TableHead, TableRow, TableCell, TableBody, TableFooter } from '@material-ui/core';
+import { withStyles, Theme, createStyles, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, Button } from '@material-ui/core';
 import { User, Project } from '../types';
 import { formatDuration } from '../tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,12 +20,19 @@ export type StateProps = {
     project: Project,
 }
 
-const styles = ({ palette }: Theme) => createStyles({
+export type DispatchProps = {
+    onUpdateProject: (projectId: number) => void,
+    onDeleteProject: (projectId: number) => void,
+}
 
+const styles = ({ palette }: Theme) => createStyles({
+    buttonBar: {
+        margin: '10px 0',
+    }
 });
 
-export default withStyles(styles)(React.memo((props: OwnProps & StateProps) => {
-    let {id, userStat} = props;
+export default withStyles(styles)(React.memo((props: OwnProps & StateProps & DispatchProps & {classes: any}) => {
+    let {id, userStat, onUpdateProject, onDeleteProject, classes} = props;
 
     const sum = {spent: 0, paid: 0, ticking: false};
     for (let stat of userStat) {
@@ -35,7 +42,7 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps) => {
             sum.ticking = true;
     }
 
-    return (
+    return <div>
         <Table>
             <TableHead>
                 <TableRow>
@@ -65,5 +72,9 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps) => {
                 </TableRow>
             </TableFooter>
         </Table>
-    )
+        <div className={classes.buttonBar}>
+            <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
+            <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
+        </div>
+    </div>
 }))

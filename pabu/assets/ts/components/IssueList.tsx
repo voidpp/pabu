@@ -1,19 +1,30 @@
 
 import * as React from 'react';
-import { IssueMap, TickingStat, Issue } from '../types';
-import IssueRow from '../components/IssueRow';
-import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Theme, createStyles, IconButton } from '@material-ui/core';
+import { TickingStat, Issue } from '../types';
+import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Theme, createStyles, IconButton, Button } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-type Props = {
+export type StateProps = {
     issues: Array<Issue>,
+    tickingStat: TickingStat,
+}
+
+export type DispatchProps = {
+    onAddNewIssue: (projectId: number) => void,
     onAddNewTime: (projectId: number, issueId: number) => void,
     onDeleteIssue: (projectId: number, issueId: number) => void,
     onUpdateIssue: (projectId: number, issueId: number) => void,
     startTime: (projectId: number, issueId: number) => void,
     stopTime: (projectId: number) => void,
-    tickingStat: TickingStat,
+}
+
+
+export type OwnProps = {
+    id: number,
+}
+
+type MuiProps = {
     classes: any,
 }
 
@@ -37,8 +48,8 @@ const ActionIcon = withStyles(styles)(React.memo((props: {icon: IconProp, classe
     )
 }));
 
-export default withStyles(styles)(React.memo((props: Props) => {
-    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue} = props;
+export default withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
+    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id} = props;
 
     function getTickingIcon(issue: Issue) {
         if (tickingStat.ticking) {
@@ -57,7 +68,9 @@ export default withStyles(styles)(React.memo((props: Props) => {
                     <TableCell>Name</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Time spent</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                        <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create</Button>
+                    </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>{

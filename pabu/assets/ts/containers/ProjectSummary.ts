@@ -1,7 +1,8 @@
 
 import { connect } from 'react-redux';
-import { Store } from '../types';
-import ProjectSummary, {OwnProps, StateProps, UserPaymentStat} from '../components/ProjectSummary';
+import { deleteProject, openProjectDialog } from '../actions';
+import ProjectSummary, { DispatchProps, OwnProps, StateProps, UserPaymentStat } from '../components/ProjectSummary';
+import { Store, ThunkDispatcher } from '../types';
 
 function mapStateToProps(store: Store, props: OwnProps): StateProps {
     const projectId = props.id;
@@ -36,5 +37,16 @@ function mapStateToProps(store: Store, props: OwnProps): StateProps {
     }
 }
 
+const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
+    return {
+        onDeleteProject: (projectId: number) => {
+            if(confirm('Do you really want to delete this project?'))
+                dispatch(deleteProject(projectId));
+        },
+        onUpdateProject: (projectId: number) => {
+            dispatch(openProjectDialog(projectId))
+        },
+    }
+}
 
-export default connect(mapStateToProps)(ProjectSummary);
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(ProjectSummary);

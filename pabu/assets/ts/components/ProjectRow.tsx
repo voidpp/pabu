@@ -1,21 +1,18 @@
-import * as React from 'react';
-
-import { Project, TickingStat, TimeEntry, LocalStorageKey } from '../types';
-
+import { Tab, Tabs } from '@material-ui/core';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import * as React from 'react';
 import IssueList from '../containers/IssueList';
-import TimeEntryList from '../containers/TimeEntryList';
-import { Tabs, Tab } from '@material-ui/core';
-import ProjectSummary from '../containers/ProjectSummary';
 import PaymentList from '../containers/PaymentList';
 import ProjectInviteTokenList from '../containers/ProjectInviteTokenList';
+import ProjectSummary from '../containers/ProjectSummary';
+import TimeEntryList from '../containers/TimeEntryList';
+import { LocalStorageKey, Project } from '../types';
+
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     root: {
@@ -42,17 +39,8 @@ const styles = ({ palette, typography }: Theme) => createStyles({
 type Props = {
     classes: any,
     handleChange: (id: number) => void,
-    onAddNewIssue: (projectId: number) => void,
-    onAddNewTime: (projectId: number) => void,
-    onAddPayment: (projectId: number) => void,
-    onCreateProjectToken: (projectId: number) => void,
-    onDeleteProject: (projectId: number) => void,
-    onStartTime: (projectId: number) => void,
-    onStopTime: (projectId: number) => void,
-    onUpdateProject: (projectId: number) => void,
     project: Project,
-    tickingStat: TickingStat,
-    openedProjectId: number,
+    expanded: boolean,
 }
 
 type State = {
@@ -72,21 +60,12 @@ class ProjectRow extends React.Component<Props, State> {
     }
 
     render() {
-        const {classes, handleChange, onAddNewIssue, onAddNewTime, onAddPayment, onDeleteProject, onStartTime, onStopTime, onUpdateProject,
-               project, tickingStat, openedProjectId, onCreateProjectToken} = this.props
+        const {classes, handleChange, project, expanded} = this.props
 
         const id = project.id;
 
-        let tickingButton = <Button size="small" disabled>Start time</Button>;
-        if (tickingStat.ticking) {
-            if (tickingStat.entry.projectId == id)
-                tickingButton = <Button size="small" color="secondary" variant="contained" onClick={onStopTime.bind(this, id)}>Stop time</Button>
-        } else
-            tickingButton = <Button size="small" color="primary" onClick={onStartTime.bind(this, id)}>Start time</Button>
-
         let spent = (project.timeStat.spent/3600).toFixed(1);
         let paid = Math.ceil(project.paid/3600);
-        const expanded = openedProjectId == id;
 
         return  <ExpansionPanel
                     className={classes.root}
@@ -101,15 +80,6 @@ class ProjectRow extends React.Component<Props, State> {
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails style={{display: 'block'}}>
-                        <div>
-                            <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create issue</Button>
-                            <Button size="small" color="primary" onClick={onAddNewTime.bind(this, id)}>Add time</Button>
-                            {tickingButton}
-                            <Button size="small" color="primary" onClick={onAddPayment.bind(this, id)}>Add payment</Button>
-                            <Button size="small" color="primary" onClick={onCreateProjectToken.bind(this, id)}>Generate invite token</Button>
-                            <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
-                            <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
-                        </div>
                         <Tabs
                             value={this.state.currentTab}
                             onChange={this.handleTabChange}
