@@ -30,7 +30,6 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
     oauth = OAuth(app, Cache())
 
     def handle_authorize(remote, token, user_info):
-        print(remote.name)
         sub = user_info['sub']
         email = user_info['email']
         user_info['providerName'] = remote.name
@@ -40,7 +39,9 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
             if not user:
                 user = User(sub = sub, email = email)
                 conn.add(user)
-                conn.flush()
+            user.email = email
+            user.name = user_info['name']
+            conn.flush()
             session['user_id'] = user.id
 
         return redirect('/')

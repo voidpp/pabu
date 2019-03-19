@@ -12,6 +12,7 @@ import ProjectInviteTokenList from '../containers/ProjectInviteTokenList';
 import ProjectSummary from '../containers/ProjectSummary';
 import TimeEntryList from '../containers/TimeEntryList';
 import { LocalStorageKey, Project } from '../types';
+import ProjectUserList from '../containers/ProjectUserList';
 
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -91,12 +92,14 @@ class ProjectRow extends React.Component<Props, State> {
                             <Tab label="Issues" className={classes.tabLabel} />
                             <Tab label="Payments" className={classes.tabLabel} />
                             <Tab label="Invite tokens" className={classes.tabLabel} />
+                            <Tab label="Users" className={classes.tabLabel} />
                         </Tabs>
                         {this.state.currentTab == 0 && <ProjectSummary id={id} />}
                         {this.state.currentTab == 1 && <TimeEntryList id={id} />}
                         {this.state.currentTab == 2 && <IssueList id={id} />}
                         {this.state.currentTab == 3 && <PaymentList id={id} /> }
                         {this.state.currentTab == 4 && <ProjectInviteTokenList id={id} /> }
+                        {this.state.currentTab == 5 && <ProjectUserList id={id} /> }
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
     }

@@ -54,5 +54,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     }
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);

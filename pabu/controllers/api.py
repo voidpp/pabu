@@ -320,5 +320,24 @@ def add_api_controllers(app: Flask, db: Database):
             return True
 
     @jsonrpc_api.dispatcher.add_method
+    def kick_user_from_project(project_id: int, user_id: int): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            check_project(project_id, conn)
+            project = conn.query(Project).filter(Project.id == project_id).first() # type: Project
+            user = conn.query(User).filter(User.id == user_id).first()
+            project.users.remove(user)
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
+    def leave_project(project_id: int): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            check_project(project_id, conn)
+            user_id = get_user_id()
+            project = conn.query(Project).filter(Project.id == project_id).first() # type: Project
+            user = conn.query(User).filter(User.id == user_id).first()
+            project.users.remove(user)
+            return True
+
+    @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable
         return 1/0

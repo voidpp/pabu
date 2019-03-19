@@ -23,6 +23,7 @@ export type StateProps = {
 export type DispatchProps = {
     onUpdateProject: (projectId: number) => void,
     onDeleteProject: (projectId: number) => void,
+    onLeaveProject: (projectId: number) => void,
 }
 
 const styles = ({ palette }: Theme) => createStyles({
@@ -32,7 +33,7 @@ const styles = ({ palette }: Theme) => createStyles({
 });
 
 export default withStyles(styles)(React.memo((props: OwnProps & StateProps & DispatchProps & {classes: any}) => {
-    let {id, userStat, onUpdateProject, onDeleteProject, classes} = props;
+    let {id, userStat, onUpdateProject, onDeleteProject, classes, onLeaveProject, project} = props;
 
     const sum = {spent: 0, paid: 0, ticking: false};
     for (let stat of userStat) {
@@ -73,6 +74,8 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps & Dis
             </TableFooter>
         </Table>
         <div className={classes.buttonBar}>
+            <Button size="small" color="primary" disabled={project.users.length == 1}
+                    onClick={onLeaveProject.bind(this, id)}>Leave project</Button>
             <Button size="small" color="primary" onClick={onUpdateProject.bind(this, id)}>Update project</Button>
             <Button size="small" color="secondary" onClick={onDeleteProject.bind(this, id)}>Delete project</Button>
         </div>

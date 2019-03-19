@@ -19,9 +19,10 @@ type Props = {
     rows: Array<PabuModel>,
     classes: any,
     rowDescriptors: Array<TableRowDesriptor>,
-    onDelete?: (row: PabuModel) => void,
+    onDelete?: (row: PabuModel, context?: any) => void,
     controllCellHeader?: React.ReactNode,
     controllCellFactory?: (row: PabuModel) => React.Component,
+    context?: any,
 }
 
 type State = {
@@ -69,7 +70,7 @@ class PabuTable extends React.Component<Props, State> {
     }
 
     render() {
-        const { rows, classes, onDelete, rowDescriptors, controllCellHeader, controllCellFactory } = this.props;
+        const { rows, classes, onDelete, rowDescriptors, controllCellHeader, controllCellFactory, context } = this.props;
 
         return <Table>
             <TableHead>
@@ -91,9 +92,9 @@ class PabuTable extends React.Component<Props, State> {
                     {rowDescriptors.map(field => <TableCell key={field.name}>{field.formatter(row[field.name])}</TableCell>)}
                     <TableCell className={classes.controlCell}>
                         {controllCellFactory ? controllCellFactory(row) :
-                            <IconButton className={classes.icon} onClick={onDelete.bind(this, row)}>
+                            (onDelete ? <IconButton className={classes.icon} onClick={onDelete.bind(this, row, context)}>
                                 <FontAwesomeIcon icon="trash" style={{ fontSize: 12 }} />
-                            </IconButton>
+                            </IconButton> : null)
                         }
                     </TableCell>
                 </TableRow>)

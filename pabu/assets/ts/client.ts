@@ -118,6 +118,14 @@ class PabuClient {
     async joinToProject(token: string) {
         return this._send('join_to_project', [token]);
     }
+
+    async kickUserFromProject(projectId: number, userId: number) {
+        return this._send('kick_user_from_project', [projectId, userId]);
+    }
+
+    async leaveProject(projectId: number) {
+        return this._send('leave_project', [projectId]);
+    }
 }
 
 export default new PabuClient();

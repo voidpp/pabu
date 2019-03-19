@@ -75,6 +75,20 @@ export function joinToProject(token: string) {
     return dispatch => client.joinToProject(token);
 }
 
+export function kickUserFromProject(projectId: number, userId: number) {
+    return dispatch => client.kickUserFromProject(projectId, userId);
+}
+
+export function leaveProject(projectId: number) {
+    return dispatch => client.leaveProject(projectId).then(() => {
+        dispatch({
+            type: Action.DELETE_PROJECT,
+            id: projectId,
+        })
+        return new Promise((resolve, reject) => resolve())
+    });
+}
+
 export function openProjectDialog(id: number = null) {
     return {
         type: Action.OPEN_PROJECT_DIALOG,
