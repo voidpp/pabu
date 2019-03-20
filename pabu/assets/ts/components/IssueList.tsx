@@ -4,6 +4,8 @@ import { TickingStat, Issue } from '../types';
 import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Theme, createStyles, IconButton, Button } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { formatDuration } from '../tools';
+import StopWatch from '../containers/StopWatch';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -77,7 +79,15 @@ export default withStyles(styles)(React.memo((props: StateProps & DispatchProps 
                 issues.map(issue => <TableRow key={issue.id}>
                     <TableCell>{issue.name}</TableCell>
                     <TableCell>{issue.desc}</TableCell>
-                    <TableCell>{(issue.timeStat.spent/3600).toFixed(2)} hours</TableCell>
+                    {/* <TableCell>{formatDuration(issue.timeStat.spent)}</TableCell> */}
+                    <TableCell>
+                        <StopWatch
+                            projectId={issue.projectId}
+                            issueId={issue.id}
+                            initialValue={issue.timeStat.spent}
+                            // started={issue.timeStat.lastEntry}
+                            />
+                        </TableCell>
                     <TableCell>
                         <ActionIcon icon="clock" onClick={onAddNewTime.bind(this, issue.projectId, issue.id)}/>
                         {getTickingIcon(issue)}
