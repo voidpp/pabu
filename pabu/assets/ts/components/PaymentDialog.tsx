@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Select, InputLabel, MenuItem, FormControl } from '@material-ui/core';
 
 import { PaymentSubmitData, UserMap, User } from '../types';
+import moment = require('moment');
 
 type Props = {
     opened: boolean,
@@ -18,6 +19,7 @@ export default class PaymentDialog extends React.Component<Props, PaymentSubmitD
         user_id: null,
         amount: '',
         note: '',
+        time: '',
     }
 
     onSubmit = (ev: React.SyntheticEvent) => {
@@ -46,6 +48,16 @@ export default class PaymentDialog extends React.Component<Props, PaymentSubmitD
                             type="text"
                             required
                             onChange={ev => {this.setState({amount: ev.target.value})}}
+                            fullWidth
+                        />
+                        <TextField
+                            margin="dense"
+                            id="time"
+                            label="Time"
+                            type="datetime-local"
+                            defaultValue={moment().format("YYYY-MM-DDTHH:mm")}
+                            required
+                            onChange={ev => {this.setState({time: ev.target.value})}}
                             fullWidth
                         />
                     <FormControl fullWidth required>

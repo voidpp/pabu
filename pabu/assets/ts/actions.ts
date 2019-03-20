@@ -303,7 +303,7 @@ export function stopTime(openedProjectId: number) {
 
 export function sendPayment(projectId: number, data: PaymentSubmitData) {
     return dispatch => {
-        return client.addPayment(projectId, data.amount, data.user_id, data.note).then(res => {
+        return client.addPayment(projectId, data.amount, data.user_id, data.time, data.note).then(res => {
             dispatch(closePaymentDialog())
             dispatch(fetchAllProjectData(projectId));
         })

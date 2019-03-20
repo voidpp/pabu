@@ -75,8 +75,8 @@ class PabuClient {
         return this._send('start_time', [projectId, issueId]);
     }
 
-    async addPayment(projectId: number, amount: string, paidUserId: number, note: string) {
-        return this._send('add_payment', [projectId, amount, paidUserId, note]);
+    async addPayment(projectId: number, amount: string, paidUserId: number, time: string, note: string) {
+        return this._send('add_payment', [projectId, amount, paidUserId, time, note]);
     }
 
     async stopTime() {

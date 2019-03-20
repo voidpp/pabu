@@ -228,12 +228,12 @@ def add_api_controllers(app: Flask, db: Database):
             return {r.id:payment_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
-    def add_payment(project_id: int, amount: str, paid_user_id: int, note: str): # pylint: disable=unused-variable
+    def add_payment(project_id: int, amount: str, paid_user_id: int, time: str, note: str): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
             check_project(project_id, conn)
             payment = Payment(project_id = project_id, amount = parse(amount), paid_user_id = paid_user_id, created_user_id = user_id,
-                              note = note)
+                              note = note, time = dateparser(time) if time else datetime.now())
             conn.add(payment)
             return True
 

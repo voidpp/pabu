@@ -1,6 +1,6 @@
 {
     "name": "pabu",
-    "version": "0.9.1",
+    "version": "0.10.2",
     "description": "",
     "author": "Lajos Santa",
     "author_email": "santa.lajos@gmail.com",
@@ -14,7 +14,7 @@
         "configpp~=0.3.0",
         "json-rpc~=1.12",
         "pytimeparse~=1.1",
-        "python-dateutil~=1.12",
+        "python-dateutil~=2.8",
         "loginpass~=0.2"
     ],
     "packages": [

@@ -76,6 +76,7 @@ export interface PaymentSubmitData {
     user_id: number,
     amount: string,
     note: string,
+    time: string,
 }
 
 export interface Payment extends PabuModel {

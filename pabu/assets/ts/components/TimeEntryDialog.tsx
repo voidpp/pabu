@@ -37,7 +37,6 @@ export default class TimeEntryDialog extends React.Component<Props, {amount: str
                             fullWidth
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             id="time"
                             label="Time"
