@@ -89,7 +89,6 @@ export default withStyles(styles)(React.memo((props: StateProps & DispatchProps 
                 issues.map(issue => <TableRow key={issue.id}>
                     <TableCell>{issue.name}</TableCell>
                     <TableCell>{issue.desc}</TableCell>
-                    {/* <TableCell>{formatDuration(issue.timeStat.spent)}</TableCell> */}
                     <TableCell>
                         <StopWatch
                             projectId={issue.projectId}

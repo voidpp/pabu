@@ -64,6 +64,7 @@ class StopWatch extends React.Component<Props, State> {
     }
 
     private startTicking = () => {
+        this.stopTicking();
         const timerId = setInterval(() => {
             const now = new Date().getTime()/1000;
             const elapsed = now - this.state.started;
