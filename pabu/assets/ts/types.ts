@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 
@@ -137,7 +138,7 @@ export interface Store {
     inviteDialogIsOpen: boolean,
 }
 
-export type TableCellFormatter = (v: any) => string;
+export type TableCellFormatter = (v: any, row: PabuModel) => React.ReactNode;
 
 export class TableRowDesriptor {
     name: string

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { withStyles, Theme, createStyles } from "@material-ui/core";
 import { connect } from 'react-redux';
 import { ThunkDispatcher, Store, TickingStat } from '../types';
-import { formatDuration } from '../tools';
+import { formatDuration, formatStopwatchDuration } from '../tools';
 
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -82,15 +82,8 @@ class StopWatch extends React.Component<Props, State> {
     }
 
     render() {
-        const {value} = this.state;
-
-        const hours = Math.ceil(value/3600);
-        const minutes = Math.ceil(value % 3600 / 60);
-        const seconds = Math.ceil(value % 60);
-
-        const num = (v: number) => v.toString().padStart(2, '0')
-
-        return <span>{num(hours)}:{num(minutes)}:{num(seconds)}</span>
+        const value = this.state.value;
+        return <span>{this.isTicking() ? formatStopwatchDuration(value) : formatDuration(value)}</span>
     }
 }
 

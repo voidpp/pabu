@@ -1,7 +1,7 @@
 
 import * as React from 'react';
-import Header from '../components/Header';
-import { UserInfo, ProjectSubmitCallback, Project, TickingStat, ProjectDialogContext } from '../types';
+import Header from '../containers/Header';
+import { UserInfo, ProjectSubmitCallback, Project, ProjectDialogContext } from '../types';
 import { Paper, Grid, Button, Typography, Theme, createStyles, withStyles } from '@material-ui/core';
 import ProjectList from '../containers/ProjectList';
 import NameDescFormDialog from '../components/NameDescFormDialog';
@@ -17,10 +17,6 @@ type Props = {
     showDialog: () => void,
     hideDialog: () => void,
     projectData: Project,
-    tickingStat: TickingStat,
-    stopTime: (projectId: number) => void,
-    onThemeClick: (isDark: boolean) => void,
-    isDarkTheme: boolean,
     classes: any,
     inviteDialogIsOpen: boolean,
     version: string,
@@ -51,14 +47,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
             onSubmit={props.onInviteSubmit}
             onClose={props.hideInviteDialog}
         />
-        <Header
-            isDarkTheme = {props.isDarkTheme}
-            onThemeClick={props.onThemeClick}
-            userInfo={props.userInfo}
-            tickingStat={props.tickingStat}
-            onStopTime={props.stopTime.bind(this, props.tickingStat.ticking ? props.tickingStat.entry.projectId : null)}
-            version={props.version}
-        />
+        <Header userInfo={props.userInfo} version={props.version} />
         <Grid container justify="center">
             <Paper className={props.classes.body}>
                 <div style={{display: 'flex'}}>

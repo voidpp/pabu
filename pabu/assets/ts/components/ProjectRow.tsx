@@ -13,6 +13,7 @@ import ProjectSummary from '../containers/ProjectSummary';
 import TimeEntryList from '../containers/TimeEntryList';
 import { LocalStorageKey, Project } from '../types';
 import ProjectUserList from '../containers/ProjectUserList';
+import StopWatch from '../containers/StopWatch';
 
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -77,7 +78,7 @@ class ProjectRow extends React.Component<Props, State> {
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography className={classes.heading}>{project.name}</Typography>
                         <Typography className={classes.secondaryHeading}>
-                            Spent {spent} hours in {project.issues.length} issues ({paid} hours paid)
+                            Spent <StopWatch projectId={id} initialValue={project.timeStat.spent} /> in {project.issues.length} issues ({paid} hours paid)
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails style={{display: 'block'}}>

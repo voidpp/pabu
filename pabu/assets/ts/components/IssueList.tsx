@@ -39,24 +39,34 @@ const styles = ({ palette, typography }: Theme) => createStyles({
     icon: {
         fontSize: 17,
     },
+    stopIcon: {
+        color: palette.secondary.main,
+    }
 });
 
-const ActionIcon = withStyles(styles)(React.memo((props: {icon: IconProp, classes: any, onClick?: () => void, disabled?: boolean}) => {
+type ActionIconProps = {
+    icon: IconProp,
+    classes: any,
+    onClick?: () => void, disabled?: boolean,
+    className?: string,
+}
+
+const ActionIcon = withStyles(styles)(React.memo((props: ActionIconProps) => {
     const {icon, classes, onClick, disabled} = props;
     return (
         <IconButton className={classes.iconButton} onClick={onClick} disabled={disabled}>
-            <FontAwesomeIcon icon={icon} className={classes.icon} />
+            <FontAwesomeIcon icon={icon} className={classes.icon + (props.className ? (' ' + props.className) : '')} />
         </IconButton>
     )
 }));
 
 export default withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
-    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id} = props;
+    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
 
     function getTickingIcon(issue: Issue) {
         if (tickingStat.ticking) {
             if (tickingStat.entry.issueId == issue.id)
-                return <ActionIcon icon="stopwatch" onClick={stopTime.bind(this, issue.projectId)} />
+                return <ActionIcon icon="stopwatch" onClick={stopTime.bind(this, issue.projectId)} className={classes.stopIcon} />
             else
                 return <ActionIcon icon="stopwatch" disabled/>
         } else
@@ -85,7 +95,6 @@ export default withStyles(styles)(React.memo((props: StateProps & DispatchProps 
                             projectId={issue.projectId}
                             issueId={issue.id}
                             initialValue={issue.timeStat.spent}
-                            // started={issue.timeStat.lastEntry}
                             />
                         </TableCell>
                     <TableCell>

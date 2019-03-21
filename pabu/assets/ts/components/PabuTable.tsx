@@ -89,7 +89,7 @@ class PabuTable extends React.Component<Props, State> {
             </TableHead>
             <TableBody>{
                 this.getRows().map(row => <TableRow key={row.id}>
-                    {rowDescriptors.map(field => <TableCell key={field.name}>{field.formatter(row[field.name])}</TableCell>)}
+                    {rowDescriptors.map(field => <TableCell key={field.name}>{field.formatter(row[field.name], row)}</TableCell>)}
                     <TableCell className={classes.controlCell}>
                         {controllCellFactory ? controllCellFactory(row) :
                             (onDelete ? <IconButton className={classes.icon} onClick={onDelete.bind(this, row, context)}>

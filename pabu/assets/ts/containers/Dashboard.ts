@@ -45,12 +45,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         hideDialog: () => {
             dispatch(closeProjectDialog())
         },
-        stopTime: (openedProjectId: number) => {
-            dispatch(stopTime(openedProjectId))
-        },
-        onThemeClick: (isDark: boolean) => {
-            dispatch(setDarkTheme(isDark))
-        }
     }
 }
 
