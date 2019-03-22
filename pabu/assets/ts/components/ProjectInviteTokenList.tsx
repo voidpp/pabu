@@ -1,7 +1,7 @@
-import * as React from 'react';
-import PabuTable from './PabuTable';
-import { TableRowDesriptor, ExpandedPayment, ProjectInvitationToken } from '../types';
 import { Button } from '@material-ui/core';
+import * as React from 'react';
+import { ProjectInvitationToken } from '../types';
+import PabuTable, { TableColDesriptor } from './PabuTable';
 
 export type OwnProps = {
     id: number,
@@ -20,12 +20,12 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
     const {rows, onDelete, id, onCreateProjectToken} = props;
 
     const rowDescriptors = [
-        new TableRowDesriptor('token' , 'Token'),
+        new TableColDesriptor('token' , 'Token'),
     ]
 
     const controllCellHeader = <div>
         <Button size="small" color="primary" onClick={onCreateProjectToken.bind(this, id)}>Generate</Button>
     </div>
 
-    return <PabuTable rowDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
+    return <PabuTable colDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
 })

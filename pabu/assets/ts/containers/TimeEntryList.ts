@@ -1,10 +1,8 @@
 
-import * as moment from 'moment';
 import { connect } from 'react-redux';
-import { Store, ThunkDispatcher, ExpandedTimeEntry, TableRowDesriptor } from '../types';
 import { deleteTimeEntry, fetchProjects, openAddTimeDialog, startTime, stopTime } from '../actions';
-import { formatDuration } from '../tools';
-import TimeEntryList, {OwnProps, StateProps, DispatchProps} from '../components/TimeEntryList';
+import TimeEntryList, { DispatchProps, OwnProps, StateProps } from '../components/TimeEntryList';
+import { ExpandedTimeEntry, Store, ThunkDispatcher } from '../types';
 
 function mapStateToProps(state: Store, props: OwnProps) {
     const {issues, timeEntries, users, tickingStat} = state;

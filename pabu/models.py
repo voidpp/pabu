@@ -50,6 +50,7 @@ class Issue(Base):
     desc = Column(String, default = '')
     project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
+    status = Column(String, default = 'todo', nullable = False)
 
     project = relationship("Project", backref = "issues")
 

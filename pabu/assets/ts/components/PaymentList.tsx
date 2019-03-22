@@ -1,6 +1,6 @@
 import * as React from 'react';
-import PabuTable from './PabuTable';
-import { TableRowDesriptor, ExpandedPayment } from '../types';
+import PabuTable, {TableColDesriptor} from './PabuTable';
+import { ExpandedPayment } from '../types';
 import moment = require('moment');
 import { formatDuration } from '../tools';
 import { Button } from '@material-ui/core';
@@ -22,16 +22,16 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
     const {rows, onDelete, id, onAddPayment} = props;
 
     const rowDescriptors = [
-        new TableRowDesriptor('time', 'Time', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
-        new TableRowDesriptor('amount' , 'Amount', formatDuration),
-        new TableRowDesriptor('createdUserName', 'Created'),
-        new TableRowDesriptor('paidUserName', 'Paid'),
-        new TableRowDesriptor('note', 'Note'),
+        new TableColDesriptor('time', 'Time', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
+        new TableColDesriptor('amount' , 'Amount', formatDuration),
+        new TableColDesriptor('createdUserName', 'Created'),
+        new TableColDesriptor('paidUserName', 'Paid'),
+        new TableColDesriptor('note', 'Note'),
     ]
 
     const controllCellHeader = <div>
         <Button size="small" color="primary" onClick={onAddPayment.bind(this, id)}>Add</Button>
     </div>
 
-    return <PabuTable rowDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
+    return <PabuTable colDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
 })

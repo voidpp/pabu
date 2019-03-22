@@ -1,11 +1,11 @@
 
-import * as React from 'react';
-import { TickingStat, Issue } from '../types';
-import { Table, TableHead, TableRow, TableCell, TableBody, withStyles, Theme, createStyles, IconButton, Button } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { formatDuration } from '../tools';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, createStyles, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
+import * as React from 'react';
 import StopWatch from '../containers/StopWatch';
+import { Issue, TickingStat, TimeSummary } from '../types';
+import PabuTable, { TableColDesriptor } from './PabuTable';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -60,7 +60,8 @@ const ActionIcon = withStyles(styles)(React.memo((props: ActionIconProps) => {
     )
 }));
 
-export default withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
+
+const IssueTableView = withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
     let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
 
     function getTickingIcon(issue: Issue) {
@@ -72,38 +73,47 @@ export default withStyles(styles)(React.memo((props: StateProps & DispatchProps 
         } else
             return <ActionIcon icon="stopwatch" onClick={startTime.bind(this, issue.projectId, issue.id)} />
     }
+    const spentRender = (stat: TimeSummary, issue: Issue) => <StopWatch projectId={issue.projectId} issueId={issue.id} initialValue={stat.spent} />;
+    const spentSorting = (a: Issue, b: Issue) => a.timeStat.spent - b.timeStat.spent;
 
-    return (
-        <Table>
-            <TableHead>
-                <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Time spent</TableCell>
-                    <TableCell>
-                        <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create</Button>
-                    </TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>{
-                issues.map(issue => <TableRow key={issue.id}>
-                    <TableCell>{issue.name}</TableCell>
-                    <TableCell>{issue.desc}</TableCell>
-                    <TableCell>
-                        <StopWatch
-                            projectId={issue.projectId}
-                            issueId={issue.id}
-                            initialValue={issue.timeStat.spent}
-                            />
-                        </TableCell>
-                    <TableCell>
-                        <ActionIcon icon="clock" onClick={onAddNewTime.bind(this, issue.projectId, issue.id)}/>
-                        {getTickingIcon(issue)}
-                        <ActionIcon icon="edit" onClick={onUpdateIssue.bind(this, issue.projectId, issue.id)}/>
-                        <ActionIcon icon="trash" onClick={onDeleteIssue.bind(this, issue.projectId, issue.id)}/>
-                    </TableCell>
-                </TableRow>)
-            }</TableBody>
-        </Table>
-    )
+    const rowDescriptors = [
+        new TableColDesriptor('name', 'Name'),
+        new TableColDesriptor('desc', 'Description'),
+        new TableColDesriptor('status', 'Status'),
+        new TableColDesriptor('timeStat', 'Time spent', spentRender, spentSorting),
+    ]
+    const controllCellFactory = (issue: Issue) => <span>
+        <ActionIcon icon="clock" onClick={onAddNewTime.bind(this, issue.projectId, issue.id)}/>
+        {getTickingIcon(issue)}
+        <ActionIcon icon="edit" onClick={onUpdateIssue.bind(this, issue.projectId, issue.id)}/>
+        <ActionIcon icon="trash" onClick={onDeleteIssue.bind(this, issue.projectId, issue.id)}/>
+    </span>
+
+    return <PabuTable rows={issues} colDescriptors={rowDescriptors} controllCellFactory={controllCellFactory} defaultOrder="asc"/>
 }))
+
+const IssueCardView = withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
+    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
+
+    return <div></div>
+}))
+
+
+type State = {
+    tableView: boolean
+}
+
+export default class IssueList extends React.Component<StateProps & DispatchProps & OwnProps, State> {
+    state = {
+        tableView: true,
+    }
+
+    render() {
+        let {onAddNewIssue, id} = this.props;
+
+        return <div>
+            <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create</Button>
+            <IssueTableView {...this.props}/>
+        </div>
+    }
+}

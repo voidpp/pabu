@@ -46,12 +46,19 @@ export interface Project extends PabuModel {
     paid: number,
 }
 
+export enum IssueStatus {
+    TODO = 'todo',
+    IN_PROGRESS = 'in progress',
+    DONE = 'done',
+}
+
 export interface Issue extends PabuModel {
     name: string,
     desc: string,
     projectId: number,
     timeEntries: Array<number>,
     timeStat: TimeSummary,
+    status: IssueStatus,
 }
 
 export interface TimeEntry extends PabuModel {
@@ -136,20 +143,6 @@ export interface Store {
     users: UserMap,
     projectInvitationTokens: ProjectInvitationTokenMap,
     inviteDialogIsOpen: boolean,
-}
-
-export type TableCellFormatter = (v: any, row: PabuModel) => React.ReactNode;
-
-export class TableRowDesriptor {
-    name: string
-    label:  string
-    formatter: TableCellFormatter
-
-    constructor(name: string, label: string, formatter: TableCellFormatter = v => v) {
-        this.name = name;
-        this.label = label;
-        this.formatter = formatter;
-    }
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

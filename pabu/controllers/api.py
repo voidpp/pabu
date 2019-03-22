@@ -58,6 +58,7 @@ def add_api_controllers(app: Flask, db: Database):
             'id': issue.id,
             'name': issue.name,
             'desc': issue.desc,
+            'status': issue.status,
             'projectId': issue.project_id,
             'timeStat': entry_stat_from_list(issue.time_entries),
             'timeEntries': [t.id for t in issue.time_entries],

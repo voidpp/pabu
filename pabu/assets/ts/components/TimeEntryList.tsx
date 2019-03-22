@@ -1,6 +1,6 @@
 import * as React from 'react';
-import PabuTable from './PabuTable';
-import { PabuModel, TableRowDesriptor, ExpandedTimeEntry, TickingStat, TimeEntry } from '../types';
+import PabuTable, {TableColDesriptor} from './PabuTable';
+import { PabuModel, ExpandedTimeEntry, TickingStat, TimeEntry } from '../types';
 import moment = require('moment');
 import { formatDuration } from '../tools';
 import { Button } from '@material-ui/core';
@@ -28,10 +28,10 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
     const lengthFormatter = (v: number, entry: TimeEntry) => entry.end ? formatDuration(v) : <StopWatch projectId={id} initialValue={v} />
 
     const rowDescriptors = [
-        new TableRowDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
-        new TableRowDesriptor('spentHours' , 'Length', lengthFormatter),
-        new TableRowDesriptor('issueName', 'Issue'),
-        new TableRowDesriptor('userName', 'User'),
+        new TableColDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
+        new TableColDesriptor('spentHours' , 'Length', lengthFormatter),
+        new TableColDesriptor('issueName', 'Issue'),
+        new TableColDesriptor('userName', 'User'),
     ]
 
     let tickingButton = <Button size="small" disabled>Start</Button>;
@@ -46,5 +46,5 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
         <Button size="small" color="primary" onClick={onAddNewTime.bind(this, id)}>Add</Button>
     </div>
 
-    return <PabuTable rowDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
+    return <PabuTable colDescriptors={rowDescriptors} rows={rows} onDelete={onDelete} controllCellHeader={controllCellHeader} />
 })

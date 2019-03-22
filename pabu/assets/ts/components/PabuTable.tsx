@@ -1,9 +1,9 @@
 
-import * as React from 'react';
-import { PabuModel, TableRowDesriptor } from '../types';
-import { Table, TableHead, TableCell, TableBody, TableRow, IconButton, Theme, createStyles, withStyles, TablePagination, TableFooter, TableSortLabel } from '@material-ui/core';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { createStyles, IconButton, Table, TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, Theme, withStyles } from '@material-ui/core';
+import * as React from 'react';
+import { PabuModel } from '../types';
+
 
 const styles = ({ palette, typography }: Theme) => createStyles({
     icon: {
@@ -15,13 +15,42 @@ const styles = ({ palette, typography }: Theme) => createStyles({
     }
 });
 
+
+function defaultRowSort(orderBy: string, a: any, b: any) {
+    if (b[orderBy] < a[orderBy])
+        return 1;
+    if (b[orderBy] > a[orderBy])
+        return -1;
+    return 0;
+}
+
+
+export type TableCellFormatter = (v: any, row: PabuModel) => React.ReactNode;
+export type TableRowSortingFunction = (a: PabuModel, b: PabuModel) => number;
+
+export class TableColDesriptor {
+    name: string
+    label:  string
+    formatter: TableCellFormatter
+    sortingFunction: TableRowSortingFunction
+
+    constructor(name: string, label: string, formatter: TableCellFormatter = v => v, sortingFunction: TableRowSortingFunction = defaultRowSort.bind(null, name)) {
+        this.name = name;
+        this.label = label;
+        this.formatter = formatter;
+        this.sortingFunction = sortingFunction;
+    }
+}
+
 type Props = {
     rows: Array<PabuModel>,
     classes: any,
-    rowDescriptors: Array<TableRowDesriptor>,
+    colDescriptors: Array<TableColDesriptor>,
     onDelete?: (row: PabuModel, context?: any) => void,
     controllCellHeader?: React.ReactNode,
-    controllCellFactory?: (row: PabuModel) => React.Component,
+    controllCellFactory?: (row: PabuModel) => React.ReactNode,
+    defaultOrderBy?: string,
+    defaultOrder?: "asc" | "desc",
     context?: any,
 }
 
@@ -32,14 +61,8 @@ type State = {
     order: "asc" | "desc",
 }
 
-function sort(orderBy: string, isAsc: boolean, a, b) {
-    let res: number;
-    if (b[orderBy] < a[orderBy])
-        res = 1;
-    else if (b[orderBy] > a[orderBy])
-        res = -1;
-    else
-        res = 0;
+function rowSort(sorter: TableRowSortingFunction, isAsc: boolean, a: PabuModel, b: PabuModel) {
+    const res = sorter(a, b);
     return isAsc ? res : -res;
 }
 
@@ -50,15 +73,26 @@ class PabuTable extends React.Component<Props, State> {
         this.state = {
             page: 0,
             rowsPerPage: 5,
-            order: 'desc',
-            orderBy: 'start',
+            order: props.defaultOrder || 'desc',
+            orderBy: props.defaultOrderBy || props.colDescriptors[0].name,
         }
+    }
+
+    private getColDescriptor(name: string): TableColDesriptor {
+        for (let desc of this.props.colDescriptors) {
+            if (desc.name == name)
+                return desc;
+        }
+        return null;
     }
 
     private getRows(): Array<PabuModel> {
         const { rows } = this.props;
         const { page, rowsPerPage, order, orderBy } = this.state;
-        rows.sort(sort.bind(null, orderBy, order == 'asc'));
+        console.log(orderBy);
+        const desc = this.getColDescriptor(orderBy);
+        if (desc && desc.sortingFunction)
+            rows.sort(rowSort.bind(null, desc.sortingFunction, order == 'asc'))
         return rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
     }
 
@@ -70,7 +104,7 @@ class PabuTable extends React.Component<Props, State> {
     }
 
     render() {
-        const { rows, classes, onDelete, rowDescriptors, controllCellHeader, controllCellFactory, context } = this.props;
+        const { rows, classes, onDelete, colDescriptors: rowDescriptors, controllCellHeader, controllCellFactory, context } = this.props;
 
         return <Table>
             <TableHead>

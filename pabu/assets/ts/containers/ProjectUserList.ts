@@ -1,8 +1,8 @@
 
 import { connect } from 'react-redux';
-import { Store, TableRowDesriptor, ThunkDispatcher, User } from '../types';
-import PabuTable from '../components/PabuTable';
-import { kickUserFromProject, fetchProjects } from '../actions';
+import { fetchProjects, kickUserFromProject } from '../actions';
+import PabuTable, { TableColDesriptor } from '../components/PabuTable';
+import { Store, ThunkDispatcher, User } from '../types';
 
 type Props = {
     id: number,
@@ -13,13 +13,13 @@ function mapStateToProps(state: Store, props: Props) {
 
     const project = projects[props.id];
 
-    const rowDescriptors = [
-        new TableRowDesriptor('name', 'Name'),
+    const colDescriptors = [
+        new TableColDesriptor('name', 'Name'),
     ]
 
     return {
         rows: Object.values(users).filter(u => project.users.indexOf(u.id) != -1),
-        rowDescriptors,
+        colDescriptors,
         context: project.id,
     }
 }
