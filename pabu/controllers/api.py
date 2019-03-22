@@ -146,7 +146,7 @@ def add_api_controllers(app: Flask, db: Database):
 
 
     @jsonrpc_api.dispatcher.add_method
-    def update_issue(id: int, name: str, desc: str, project_id: int): # pylint: disable=unused-variable
+    def update_issue(id: int, name: str, desc: str, status: str, project_id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
             issue = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
@@ -154,6 +154,7 @@ def add_api_controllers(app: Flask, db: Database):
                 abort(404)
             issue.name = name
             issue.desc = desc
+            issue.status = status
             # update project_id is not supported yet
             return issue_to_dict(issue)
 

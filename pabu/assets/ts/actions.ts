@@ -1,6 +1,6 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData, LocalStorageKey, Issue } from "./types";
+import { TickingStat, PaymentSubmitData, LocalStorageKey, IssueMap, IssueStatus } from "./types";
 
 export enum Action {
     CLOSE_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
@@ -241,8 +241,8 @@ export function sendProject(name: string, description: string, id: number = null
 }
 
 
-export function sendIssue(name: string, description: string, projectId: number, id: number = null) {
-    return dispatch => id ? client.updateIssue(id, name, description, projectId) : client.createIssue(name, description, projectId)
+export function sendIssue(name: string, description: string, status: IssueStatus, projectId: number, id: number = null) {
+    return dispatch => id ? client.updateIssue(id, name, description, status, projectId) : client.createIssue(name, description, projectId)
 }
 
 export function sendTime(projectId: number, time: string, amount: string, issueId: number = null) {

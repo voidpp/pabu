@@ -1,10 +1,10 @@
 
 import * as React from 'react';
-import { TimeDialogContext, UserMap, PaymentSubmitData, Project, IssueDialogContext, Issue } from '../types';
+import { TimeDialogContext, UserMap, PaymentSubmitData, Project, IssueDialogContext, Issue, IssueStatus } from '../types';
 import ProjectRow from '../components/ProjectRow';
-import NameDescFormDialog from '../components/NameDescFormDialog';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 import PaymentDialog from '../components/PaymentDialog';
+import IssueFormDialog from './IssueFormDialog';
 
 type Props = {
     issueDialogContext: IssueDialogContext
@@ -13,7 +13,7 @@ type Props = {
     hideAddIssueDialog: () => void,
     hideAddTimeDialog: () => void,
     hidePaymentDialog: () => void,
-    onIssueSubmit: (name: string, desc: string, projectId: number, id: number) => void,
+    onIssueSubmit: (name: string, desc: string, status: IssueStatus, projectId: number, id: number) => void,
     onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => void
     onTimeSubmit: (amount: string, time: string, projectId: number, issueId: number) => void,
     openedProjectId: number,
@@ -27,9 +27,8 @@ type Props = {
 export default React.memo((props: Props) => {
 
     return <div>
-                <NameDescFormDialog
-                    caption="Create issue"
-                    onSubmit={(name, desc) => props.onIssueSubmit(name, desc, props.issueDialogContext.projectId, props.issueDialogContext.id)}
+                <IssueFormDialog
+                    onSubmit={(name, desc, status) => props.onIssueSubmit(name, desc, status, props.issueDialogContext.projectId, props.issueDialogContext.id)}
                     opened={props.issueDialogContext != null}
                     initialData={props.issueData}
                     onClose={props.hideAddIssueDialog} />

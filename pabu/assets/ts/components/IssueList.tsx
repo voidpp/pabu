@@ -1,11 +1,12 @@
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, createStyles, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Theme, withStyles } from '@material-ui/core';
+import { Button, createStyles, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Theme, withStyles, Typography, Chip } from '@material-ui/core';
 import * as React from 'react';
 import StopWatch from '../containers/StopWatch';
-import { Issue, TickingStat, TimeSummary } from '../types';
+import { Issue, TickingStat, TimeSummary, IssueStatus } from '../types';
 import PabuTable, { TableColDesriptor } from './PabuTable';
+import classNames from 'classnames';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -41,8 +42,22 @@ const styles = ({ palette, typography }: Theme) => createStyles({
     },
     stopIcon: {
         color: palette.secondary.main,
-    }
+    },
+    menuBar: {
+        marginTop: 10,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    inactiveLayoutIcon: {
+        opacity: 0.5,
+    },
+    filterChip: {
+        marginLeft: 5,
+        height: 26,
+    },
 });
+
+type Props = StateProps & DispatchProps & OwnProps & MuiProps;
 
 type ActionIconProps = {
     icon: IconProp,
@@ -61,7 +76,7 @@ const ActionIcon = withStyles(styles)(React.memo((props: ActionIconProps) => {
 }));
 
 
-const IssueTableView = withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
+const IssueTableView = withStyles(styles)(React.memo((props: Props) => {
     let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
 
     function getTickingIcon(issue: Issue) {
@@ -92,28 +107,73 @@ const IssueTableView = withStyles(styles)(React.memo((props: StateProps & Dispat
     return <PabuTable rows={issues} colDescriptors={rowDescriptors} controllCellFactory={controllCellFactory} defaultOrder="asc"/>
 }))
 
-const IssueCardView = withStyles(styles)(React.memo((props: StateProps & DispatchProps & OwnProps & MuiProps) => {
+const IssueCardView = withStyles(styles)(React.memo((props: Props) => {
     let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
 
     return <div></div>
 }))
 
-
-type State = {
-    tableView: boolean
+type IssueStatusFilterStatusMap = {
+    [IssueStatus.TODO]: boolean,
+    [IssueStatus.IN_PROGRESS]: boolean,
+    [IssueStatus.DONE]: boolean,
 }
 
-export default class IssueList extends React.Component<StateProps & DispatchProps & OwnProps, State> {
-    state = {
-        tableView: true,
+type IssueStatusFilterBarProps = {
+    value: IssueStatusFilterStatusMap,
+    onChange: (value: {[s: string] : boolean}) => void,
+}
+
+const IssueStatusFilterBar = withStyles(styles)(React.memo((props: IssueStatusFilterBarProps & MuiProps) => {
+    return <div style={{marginLeft: 10}}> {
+            Object.values(IssueStatus).map(s => {
+                return <Chip
+                    className={props.classes.filterChip}
+                    key={s}
+                    label={s}
+                    variant={props.value[s] ? 'default' : 'outlined'}
+                    color="primary"
+                    clickable
+                    onClick={() => props.onChange({[s]: !props.value[s]})}
+                />
+            })
+        } </div>
+}))
+
+
+type State = {
+    layout: 'list' | 'card',
+    statusFilters: IssueStatusFilterStatusMap,
+}
+
+class IssueList extends React.Component<Props, State> {
+
+    constructor(props: Props){
+        super(props)
+        this.state = {
+            layout: 'list',
+            statusFilters: {
+                [IssueStatus.TODO]: true,
+                [IssueStatus.IN_PROGRESS]: true,
+                [IssueStatus.DONE]: false,
+            },
+        }
     }
 
     render() {
-        let {onAddNewIssue, id} = this.props;
+        const {onAddNewIssue, id, classes} = this.props;
+        const issues = this.props.issues.filter((i => this.state.statusFilters[i.status]))
 
         return <div>
-            <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)}>Create</Button>
-            <IssueTableView {...this.props}/>
+            <div className={classes.menuBar}>
+                <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create issue</Button>
+                <ActionIcon icon="list" onClick={() => this.setState({layout: 'list'})} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon icon="table" onClick={() => this.setState({layout: 'card'})} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
+                <IssueStatusFilterBar value={this.state.statusFilters} onChange={value => this.setState({statusFilters: Object.assign(this.state.statusFilters, value)})} />
+            </div>
+            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView {...this.props} />}
         </div>
     }
 }
+
+export default withStyles(styles)(IssueList);

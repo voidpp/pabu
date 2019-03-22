@@ -1,4 +1,4 @@
-import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap } from "./types";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus } from "./types";
 
 class PabuClient {
 
@@ -59,8 +59,8 @@ class PabuClient {
         return this._send('update_project', [id, name, description]);
     }
 
-    async updateIssue(id: number, name: string, description: string, projectId: number): Promise<Issue> {
-        return this._send('update_issue', [id, name, description, projectId]);
+    async updateIssue(id: number, name: string, description: string, status: IssueStatus, projectId: number): Promise<Issue> {
+        return this._send('update_issue', [id, name, description, status, projectId]);
     }
 
     async createIssue(name: string, description: string, projectId: number): Promise<Issue> {

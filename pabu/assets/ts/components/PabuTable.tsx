@@ -89,7 +89,6 @@ class PabuTable extends React.Component<Props, State> {
     private getRows(): Array<PabuModel> {
         const { rows } = this.props;
         const { page, rowsPerPage, order, orderBy } = this.state;
-        console.log(orderBy);
         const desc = this.getColDescriptor(orderBy);
         if (desc && desc.sortingFunction)
             rows.sort(rowSort.bind(null, desc.sortingFunction, order == 'asc'))

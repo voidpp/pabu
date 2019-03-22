@@ -1,22 +1,22 @@
 
 import * as React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@material-ui/core';
-import { NameDescSubmitCallback } from '../types';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { IssueStatus } from '../types';
 
 type State = {
     name: string,
     desc: string,
+    status: IssueStatus,
 }
 
 type Props = {
     opened: boolean,
-    onSubmit: NameDescSubmitCallback,
-    caption: string,
+    onSubmit: (name: string, desc: string, status: IssueStatus) => void,
     initialData: State,
     onClose: () => void,
 }
 
-export default class NameDescFormDialog extends React.Component<Props, State> {
+export default class IssueFormDialog extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -29,7 +29,7 @@ export default class NameDescFormDialog extends React.Component<Props, State> {
 
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
-        this.props.onSubmit(this.state.name, this.state.desc);
+        this.props.onSubmit(this.state.name, this.state.desc, this.state.status);
     }
 
     render() {
@@ -39,7 +39,7 @@ export default class NameDescFormDialog extends React.Component<Props, State> {
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
         >
-            <DialogTitle id="form-dialog-title">{this.props.caption}</DialogTitle>
+            <DialogTitle id="form-dialog-title">Create issue</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">
                 <DialogContent>
                     <TextField
@@ -53,6 +53,17 @@ export default class NameDescFormDialog extends React.Component<Props, State> {
                         onChange={ev => {this.setState({name: ev.target.value})}}
                         fullWidth
                     />
+                    <FormControl fullWidth required>
+                        <InputLabel htmlFor="status">Status</InputLabel>
+                        <Select
+                            margin="dense"
+                            inputProps={{name: 'status', id: 'status'}}
+                            onChange={ev => {this.setState({status: ev.target.value as IssueStatus})}}
+                            value={this.state.status}
+                        >
+                        {Object.values(IssueStatus).map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+                        </Select>
+                    </FormControl>
                     <TextField
                         margin="dense"
                         id="description"
