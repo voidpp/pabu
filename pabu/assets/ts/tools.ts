@@ -51,10 +51,30 @@ const localStorageHandler = {
 
 export const pabuLocalStorage = new Proxy<LocalStorageSchema>(new LocalStorageSchema(), localStorageHandler);
 
-export function convertKeysToCamelCase(data: {[s: string]: any}) {
+export function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export type StringObject = {[s: string]: any};
+
+export function convertKeysToSnakeCase(data: StringObject): StringObject {
     let res = {}
     for (const key in data) {
         res[key.split(/(?=[A-Z])/).map(s => s.toLowerCase()).join('_')] = data[key];
+    }
+    return res
+}
+
+export const isObject = function(a) {
+    return (!!a) && (a.constructor === Object);
+};
+
+export function convertKeysToCamelCase(data: StringObject): StringObject {
+    let res = {}
+    for (const key in data) {
+        let newKey = key.split('_').map(s => capitalizeFirstLetter(s)).join('');
+        let value = data[key];
+        res[newKey.charAt(0).toLowerCase() + newKey.slice(1)] = isObject(value) ? convertKeysToCamelCase(value) : value;
     }
     return res
 }

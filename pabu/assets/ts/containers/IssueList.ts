@@ -33,13 +33,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher, dd) => {
         onAddNewIssue: (projectId: number) => {
             dispatch(openIssueDialog(projectId))
         },
-        updateIssues: (serverIssues: Array<ServerIssueData>) => {
-            dispatch(receiveIssues(serverIssues.reduce((map, i) => (map[i.id] = i, map), {}), true))
-            dispatch(processIssues(serverIssues)).then(issues => dispatch(receiveIssues(issues)));
-
-            // dispatch(receiveIssues({[issue.id]: Object.assign({}, issue, {...data})}));
-            // dispatch(processIssues({...data, id: issue.id, projectId: issue.projectId})).then(i => dispatch(receiveIssues({[i.id]: i})));
-        },
     }
 }
 

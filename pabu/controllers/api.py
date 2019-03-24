@@ -29,14 +29,14 @@ def add_api_controllers(app: Flask, db: Database):
     def entry_stat_from_list(time_entries):
         stat = {
             'spent': 0,
-            'lastEntry': 0,
+            'last_entry': 0,
             'count': len(time_entries),
         }
         for entry in time_entries:
-            if entry.end and entry.end.timestamp() > stat['lastEntry']:
-                stat['lastEntry'] = entry.end.timestamp()
-            if entry.start.timestamp() > stat['lastEntry']:
-                stat['lastEntry'] = entry.start.timestamp()
+            if entry.end and entry.end.timestamp() > stat['last_entry']:
+                stat['last_entry'] = entry.end.timestamp()
+            if entry.start.timestamp() > stat['last_entry']:
+                stat['last_entry'] = entry.start.timestamp()
             stat['spent'] += ((entry.end or datetime.now()) - entry.start).total_seconds()
         return stat
 
@@ -48,7 +48,7 @@ def add_api_controllers(app: Flask, db: Database):
             'id': project.id,
             'name': project.name,
             'desc': project.desc,
-            'timeStat': entry_stat_from_list(project.time_entries),
+            'time_stat': entry_stat_from_list(project.time_entries),
             'issues': [i.id for i in project.issues],
             'paid': paid,
             'users': [u.id for u in project.users],
@@ -63,17 +63,18 @@ def add_api_controllers(app: Flask, db: Database):
             'desc': issue.desc,
             'status': issue.status,
             'rank': issue.rank,
-            'projectId': issue.project_id,
-            'timeStat': entry_stat_from_list(issue.time_entries),
-            'timeEntries': [t.id for t in issue.time_entries],
+            'project_id': issue.project_id,
+            'userId': issue.user_id,
+            'time_stat': entry_stat_from_list(issue.time_entries),
+            'time_entries': [t.id for t in issue.time_entries],
         }
 
     def payment_to_dict(payment: Payment):
         return {
             'id': payment.id,
-            'projectId': payment.project_id,
-            'createdUserId': payment.created_user_id,
-            'paidUserId': payment.paid_user_id,
+            'project_id': payment.project_id,
+            'created_user_id': payment.created_user_id,
+            'paid_user_id': payment.paid_user_id,
             'amount': payment.amount,
             'time': payment.time.timestamp(),
             'note': payment.note,
@@ -83,13 +84,14 @@ def add_api_controllers(app: Flask, db: Database):
         return {
             'id': user.id,
             'name': user.name,
+            'avatar': user.avatar,
         }
 
     def project_token_to_dict(prj_token: ProjectInvitationToken):
         return {
             'id': prj_token.id,
             'token': prj_token.token,
-            'projectId': prj_token.project_id,
+            'project_id': prj_token.project_id,
         }
 
     def get_current_user(conn):
@@ -234,7 +236,7 @@ def add_api_controllers(app: Flask, db: Database):
         return {
             'id': time_entry.id,
             'issueId': time_entry.issue_id,
-            'projectId': time_entry.project_id,
+            'project_id': time_entry.project_id,
             'userId': time_entry.user_id,
             'start': time_entry.start.timestamp(),
             'end': time_entry.end.timestamp() if time_entry.end else None,
@@ -371,6 +373,18 @@ def add_api_controllers(app: Flask, db: Database):
             user = conn.query(User).filter(User.id == user_id).first()
             project.users.remove(user)
             return True
+
+
+    @jsonrpc_api.dispatcher.add_method
+    def get_all_project_data(id: int): # pylint: disable=unused-variable
+        return {
+            'project': get_projects(id)[id],
+            'issues': get_issues(id),
+            'time_entries': get_time_entries(id),
+            'users': get_project_users(id),
+            'payments': get_payments(id),
+            'tokens': get_project_tokens(id),
+        }
 
     @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

@@ -34,12 +34,14 @@ export enum Action {
 
 export function fetchAllProjectData(id: number) {
     return dispatch => {
-        dispatch(fetchProjects(id))
-        dispatch(fetchIssues(id))
-        dispatch(fetchTimeEntries(id))
-        dispatch(fetchProjectUsers(id))
-        dispatch(fetchPayments(id))
-        dispatch(fetchProjectTokens(id))
+        client.getAllProjectData(id).then(data => {
+            dispatch(receiveUsers(data.users))
+            dispatch(receiveTimeEntries(data.timeEntries))
+            dispatch(receiveProjectTokens(data.tokens))
+            dispatch(receivePayments(data.payments))
+            dispatch(receiveIssues(data.issues))
+            dispatch(receiveProjects({[id]: data.project}))
+        });
     }
 }
 
@@ -148,16 +150,8 @@ export function closeAddTimeDialog(){
     }
 }
 
-export function requestProjects(id: number = null) {
-    return {
-        type: Action.RECEIVE_PROJECTS,
-        id,
-    }
-}
-
 export function fetchProjects(id: number = null, ) {
     return dispatch => {
-        dispatch(requestProjects(id))
         return client.getProjects(id).then(data => {
             dispatch(receiveProjects(data))
         })

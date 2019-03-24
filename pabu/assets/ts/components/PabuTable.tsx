@@ -33,12 +33,20 @@ export class TableColDesriptor {
     label:  string
     formatter: TableCellFormatter
     sortingFunction: TableRowSortingFunction
+    style: React.CSSProperties
 
-    constructor(name: string, label: string, formatter: TableCellFormatter = v => v, sortingFunction: TableRowSortingFunction = defaultRowSort.bind(null, name)) {
+    constructor(name: string, label: string, formatter: TableCellFormatter = v => v,
+                sortingFunction: TableRowSortingFunction = defaultRowSort.bind(null, name), style: React.CSSProperties = {}) {
         this.name = name;
         this.label = label;
         this.formatter = formatter;
         this.sortingFunction = sortingFunction;
+        this.style = style;
+    }
+
+    setStyle(style: React.CSSProperties) {
+        this.style = style;
+        return this;
     }
 }
 
@@ -122,8 +130,8 @@ class PabuTable extends React.Component<Props, State> {
             </TableHead>
             <TableBody>{
                 this.getRows().map(row => <TableRow key={row.id}>
-                    {rowDescriptors.map(field => <TableCell key={field.name}>{field.formatter(row[field.name], row)}</TableCell>)}
-                    <TableCell className={classes.controlCell}>
+                    {rowDescriptors.map(field => <TableCell style={field.style} key={field.name}>{field.formatter(row[field.name], row)}</TableCell>)}
+                    <TableCell className={classes.controlCell} >
                         {controllCellFactory ? controllCellFactory(row) :
                             (onDelete ? <IconButton className={classes.icon} onClick={onDelete.bind(this, row, context)}>
                                 <FontAwesomeIcon icon="trash" style={{ fontSize: 12 }} />

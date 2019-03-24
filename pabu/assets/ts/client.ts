@@ -1,5 +1,5 @@
-import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap } from "./types";
-import { convertKeysToCamelCase } from "./tools";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap, AllProjectData } from "./types";
+import { convertKeysToSnakeCase, convertKeysToCamelCase } from "./tools";
 
 class PabuClient {
 
@@ -29,7 +29,7 @@ class PabuClient {
             console.error(data.error)
             throw new Error('server error');
         }
-        return data.result;
+        return convertKeysToCamelCase(data.result) as any;
     }
 
     async getProjects(id: number = null) {
@@ -61,7 +61,7 @@ class PabuClient {
     }
 
     async processIssues(issues: Array<ServerIssueData>): Promise<IssueMap> {
-        return this._send('process_issues', [issues.map(convertKeysToCamelCase)]);
+        return this._send('process_issues', [issues.map(convertKeysToSnakeCase)]);
     }
 
     async addTime(projectId: number, amount: string, time: string, issueId: number = null) {
@@ -122,6 +122,10 @@ class PabuClient {
 
     async leaveProject(projectId: number) {
         return this._send('leave_project', [projectId]);
+    }
+
+    async getAllProjectData(projectId: number): Promise<AllProjectData> {
+        return this._send('get_all_project_data', [projectId]);
     }
 }
 

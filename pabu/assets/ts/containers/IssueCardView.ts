@@ -1,12 +1,12 @@
 
 import { connect } from 'react-redux';
-import { processIssues, receiveIssues } from '../actions';
+import { processIssues, receiveIssues, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog } from '../actions';
 import IssueCardView, { DispatchProps, OwnProps, StateProps } from '../components/IssueCardView';
 import { ServerIssueData, Store, ThunkDispatcher, IssueStatus, IssueByStatusMap } from '../types';
 import { DropResult } from 'react-beautiful-dnd';
 
 function mapStateToProps(state: Store, props: OwnProps) {
-    let {issues} = state;
+    let {issues, users} = state;
 
     let issuesByStatus: IssueByStatusMap = {};
     Object.values(IssueStatus).map(s => {issuesByStatus[s] = []})
@@ -16,6 +16,7 @@ function mapStateToProps(state: Store, props: OwnProps) {
 
     return {
         issues: issuesByStatus,
+        users,
     }
 }
 
@@ -47,7 +48,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
             }
             dispatch(receiveIssues(issuesToProcess.reduce((map, i) => (map[i.id] = i, map), {}), true))
             dispatch(processIssues(issuesToProcess)).then(issues => dispatch(receiveIssues(issues)));
-        }
+        },
     }
 }
 

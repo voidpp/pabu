@@ -41,6 +41,7 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
                 conn.add(user)
             user.email = email
             user.name = user_info['name']
+            user.avatar = user_info['picture']
             conn.flush()
             session['user_id'] = user.id
 

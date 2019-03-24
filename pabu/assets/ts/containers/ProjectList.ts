@@ -5,17 +5,18 @@ import ProjectList from '../components/ProjectList';
 import { PaymentSubmitData, Project, Store, ThunkDispatcher, IssueStatus } from '../types';
 
 function mapStateToProps(state: Store) {
-    const { issueDialogContext, openedProjectId, addTimeDialogContext, paymentDialogProjectId, users, issues } = state;
+    const { issueDialogContext, openedProjectId, addTimeDialogContext, paymentDialogProjectId, users, issues, projects } = state;
     let issueData = {name: '', desc: ''};
     if (issueDialogContext && issueDialogContext.id) {
         issueData = issues[issueDialogContext.id];
     }
+
     return {
         issueDialogContext,
         addTimeDialogContext,
         openedProjectId,
         paymentDialogProjectId,
-        projects: Object.values(state.projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
+        projects: Object.values(projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
         users,
         issueData,
     }

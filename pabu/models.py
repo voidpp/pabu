@@ -20,6 +20,7 @@ class User(Base):
     sub = Column(String, nullable = False)
     email = Column(String)
     name = Column(String)
+    avatar = Column(String)
 
 class Project(Base):
     __tablename__ = 'projects'

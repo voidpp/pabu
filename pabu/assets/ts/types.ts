@@ -59,6 +59,7 @@ export interface Issue extends PabuModel {
     name: string,
     desc: string,
     projectId: number,
+    userId: number,
     timeEntries: Array<number>,
     timeStat: TimeSummary,
     status: IssueStatus,
@@ -82,6 +83,7 @@ export interface ExpandedTimeEntry extends TimeEntry {
 export interface User {
     id: number,
     name: string,
+    avatar: string,
 }
 
 export interface PaymentSubmitData {
@@ -170,4 +172,13 @@ export class LocalStorageSchema {
         [IssueStatus.IN_PROGRESS]: true,
         [IssueStatus.DONE]: false,
     };
+}
+
+export type AllProjectData = {
+    project: Project,
+    issues: IssueMap,
+    timeEntries: TimeEntryMap,
+    users: UserMap,
+    payments: PaymentMap,
+    tokens: ProjectInvitationTokenMap,
 }

@@ -93,7 +93,7 @@ const IssueTableView = withStyles(styles)(React.memo((props: Props) => {
     const spentSorting = (a: Issue, b: Issue) => a.timeStat.spent - b.timeStat.spent;
 
     const rowDescriptors = [
-        new TableColDesriptor('name', 'Name'),
+        new TableColDesriptor('name', 'Name').setStyle({maxWidth: 300, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}),
         new TableColDesriptor('desc', 'Description'),
         new TableColDesriptor('status', 'Status'),
         new TableColDesriptor('timeStat', 'Time spent', spentRender, spentSorting),
