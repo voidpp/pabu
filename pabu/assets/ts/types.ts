@@ -1,12 +1,5 @@
-import * as React from 'react';
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-
-export enum LocalStorageKey {
-    OPENED_PROJECTID = 'OPENED_PROJECTID',
-    IS_DARK_THEME  = 'IS_DARK_THEME',
-    OPENED_PROJECT_TAB  = 'OPENED_PROJECT_TAB',
-}
 
 export interface UserInfo {
     name: string,
@@ -29,6 +22,16 @@ export interface TimeSummary {
     spent: number,
     lastEntry: number,
     count: number,
+}
+
+export interface ServerIssueData {
+    id?: number,
+    name?: string,
+    desc?: string,
+    projectId?: number,
+    userId?: number,
+    status?: string,
+    rank?: number,
 }
 
 export interface PabuModel {
@@ -59,6 +62,7 @@ export interface Issue extends PabuModel {
     timeEntries: Array<number>,
     timeStat: TimeSummary,
     status: IssueStatus,
+    rank: number,
 }
 
 export interface TimeEntry extends PabuModel {
@@ -126,6 +130,7 @@ export type ProjectInvitationTokenMap = { [n: number]: ProjectInvitationToken };
 export type ProjectDialogContext = {id?: number};
 export type IssueDialogContext = {projectId: number, id?: number};
 export type TimeDialogContext = {projectId: number, issueId: number};
+export type IssueByStatusMap = { [s: string ]: Array<Issue> };
 
 export interface Store {
     addTimeDialogContext: TimeDialogContext,
@@ -146,3 +151,23 @@ export interface Store {
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;
+
+export type IssueListLayout = 'list' | 'card';
+
+export type IssueStatusFilterStatusMap = {
+    [IssueStatus.TODO]: boolean,
+    [IssueStatus.IN_PROGRESS]: boolean,
+    [IssueStatus.DONE]: boolean,
+}
+
+export class LocalStorageSchema {
+    openedProjectId: number = 0;
+    isDarkTheme: boolean = false;
+    openedProjectTab: number = 0;
+    issueListLayout: IssueListLayout = 'list';
+    issueTableFilters: IssueStatusFilterStatusMap = {
+        [IssueStatus.TODO]: true,
+        [IssueStatus.IN_PROGRESS]: true,
+        [IssueStatus.DONE]: false,
+    };
+}

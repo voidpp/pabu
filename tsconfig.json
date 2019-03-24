@@ -16,6 +16,7 @@
 
 {
     "compilerOptions": {
+        "baseUrl": ".",
       "target": "es2017",
       "jsx": "react",
       "module": "commonjs"

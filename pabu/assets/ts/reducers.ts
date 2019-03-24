@@ -2,6 +2,8 @@ import { combineReducers } from 'redux';
 import { Action } from './actions';
 import { Store } from './types';
 
+import * as objectAssignDeep from 'object-assign-deep';
+
 
 function fetchingProject(state = false, action) {
     if (action.type == Action.REQUEST_PROJECTS)
@@ -65,8 +67,10 @@ function isDarkTheme(state = false, action) {
 
 function resourceReducerFactory(receiveAction: Action, deleteAction: Action = null) {
     return (state = {}, action) => {
-        if (action.type == receiveAction)
-            return Object.assign({}, state, action.data);
+        if (action.type == receiveAction) {
+            const updater = action.deepUpdate ? objectAssignDeep : Object.assign;
+            return updater({}, state, action.data);
+        }
         if (deleteAction && action.type == deleteAction) {
             let newState = Object.assign({}, state);
             delete newState[action.id]

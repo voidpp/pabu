@@ -1,7 +1,7 @@
 
-import { Store,  ThunkDispatcher } from '../types';
+import { Store,  ThunkDispatcher, IssueStatus, Issue, ServerIssueData } from '../types';
 import { connect } from 'react-redux';
-import { openAddTimeDialog, startTime, stopTime, deleteIssue,  openIssueDialog } from '../actions';
+import { openAddTimeDialog, startTime, stopTime, deleteIssue,  openIssueDialog, receiveIssues, processIssues } from '../actions';
 import IssueList, { StateProps, DispatchProps, OwnProps } from '../components/IssueList';
 
 function mapStateToProps(state: Store, props: OwnProps) {
@@ -12,7 +12,7 @@ function mapStateToProps(state: Store, props: OwnProps) {
     }
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
+const mapDispatchToProps = (dispatch: ThunkDispatcher, dd) => {
     return {
         onAddNewTime: (projectId: number, issueId: number) => {
             dispatch(openAddTimeDialog(projectId, issueId));
@@ -32,6 +32,13 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         },
         onAddNewIssue: (projectId: number) => {
             dispatch(openIssueDialog(projectId))
+        },
+        updateIssues: (serverIssues: Array<ServerIssueData>) => {
+            dispatch(receiveIssues(serverIssues.reduce((map, i) => (map[i.id] = i, map), {}), true))
+            dispatch(processIssues(serverIssues)).then(issues => dispatch(receiveIssues(issues)));
+
+            // dispatch(receiveIssues({[issue.id]: Object.assign({}, issue, {...data})}));
+            // dispatch(processIssues({...data, id: issue.id, projectId: issue.projectId})).then(i => dispatch(receiveIssues({[i.id]: i})));
         },
     }
 }

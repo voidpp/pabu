@@ -11,18 +11,17 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import Root, { store } from "./containers/Root";
 import { fetchProjects, fetchTickingStat, openProject, setDarkTheme } from "./actions";
-import { LocalStorageKey } from "./types";
+import { pabuLocalStorage } from "./tools";
 
 library.add(fab, fas, far);
 
 if (window['initialData'].isLoggedIn) {
     store.dispatch(fetchProjects());
     store.dispatch(fetchTickingStat());
-    let openedProjectId = parseInt(window.localStorage.getItem(LocalStorageKey.OPENED_PROJECTID)) || 0;
-    if (openedProjectId)
-        store.dispatch(openProject(openedProjectId));
+    if (pabuLocalStorage.openedProjectId)
+        store.dispatch(openProject(pabuLocalStorage.openedProjectId));
 
-    let isDarkTheme = !!(parseInt(window.localStorage.getItem(LocalStorageKey.IS_DARK_THEME)) || 0);
+    let isDarkTheme = pabuLocalStorage.isDarkTheme;
     store.dispatch(setDarkTheme(isDarkTheme));
 }
 

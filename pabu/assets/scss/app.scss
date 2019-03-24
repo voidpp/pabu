@@ -12,3 +12,30 @@ html, body {
 .auth-list-text {
     text-transform: capitalize;
 }
+
+.card-column {
+    flex-basis: 33.33%;
+    flex-shrink: 0;
+    display: 'flex';
+    flex-direction: 'column';
+    .droppable {
+        padding: 5px 4px;
+        border: 1px dashed transparent;
+        border-radius: 4px;
+        &.hovering {
+            border-color: grey;
+        }
+    }
+}
+
+.card-header {
+    text-align: center;
+    text-transform: capitalize;
+    margin-bottom: 10px !important;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}

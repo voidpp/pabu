@@ -2,15 +2,18 @@ import logging
 from datetime import datetime, timedelta
 import random
 import string
+from functools import partial
 
 from flask import Flask, abort, request
 from jsonrpc.backend.flask import JSONRPCAPI
 from pytimeparse import parse
 from dateutil.parser import parse as dateparser
+from voluptuous import Schema
 
 from pabu.db import Database
 from pabu.auth import is_logged_in, get_user_id
 from pabu.models import Project, User, Issue, projects_users, TimeEntry, Payment, ProjectInvitationToken
+from pabu.tools import sqla_model_to_voluptuous
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +62,7 @@ def add_api_controllers(app: Flask, db: Database):
             'name': issue.name,
             'desc': issue.desc,
             'status': issue.status,
+            'rank': issue.rank,
             'projectId': issue.project_id,
             'timeStat': entry_stat_from_list(issue.time_entries),
             'timeEntries': [t.id for t in issue.time_entries],
@@ -134,29 +138,54 @@ def add_api_controllers(app: Flask, db: Database):
             data = {r.id: project_to_dict(r) for r in qs.all()}
         return data
 
-    @jsonrpc_api.dispatcher.add_method
-    def create_issue(name: str, desc: str, project_id: int): # pylint: disable=unused-variable
-        with db.session_scope() as conn:
-            user_id = get_user_id()
-            check_project(project_id, conn)
-            issue = Issue(name = name, desc = desc, project_id = project_id, user_id = user_id)
-            conn.add(issue)
+    def process_resources(raw_data_list: list, model, conn, handler):
+        schema = sqla_model_to_voluptuous(model)
+        res = []
+
+        for raw_data in raw_data_list:
+
+            if 'id' in raw_data and raw_data['id'] is None:
+                del raw_data['id']
+
+            data = schema(raw_data)
+
+            if 'pre_process' in handler:
+                raw_data.update(handler['pre_process'](raw_data))
+
+            if 'id' in data:
+                instance = conn.query(model).filter(model.id == data['id']).first()
+                if not instance:
+                    abort(404)
+                handler['checker'](instance)
+                for key, value in data.items():
+                    setattr(instance, key, value)
+            else:
+                instance = model(**data)
+                handler['checker'](instance)
+                conn.add(instance)
+
             conn.flush()
-            return issue_to_dict(issue)
 
+            if 'post_process' in handler:
+                new_data = handler['post_process'](raw_data, instance)
+                if new_data:
+                    for key, value in new_data.items():
+                        setattr(instance, key, value)
+                    conn.flush()
+
+            res.append(instance)
+
+        return res
 
     @jsonrpc_api.dispatcher.add_method
-    def update_issue(id: int, name: str, desc: str, status: str, project_id: int): # pylint: disable=unused-variable
-        user_id = get_user_id()
+    def process_issues(issues): # pylint: disable=unused-variable
         with db.session_scope() as conn:
-            issue = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Issue.id == id).first()
-            if not issue:
-                abort(404)
-            issue.name = name
-            issue.desc = desc
-            issue.status = status
-            # update project_id is not supported yet
-            return issue_to_dict(issue)
+            issues = process_resources(issues, Issue, conn, {
+                'pre_process': lambda d: {'user_id': get_user_id()},
+                'checker': lambda i: check_project(i.project_id, conn),
+                'post_process': lambda d, i: None if 'id' in d else {'rank': i.id},
+            })
+            return {i.id: issue_to_dict(i) for i in issues}
 
     @jsonrpc_api.dispatcher.add_method
     def get_issues(project_id: int): # pylint: disable=unused-variable

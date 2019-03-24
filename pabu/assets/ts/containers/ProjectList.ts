@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendIssue, sendPayment, sendTime } from '../actions';
+import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues } from '../actions';
 import ProjectList from '../components/ProjectList';
 import { PaymentSubmitData, Project, Store, ThunkDispatcher, IssueStatus } from '../types';
 
@@ -24,10 +24,10 @@ function mapStateToProps(state: Store) {
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
         onIssueSubmit: (name: string, desc: string, status: IssueStatus, projectId: number, id: number) => {
-            dispatch(sendIssue(name, desc, status, projectId, id)).then(issue => {
+            dispatch(processIssues([{name, desc, status, projectId, id}])).then(issues => {
                 dispatch(closeIssueDialog())
                 dispatch(fetchProjects(projectId))
-                dispatch(receiveIssues({[issue.id]: issue}))
+                dispatch(receiveIssues(issues))
             })
         },
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {

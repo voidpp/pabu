@@ -1,12 +1,13 @@
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, createStyles, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Theme, withStyles, Typography, Chip } from '@material-ui/core';
+import { Button, Chip, createStyles, IconButton, Theme, withStyles } from '@material-ui/core';
 import * as React from 'react';
+import IssueCardView from '../containers/IssueCardView';
 import StopWatch from '../containers/StopWatch';
-import { Issue, TickingStat, TimeSummary, IssueStatus } from '../types';
+import { pabuLocalStorage } from '../tools';
+import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary } from '../types';
 import PabuTable, { TableColDesriptor } from './PabuTable';
-import classNames from 'classnames';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -31,7 +32,7 @@ type MuiProps = {
     classes: any,
 }
 
-const styles = ({ palette, typography }: Theme) => createStyles({
+const styles = ({ palette }: Theme) => createStyles({
     iconButton: {
         width: 35,
         height: 35,
@@ -107,18 +108,6 @@ const IssueTableView = withStyles(styles)(React.memo((props: Props) => {
     return <PabuTable rows={issues} colDescriptors={rowDescriptors} controllCellFactory={controllCellFactory} defaultOrder="asc"/>
 }))
 
-const IssueCardView = withStyles(styles)(React.memo((props: Props) => {
-    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
-
-    return <div></div>
-}))
-
-type IssueStatusFilterStatusMap = {
-    [IssueStatus.TODO]: boolean,
-    [IssueStatus.IN_PROGRESS]: boolean,
-    [IssueStatus.DONE]: boolean,
-}
-
 type IssueStatusFilterBarProps = {
     value: IssueStatusFilterStatusMap,
     onChange: (value: {[s: string] : boolean}) => void,
@@ -142,7 +131,7 @@ const IssueStatusFilterBar = withStyles(styles)(React.memo((props: IssueStatusFi
 
 
 type State = {
-    layout: 'list' | 'card',
+    layout: IssueListLayout,
     statusFilters: IssueStatusFilterStatusMap,
 }
 
@@ -151,13 +140,20 @@ class IssueList extends React.Component<Props, State> {
     constructor(props: Props){
         super(props)
         this.state = {
-            layout: 'list',
-            statusFilters: {
-                [IssueStatus.TODO]: true,
-                [IssueStatus.IN_PROGRESS]: true,
-                [IssueStatus.DONE]: false,
-            },
+            layout: pabuLocalStorage.issueListLayout,
+            statusFilters: pabuLocalStorage.issueTableFilters,
         }
+    }
+
+    private changeLayout(layout: IssueListLayout) {
+        this.setState({layout});
+        pabuLocalStorage.issueListLayout = layout;
+    }
+
+    private changeFilter(value: {[s: string] : boolean}) {
+        const statusFilters = Object.assign(this.state.statusFilters, value);
+        this.setState({statusFilters});
+        pabuLocalStorage.issueTableFilters = statusFilters;
     }
 
     render() {
@@ -167,11 +163,12 @@ class IssueList extends React.Component<Props, State> {
         return <div>
             <div className={classes.menuBar}>
                 <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create issue</Button>
-                <ActionIcon icon="list" onClick={() => this.setState({layout: 'list'})} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
-                <ActionIcon icon="table" onClick={() => this.setState({layout: 'card'})} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
-                <IssueStatusFilterBar value={this.state.statusFilters} onChange={value => this.setState({statusFilters: Object.assign(this.state.statusFilters, value)})} />
+                <ActionIcon icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
+                {this.state.layout == 'list' ? <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> : null}
+
             </div>
-            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView {...this.props} />}
+            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id}/>}
         </div>
     }
 }

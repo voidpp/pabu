@@ -11,9 +11,10 @@ import PaymentList from '../containers/PaymentList';
 import ProjectInviteTokenList from '../containers/ProjectInviteTokenList';
 import ProjectSummary from '../containers/ProjectSummary';
 import TimeEntryList from '../containers/TimeEntryList';
-import { LocalStorageKey, Project } from '../types';
+import { Project } from '../types';
 import ProjectUserList from '../containers/ProjectUserList';
 import StopWatch from '../containers/StopWatch';
+import { pabuLocalStorage } from '../tools';
 
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -53,12 +54,12 @@ class ProjectRow extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        this.state = {currentTab: parseInt(window.localStorage.getItem(LocalStorageKey.OPENED_PROJECT_TAB)) || 0};
+        this.state = {currentTab: pabuLocalStorage.openedProjectTab};
     }
 
     handleTabChange = (ev, val:number) => {
         this.setState({currentTab: val});
-        window.localStorage.setItem(LocalStorageKey.OPENED_PROJECT_TAB, val.toString());
+        pabuLocalStorage.openedProjectTab = val;
     }
 
     render() {

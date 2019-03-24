@@ -1,6 +1,7 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData, LocalStorageKey, IssueMap, IssueStatus } from "./types";
+import { TickingStat, PaymentSubmitData, IssueStatus, ServerIssueData } from "./types";
+import { pabuLocalStorage } from "./tools";
 
 export enum Action {
     CLOSE_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
@@ -44,7 +45,7 @@ export function fetchAllProjectData(id: number) {
 
 export function openProject(id: number) {
     return dispatch => {
-        window.localStorage.setItem(LocalStorageKey.OPENED_PROJECTID, id.toString());
+        pabuLocalStorage.openedProjectId = id;
         dispatch(fetchAllProjectData(id));
         dispatch({
             type: Action.OPEN_PROJECT,
@@ -215,10 +216,11 @@ export function receiveProjects(data) {
     }
 }
 
-export function receiveIssues(data) {
+export function receiveIssues(data, deepUpdate = false) {
     return  {
         type: Action.RECEIVE_ISSUES,
         data,
+        deepUpdate,
     }
 }
 
@@ -240,9 +242,8 @@ export function sendProject(name: string, description: string, id: number = null
     return () => id ? client.updateProject(id, name, description) : client.createProject(name, description);
 }
 
-
-export function sendIssue(name: string, description: string, status: IssueStatus, projectId: number, id: number = null) {
-    return dispatch => id ? client.updateIssue(id, name, description, status, projectId) : client.createIssue(name, description, projectId)
+export function processIssues(issues: Array<ServerIssueData>) {
+    return dispatch => client.processIssues(issues);
 }
 
 export function sendTime(projectId: number, time: string, amount: string, issueId: number = null) {
@@ -355,7 +356,7 @@ export function deleteIssue(id: number, openedProjectId: number) {
 }
 
 export function setDarkTheme(isSet: boolean) {
-    window.localStorage.setItem(LocalStorageKey.IS_DARK_THEME, isSet ? '1' : '0')
+    pabuLocalStorage.isDarkTheme = isSet;
     return {
         type: Action.SET_DARK_THEME,
         isSet,

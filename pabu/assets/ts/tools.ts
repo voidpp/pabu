@@ -1,3 +1,4 @@
+import { LocalStorageSchema } from "./types";
 
 const durationDesc = [
     {divider: 3600, unit: 'hour'},
@@ -35,4 +36,25 @@ export function formatStopwatchDuration(value: number): string {
     const num = (v: number) => v.toString().padStart(2, '0')
 
     return `${num(hours)}:${num(minutes)}:${num(seconds)}`
+}
+
+const localStorageHandler = {
+    get: (target: LocalStorageSchema, name: string) => {
+        const res = window.localStorage.getItem(name);
+        return res == undefined ? target[name] : JSON.parse(res);
+    },
+    set: (target: LocalStorageSchema, name: string, value: any, receiver: any) => {
+        window.localStorage.setItem(name, JSON.stringify(value));
+        return true;
+    },
+}
+
+export const pabuLocalStorage = new Proxy<LocalStorageSchema>(new LocalStorageSchema(), localStorageHandler);
+
+export function convertKeysToCamelCase(data: {[s: string]: any}) {
+    let res = {}
+    for (const key in data) {
+        res[key.split(/(?=[A-Z])/).map(s => s.toLowerCase()).join('_')] = data[key];
+    }
+    return res
 }

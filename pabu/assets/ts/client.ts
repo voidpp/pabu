@@ -1,4 +1,5 @@
-import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus } from "./types";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap } from "./types";
+import { convertKeysToCamelCase } from "./tools";
 
 class PabuClient {
 
@@ -59,12 +60,8 @@ class PabuClient {
         return this._send('update_project', [id, name, description]);
     }
 
-    async updateIssue(id: number, name: string, description: string, status: IssueStatus, projectId: number): Promise<Issue> {
-        return this._send('update_issue', [id, name, description, status, projectId]);
-    }
-
-    async createIssue(name: string, description: string, projectId: number): Promise<Issue> {
-        return this._send('create_issue', [name, description, projectId]);
+    async processIssues(issues: Array<ServerIssueData>): Promise<IssueMap> {
+        return this._send('process_issues', [issues.map(convertKeysToCamelCase)]);
     }
 
     async addTime(projectId: number, amount: string, time: string, issueId: number = null) {
