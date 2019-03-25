@@ -6,6 +6,7 @@ import classNames = require("classnames");
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import StopWatch from "../containers/StopWatch";
 import IssueActionIcons from "./IssueActionIcons";
+import { removeKeys } from "../tools";
 
 const styles = ({ palette, shape, typography }: Theme) => createStyles({
     card: {
@@ -47,7 +48,9 @@ type MuiProps = {
     classes: any,
 }
 
-export default withStyles(styles)(React.memo((props: OwnProps & StateProps & DispatchProps & MuiProps) => {
+type Props = OwnProps & StateProps & DispatchProps & MuiProps;
+
+export default withStyles(styles)(React.memo((props: Props) => {
 
     let {issues, onDragEnd, classes, users} = props;
 
@@ -87,7 +90,7 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps & Dis
                                             <AccountCircle className={classes.avatar}/>}
                                         </Tooltip>
                                     </div>
-                                    <div className="controls"><IssueActionIcons  issue={i} {...props} /></div>
+                                    <div className="controls"><IssueActionIcons  issue={i} {...removeKeys<Props>(props, 'classes')} /></div>
                                 </div>
                             )}
                         </Draggable>)}

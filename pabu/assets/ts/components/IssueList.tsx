@@ -5,7 +5,7 @@ import { Button, Chip, createStyles, IconButton, Theme, withStyles } from '@mate
 import * as React from 'react';
 import IssueCardView from '../containers/IssueCardView';
 import StopWatch from '../containers/StopWatch';
-import { pabuLocalStorage } from '../tools';
+import { pabuLocalStorage, removeKeys } from '../tools';
 import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary } from '../types';
 import PabuTable, { TableColDesriptor } from './PabuTable';
 import ActionIcon from './ActionIcon';
@@ -131,7 +131,7 @@ class IssueList extends React.Component<Props, State> {
                 {this.state.layout == 'list' ? <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> : null}
 
             </div>
-            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id} {...this.props}/>}
+            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id} {...removeKeys<Props>(this.props, 'classes')}/>}
         </div>
     }
 }

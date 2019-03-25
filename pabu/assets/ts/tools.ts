@@ -78,3 +78,7 @@ export function convertKeysToCamelCase(data: StringObject): StringObject {
     }
     return res
 }
+
+export function removeKeys<T extends object>(data: T, ...keys: Array<string>): T {
+    return Object.keys(data).filter(k => keys.indexOf(k) == -1).reduce((map, key) => (map[key] = data[key], map), {}) as T;
+}
