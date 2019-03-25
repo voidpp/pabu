@@ -159,6 +159,8 @@ def add_api_controllers(app: Flask, db: Database):
                 if not instance:
                     abort(404)
                 handler['checker'](instance)
+                if 'pre_update' in handler:
+                    handler['pre_update'](data, instance)
                 for key, value in data.items():
                     setattr(instance, key, value)
             else:
@@ -169,7 +171,7 @@ def add_api_controllers(app: Flask, db: Database):
             conn.flush()
 
             if 'post_process' in handler:
-                new_data = handler['post_process'](raw_data, instance)
+                new_data = handler['post_process'](data, instance)
                 if new_data:
                     for key, value in new_data.items():
                         setattr(instance, key, value)
@@ -181,9 +183,14 @@ def add_api_controllers(app: Flask, db: Database):
 
     @jsonrpc_api.dispatcher.add_method
     def process_issues(issues): # pylint: disable=unused-variable
+        def pre_update(data: dict, issue: Issue):
+            if 'status' in data and issue.status != data['status']:
+                data['status_date'] = datetime.now()
+
         with db.session_scope() as conn:
             issues = process_resources(issues, Issue, conn, {
                 'pre_process': lambda d: {'user_id': get_user_id()},
+                'pre_update': pre_update,
                 'checker': lambda i: check_project(i.project_id, conn),
                 'post_process': lambda d, i: None if 'id' in d else {'rank': i.id},
             })

@@ -53,6 +53,7 @@ class Issue(Base):
     user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     status = Column(String, default = 'todo', nullable = False)
     rank = Column(Integer, default = 0)
+    status_date = Column(DateTime, default = datetime.now, nullable = False)
 
     project = relationship("Project", backref = "issues")
 
