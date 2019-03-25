@@ -152,7 +152,7 @@ def add_api_controllers(app: Flask, db: Database):
             data = schema(raw_data)
 
             if 'pre_process' in handler:
-                raw_data.update(handler['pre_process'](raw_data))
+                data.update(handler['pre_process'](data))
 
             if 'id' in data:
                 instance = conn.query(model).filter(model.id == data['id']).first()
