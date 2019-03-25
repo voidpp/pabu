@@ -19,7 +19,7 @@ export type DispatchProps = {
     onDelete: (entry: ExpandedTimeEntry) => void,
     onAddNewTime: (projectId: number) => void,
     onStartTime: (projectId: number) => void,
-    onStopTime: (projectId: number) => void,
+    onStopTime: () => void,
 }
 
 export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
@@ -37,7 +37,7 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
     let tickingButton = <Button size="small" disabled>Start</Button>;
     if (tickingStat.ticking) {
         if (tickingStat.entry.projectId == id)
-            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={onStopTime.bind(this, id)}>Stop</Button>
+            tickingButton = <Button size="small" color="secondary" variant="contained" onClick={onStopTime}>Stop</Button>
     } else
         tickingButton = <Button size="small" color="primary" onClick={onStartTime.bind(this, id)}>Start</Button>
 

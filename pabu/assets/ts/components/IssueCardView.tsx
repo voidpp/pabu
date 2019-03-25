@@ -41,7 +41,7 @@ export type OwnProps = {
     onDeleteIssue: (projectId: number, issueId: number) => void,
     onUpdateIssue: (projectId: number, issueId: number) => void,
     startTime: (projectId: number, issueId: number) => void,
-    stopTime: (projectId: number) => void,
+    stopTime: () => void,
 }
 
 type MuiProps = {

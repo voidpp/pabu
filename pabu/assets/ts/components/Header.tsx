@@ -24,7 +24,7 @@ export type StateProps = {
 }
 
 export type DispatchProps = {
-    onStopTime: (projectId: number) => void,
+    onStopTime: () => void,
     onThemeClick: (isDark: boolean) => void,
 }
 
@@ -84,7 +84,7 @@ class Header extends React.Component<OwnProps & StateProps & DispatchProps & {cl
         const {onStopTime, tickingStat, projects, issues, classes} = this.props;
         const entry = tickingStat.entry;
         return <div className={classes.stopButton}>
-            <Button variant="contained" color="secondary" onClick={onStopTime.bind(this, entry.projectId)}>stop time</Button>
+            <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button>
             <div className={classes.tickingStatContainer}>
                 <div>{projects[entry.projectId].name}{entry.issueId && entry.issueId in issues ? ` / ${issues[entry.issueId].name}` : ''}</div>
                 <div>

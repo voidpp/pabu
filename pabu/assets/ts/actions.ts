@@ -286,12 +286,13 @@ export function startTime(projectId: number, issueId: number = null) {
     }
 }
 
-export function stopTime(openedProjectId: number) {
+export function stopTime() {
     return dispatch => {
-        return client.stopTime().then(() => {
+        return client.stopTime().then(te => {
             dispatch(fetchTickingStat())
-            dispatch(fetchProjects(openedProjectId))
-            dispatch(fetchTimeEntries(openedProjectId))
+            dispatch(fetchProjects(te.projectId))
+            dispatch(fetchTimeEntries(te.projectId))
+            dispatch(fetchIssues(te.projectId))
         })
     }
 }

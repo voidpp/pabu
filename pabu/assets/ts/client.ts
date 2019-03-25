@@ -1,4 +1,4 @@
-import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap, AllProjectData } from "./types";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap, AllProjectData, TimeEntry } from "./types";
 import { convertKeysToSnakeCase, convertKeysToCamelCase } from "./tools";
 
 class PabuClient {
@@ -76,7 +76,7 @@ class PabuClient {
         return this._send('add_payment', [projectId, amount, paidUserId, time, note]);
     }
 
-    async stopTime() {
+    async stopTime(): Promise<TimeEntry> {
         return this._send('stop_time');
     }
 

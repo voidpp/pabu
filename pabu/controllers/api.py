@@ -229,8 +229,8 @@ def add_api_controllers(app: Flask, db: Database):
             entry = conn.query(TimeEntry).filter(TimeEntry.user_id == user_id).filter(TimeEntry.end.is_(None)).first()
             if entry:
                 entry.end = datetime.now()
-                return True
-            return False
+                return time_entry_to_dict(entry)
+
 
     def time_entry_to_dict(time_entry: TimeEntry):
         return {

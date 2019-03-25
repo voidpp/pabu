@@ -35,7 +35,6 @@ class StopWatch extends React.Component<Props, State> {
     }
 
     componentWillReceiveProps(props: Props) {
-        this.setState({value: props.initialValue});
         if (this.isTicking(props))
             this.startTicking()
         else

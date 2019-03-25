@@ -12,7 +12,7 @@ export type OwnProps = {
     onDeleteIssue: (projectId: number, issueId: number) => void,
     onUpdateIssue: (projectId: number, issueId: number) => void,
     startTime: (projectId: number, issueId: number) => void,
-    stopTime: (projectId: number) => void,
+    stopTime: () => void,
 }
 
 type MuiProps = {
@@ -32,7 +32,7 @@ export default withStyles(styles)(React.memo((props: OwnProps & MuiProps) => {
     function getTickingIcon(issue: Issue) {
         if (tickingStat.ticking) {
             if (tickingStat.entry.issueId == issue.id)
-                return <ActionIcon icon="stopwatch" onClick={stopTime.bind(this, issue.projectId)} className={classes.stopIcon} />
+                return <ActionIcon icon="stopwatch" onClick={stopTime} className={classes.stopIcon} />
             else
                 return <ActionIcon icon="stopwatch" disabled/>
         } else

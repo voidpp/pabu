@@ -17,8 +17,8 @@ const mapStateToProps = (state: Store) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
-        onStopTime: (projectId: number) => {
-            dispatch(stopTime(projectId))
+        onStopTime: () => {
+            dispatch(stopTime())
         },
         onThemeClick: (isDark: boolean) => {
             dispatch(setDarkTheme(isDark))

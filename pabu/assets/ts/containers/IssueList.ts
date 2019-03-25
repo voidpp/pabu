@@ -20,8 +20,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher, dd) => {
         startTime: (projectId: number, issueId: number) => {
             dispatch(startTime(projectId, issueId));
         },
-        stopTime: (projectId: number) => {
-            dispatch(stopTime(projectId));
+        stopTime: () => {
+            dispatch(stopTime());
         },
         onDeleteIssue: (projectId: number, issueId: number) => {
             if(confirm('Do you really want to delete this issue?'))

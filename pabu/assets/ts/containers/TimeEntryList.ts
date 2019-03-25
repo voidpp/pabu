@@ -40,8 +40,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onStartTime: (projectId: number) => {
             dispatch(startTime(projectId))
         },
-        onStopTime: (openedProjectId: number) => {
-            dispatch(stopTime(openedProjectId))
+        onStopTime: () => {
+            dispatch(stopTime())
         },
     }
 }
