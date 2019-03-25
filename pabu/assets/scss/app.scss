@@ -44,6 +44,18 @@ html, body {
     > .controls {
         float: right;
         margin-right: -5px;
+        > .issue-action-icons {
+            opacity: 0;
+            transition: opacity 0.3s;
+            &.ticking {
+                opacity: 1;
+            }
+        }
+    }
+    &:hover {
+        > .controls > .issue-action-icons {
+            opacity: 1;
+        }
     }
 }
 

@@ -90,7 +90,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                                             <AccountCircle className={classes.avatar}/>}
                                         </Tooltip>
                                     </div>
-                                    <div className="controls"><IssueActionIcons  issue={i} {...removeKeys<Props>(props, 'classes')} /></div>
+                                    <div className="controls"><IssueActionIcons issue={i} {...removeKeys<Props>(props, 'classes')} /></div>
                                 </div>
                             )}
                         </Draggable>)}

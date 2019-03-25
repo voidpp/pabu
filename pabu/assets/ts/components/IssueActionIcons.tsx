@@ -2,6 +2,7 @@ import * as React from 'react';
 import { withStyles, Theme, createStyles } from '@material-ui/core';
 import { Issue, TickingStat } from '../types';
 import ActionIcon from './ActionIcon';
+import classNames = require('classnames');
 
 export type OwnProps = {
     tickingStat: TickingStat,
@@ -24,7 +25,7 @@ const styles = ({ palette }: Theme) => createStyles({
     },
 });
 
-export default  withStyles(styles)(React.memo((props: OwnProps & MuiProps) => {
+export default withStyles(styles)(React.memo((props: OwnProps & MuiProps) => {
 
     let { issue, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, classes} = props;
 
@@ -38,7 +39,9 @@ export default  withStyles(styles)(React.memo((props: OwnProps & MuiProps) => {
             return <ActionIcon icon="stopwatch" onClick={startTime.bind(this, issue.projectId, issue.id)} />
     }
 
-    return <span>
+    const isTicking = tickingStat.ticking && tickingStat.entry.issueId == issue.id;
+
+    return <span className={classNames('issue-action-icons', {ticking: isTicking})}>
         <ActionIcon icon="clock" onClick={onAddNewTime.bind(this, issue.projectId, issue.id)}/>
         {getTickingIcon(issue)}
         <ActionIcon icon="edit" onClick={onUpdateIssue.bind(this, issue.projectId, issue.id)}/>
