@@ -1,10 +1,11 @@
 import { createStyles, Theme, Typography, withStyles, Avatar, Tooltip } from "@material-ui/core";
 import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DroppableStateSnapshot, DropResult } from "react-beautiful-dnd";
-import { IssueByStatusMap, IssueStatus, UserMap } from "../types";
+import { IssueByStatusMap, IssueStatus, UserMap, TickingStat } from "../types";
 import classNames = require("classnames");
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import StopWatch from "../containers/StopWatch";
+import IssueActionIcons from "./IssueActionIcons";
 
 const styles = ({ palette, shape, typography }: Theme) => createStyles({
     card: {
@@ -33,6 +34,13 @@ export type DispatchProps = {
 
 export type OwnProps = {
     id: number,
+    tickingStat: TickingStat,
+    onAddNewIssue: (projectId: number) => void,
+    onAddNewTime: (projectId: number, issueId: number) => void,
+    onDeleteIssue: (projectId: number, issueId: number) => void,
+    onUpdateIssue: (projectId: number, issueId: number) => void,
+    startTime: (projectId: number, issueId: number) => void,
+    stopTime: (projectId: number) => void,
 }
 
 type MuiProps = {
@@ -57,29 +65,29 @@ export default withStyles(styles)(React.memo((props: OwnProps & StateProps & Dis
                         <Draggable draggableId={i.id.toString()} index={idx} key={i.id}>
                             {({innerRef, dragHandleProps, draggableProps}) => (
                                 <div className={classes.card + ' card'} ref={innerRef} {...draggableProps} {...dragHandleProps}>
-                                    <div className="card-header">
-                                        <Tooltip title={i.name}>
-                                            <Typography variant="subtitle1" style={{
-                                                whiteSpace: 'nowrap',
-                                                maxWidth: 260,
-                                                textOverflow: 'ellipis',
-                                                overflow: 'hidden',
-                                            }}>
-                                                #{i.id} {i.name}
+                                    <div className="data">
+                                        <div className="details">
+                                            <Tooltip title={i.name}>
+                                                <Typography variant="subtitle1" style={{
+                                                    whiteSpace: 'nowrap',
+                                                    maxWidth: 260,
+                                                    textOverflow: 'ellipis',
+                                                    overflow: 'hidden',
+                                                }}>
+                                                    #{i.id} {i.name}
+                                                </Typography>
+                                            </Tooltip>
+                                            <Typography style={{opacity: 0.6, flexGrow: 1}}>
+                                                <StopWatch projectId={i.projectId} issueId={i.id} initialValue={i.timeStat.spent} />
                                             </Typography>
-                                        </Tooltip>
-                                        <Typography style={{opacity: 0.6, flexGrow: 1}}>
-                                            <StopWatch projectId={i.projectId} issueId={i.id} initialValue={i.timeStat.spent} />
-                                        </Typography>
-                                        <div>
-                                            {/* controls */}
                                         </div>
+                                        <Tooltip title={users[i.userId].name}>
+                                        {users[i.userId].avatar ?
+                                            <Avatar className={classes.avatar} src={users[i.userId].avatar}/> :
+                                            <AccountCircle className={classes.avatar}/>}
+                                        </Tooltip>
                                     </div>
-                                    <Tooltip title={users[i.userId].name}>
-                                    {users[i.userId].avatar ?
-                                        <Avatar className={classes.avatar} src={users[i.userId].avatar}/> :
-                                        <AccountCircle className={classes.avatar}/>}
-                                    </Tooltip>
+                                    <div className="controls"><IssueActionIcons  issue={i} {...props} /></div>
                                 </div>
                             )}
                         </Draggable>)}

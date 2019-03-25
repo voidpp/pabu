@@ -8,6 +8,8 @@ import StopWatch from '../containers/StopWatch';
 import { pabuLocalStorage } from '../tools';
 import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary } from '../types';
 import PabuTable, { TableColDesriptor } from './PabuTable';
+import ActionIcon from './ActionIcon';
+import IssueActionIcons from './IssueActionIcons';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -33,14 +35,6 @@ type MuiProps = {
 }
 
 const styles = ({ palette }: Theme) => createStyles({
-    iconButton: {
-        width: 35,
-        height: 35,
-        padding: 5,
-    },
-    icon: {
-        fontSize: 17,
-    },
     stopIcon: {
         color: palette.secondary.main,
     },
@@ -60,35 +54,9 @@ const styles = ({ palette }: Theme) => createStyles({
 
 type Props = StateProps & DispatchProps & OwnProps & MuiProps;
 
-type ActionIconProps = {
-    icon: IconProp,
-    classes: any,
-    onClick?: () => void, disabled?: boolean,
-    className?: string,
-}
+const IssueTableView = React.memo((props: Props) => {
+    let {issues} = props;
 
-const ActionIcon = withStyles(styles)(React.memo((props: ActionIconProps) => {
-    const {icon, classes, onClick, disabled} = props;
-    return (
-        <IconButton className={classes.iconButton} onClick={onClick} disabled={disabled}>
-            <FontAwesomeIcon icon={icon} className={classes.icon + (props.className ? (' ' + props.className) : '')} />
-        </IconButton>
-    )
-}));
-
-
-const IssueTableView = withStyles(styles)(React.memo((props: Props) => {
-    let {issues, onAddNewTime, startTime, stopTime, tickingStat, onDeleteIssue, onUpdateIssue, onAddNewIssue, id, classes} = props;
-
-    function getTickingIcon(issue: Issue) {
-        if (tickingStat.ticking) {
-            if (tickingStat.entry.issueId == issue.id)
-                return <ActionIcon icon="stopwatch" onClick={stopTime.bind(this, issue.projectId)} className={classes.stopIcon} />
-            else
-                return <ActionIcon icon="stopwatch" disabled/>
-        } else
-            return <ActionIcon icon="stopwatch" onClick={startTime.bind(this, issue.projectId, issue.id)} />
-    }
     const spentRender = (stat: TimeSummary, issue: Issue) => <StopWatch projectId={issue.projectId} issueId={issue.id} initialValue={stat.spent} />;
     const spentSorting = (a: Issue, b: Issue) => a.timeStat.spent - b.timeStat.spent;
 
@@ -98,15 +66,10 @@ const IssueTableView = withStyles(styles)(React.memo((props: Props) => {
         new TableColDesriptor('status', 'Status'),
         new TableColDesriptor('timeStat', 'Time spent', spentRender, spentSorting),
     ]
-    const controllCellFactory = (issue: Issue) => <span>
-        <ActionIcon icon="clock" onClick={onAddNewTime.bind(this, issue.projectId, issue.id)}/>
-        {getTickingIcon(issue)}
-        <ActionIcon icon="edit" onClick={onUpdateIssue.bind(this, issue.projectId, issue.id)}/>
-        <ActionIcon icon="trash" onClick={onDeleteIssue.bind(this, issue.projectId, issue.id)}/>
-    </span>
+    const controllCellFactory = (issue: Issue) => <IssueActionIcons issue={issue} {...props} />
 
     return <PabuTable rows={issues} colDescriptors={rowDescriptors} controllCellFactory={controllCellFactory} defaultOrder="asc"/>
-}))
+})
 
 type IssueStatusFilterBarProps = {
     value: IssueStatusFilterStatusMap,
@@ -168,7 +131,7 @@ class IssueList extends React.Component<Props, State> {
                 {this.state.layout == 'list' ? <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> : null}
 
             </div>
-            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id}/>}
+            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id} {...this.props}/>}
         </div>
     }
 }
