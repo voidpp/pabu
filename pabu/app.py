@@ -11,18 +11,19 @@ from .models import User
 from .controllers.api import add_api_controllers
 from .controllers.auth import add_auth_controllers
 from .auth import is_logged_in
+from .tools import get_all_project_data
 
-frontent = Flask('pabu')
+frontend = Flask('pabu')
 api = Flask('api')
 auth = Flask('auth')
 
 secret_key = 'j32bd4kj2d4jkvgh23jk4hvgj23hg4ekjhg'
 
-frontent.secret_key = secret_key
+frontend.secret_key = secret_key
 auth.secret_key = secret_key
 api.secret_key = secret_key
 
-wsgi_application = DispatcherMiddleware(frontent, {
+wsgi_application = DispatcherMiddleware(frontend, {
     '/api': api,
     '/auth': auth,
 })
@@ -45,8 +46,8 @@ logger.info("App start")
 
 db = Database(str(config.database))
 
-@frontent.route('/')
-@frontent.route('/<path:path>')
+@frontend.route('/')
+@frontend.route('/<path:path>')
 def index(path = None):
     return render_template('index.html',
         data = {
@@ -54,6 +55,7 @@ def index(path = None):
             'isLoggedIn': is_logged_in(),
             'authBackendNames': list(config.auth.keys()),
             'version': pkg_resources.get_distribution('pabu').version,
+            'initialData': get_all_project_data(db) if is_logged_in() else None,
         }
     )
 

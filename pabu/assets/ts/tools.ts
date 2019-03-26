@@ -69,8 +69,8 @@ export const isObject = function(a) {
     return (!!a) && (a.constructor === Object);
 };
 
-export function convertKeysToCamelCase(data: StringObject): StringObject {
-    let res = {}
+export function convertKeysToCamelCase<T>(data: T): T {
+    let res = {} as T
     for (const key in data) {
         let newKey = key.split('_').map(s => capitalizeFirstLetter(s)).join('');
         let value = data[key];

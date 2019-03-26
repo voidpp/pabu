@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues, preFetchAllProjectDataIfNeeded } from '../actions';
+import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues, fetchAllProjectDataIfNeeded } from '../actions';
 import ProjectList, {StateProps, DispatchProps} from '../components/ProjectList';
 import { PaymentSubmitData, Project, Store, ThunkDispatcher, IssueStatus, Issue } from '../types';
 
@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
             dispatch(closeProject());
         },
         onHoverTitle: (projectId: number) => {
-            dispatch(preFetchAllProjectDataIfNeeded(projectId));
+            dispatch(fetchAllProjectDataIfNeeded(projectId));
         }
     }
 }

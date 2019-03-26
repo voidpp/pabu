@@ -1,19 +1,20 @@
 import logging
-from datetime import datetime, timedelta
 import random
 import string
+from datetime import datetime, timedelta
 from functools import partial
 
+from dateutil.parser import parse as dateparser
 from flask import Flask, abort, request
 from jsonrpc.backend.flask import JSONRPCAPI
 from pytimeparse import parse
-from dateutil.parser import parse as dateparser
 from voluptuous import Schema
 
+from pabu.auth import get_user_id, is_logged_in
 from pabu.db import Database
-from pabu.auth import is_logged_in, get_user_id
-from pabu.models import Project, User, Issue, projects_users, TimeEntry, Payment, ProjectInvitationToken
-from pabu.tools import sqla_model_to_voluptuous
+from pabu.models import Issue, Payment, Project, ProjectInvitationToken, TimeEntry, User, projects_users
+from pabu.tools import (entry_stat_from_list, issue_to_dict, project_to_dict, project_token_to_dict, sqla_model_to_voluptuous,
+                        time_entry_to_dict, user_to_dict, payment_to_dict)
 
 logger = logging.getLogger(__name__)
 
@@ -25,74 +26,6 @@ def add_api_controllers(app: Flask, db: Database):
     jsonrpc_api = JSONRPCAPI()
 
     app.add_url_rule('/', 'api', jsonrpc_api.as_view(), methods=['POST'])
-
-    def entry_stat_from_list(time_entries):
-        stat = {
-            'spent': 0,
-            'last_entry': 0,
-            'count': len(time_entries),
-        }
-        for entry in time_entries:
-            if entry.end and entry.end.timestamp() > stat['last_entry']:
-                stat['last_entry'] = entry.end.timestamp()
-            if entry.start.timestamp() > stat['last_entry']:
-                stat['last_entry'] = entry.start.timestamp()
-            stat['spent'] += ((entry.end or datetime.now()) - entry.start).total_seconds()
-        return stat
-
-    def project_to_dict(project: Project):
-        paid = 0
-        for payment in project.payments:
-            paid += payment.amount
-        return {
-            'id': project.id,
-            'name': project.name,
-            'desc': project.desc,
-            'time_stat': entry_stat_from_list(project.time_entries),
-            'issues': [i.id for i in project.issues],
-            'paid': paid,
-            'users': [u.id for u in project.users],
-            'payments': [p.id for p in project.payments],
-            'tokens': [t.id for t in project.tokens],
-        }
-
-    def issue_to_dict(issue: Issue):
-        return {
-            'id': issue.id,
-            'name': issue.name,
-            'desc': issue.desc,
-            'status': issue.status,
-            'rank': issue.rank,
-            'project_id': issue.project_id,
-            'userId': issue.user_id,
-            'time_stat': entry_stat_from_list(issue.time_entries),
-            'time_entries': [t.id for t in issue.time_entries],
-        }
-
-    def payment_to_dict(payment: Payment):
-        return {
-            'id': payment.id,
-            'project_id': payment.project_id,
-            'created_user_id': payment.created_user_id,
-            'paid_user_id': payment.paid_user_id,
-            'amount': payment.amount,
-            'time': payment.time.timestamp(),
-            'note': payment.note,
-        }
-
-    def user_to_dict(user: User):
-        return {
-            'id': user.id,
-            'name': user.name,
-            'avatar': user.avatar,
-        }
-
-    def project_token_to_dict(prj_token: ProjectInvitationToken):
-        return {
-            'id': prj_token.id,
-            'token': prj_token.token,
-            'project_id': prj_token.project_id,
-        }
 
     def get_current_user(conn):
         user_id = get_user_id()
@@ -243,17 +176,6 @@ def add_api_controllers(app: Flask, db: Database):
             if entry:
                 entry.end = datetime.now()
                 return time_entry_to_dict(entry)
-
-
-    def time_entry_to_dict(time_entry: TimeEntry):
-        return {
-            'id': time_entry.id,
-            'issueId': time_entry.issue_id,
-            'project_id': time_entry.project_id,
-            'userId': time_entry.user_id,
-            'start': time_entry.start.timestamp(),
-            'end': time_entry.end.timestamp() if time_entry.end else None,
-        }
 
     @jsonrpc_api.dispatcher.add_method
     def get_ticking_stat(): # pylint: disable=unused-variable

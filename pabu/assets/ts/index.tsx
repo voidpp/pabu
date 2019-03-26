@@ -10,13 +10,12 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import Root, { store } from "./containers/Root";
-import { fetchProjects, fetchTickingStat, openProject, setDarkTheme } from "./actions";
+import { fetchTickingStat, openProject, setDarkTheme } from "./actions";
 import { pabuLocalStorage } from "./tools";
 
 library.add(fab, fas, far);
 
 if (window['initialData'].isLoggedIn) {
-    store.dispatch(fetchProjects());
     store.dispatch(fetchTickingStat());
     if (pabuLocalStorage.openedProjectId)
         store.dispatch(openProject(pabuLocalStorage.openedProjectId));

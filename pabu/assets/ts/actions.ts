@@ -29,7 +29,7 @@ export enum Action {
     RECEIVE_PAYMENTS = 'RECEIVE_PAYMENTS',
     RECEIVE_PROJECT_TOKENS = 'RECEIVE_PROJECT_TOKENS',
     SET_DARK_THEME = 'SET_DARK_THEME',
-    COMPLETE_PROJECT_DATA_RECEIVED = 'COMPLETE_PROJECT_DATA_RECEIVED',
+    SET_PROJECT_DATA_AGE = 'SET_PROJECT_DATA_AGE',
 }
 
 export function fetchAllProjectData(id: number) {
@@ -42,7 +42,7 @@ export function fetchAllProjectData(id: number) {
             dispatch(receiveIssues(data.issues))
             dispatch(receiveProjects({[id]: data.project}))
             dispatch({
-                type: Action.COMPLETE_PROJECT_DATA_RECEIVED,
+                type: Action.SET_PROJECT_DATA_AGE,
                 id,
                 time: new Date().getTime(),
             })
@@ -50,7 +50,7 @@ export function fetchAllProjectData(id: number) {
         });
 }
 
-export function preFetchAllProjectDataIfNeeded(id: number) {
+export function fetchAllProjectDataIfNeeded(id: number) {
     return (dispatch: ThunkDispatcher, getState: StoreGetter) => {
         if (id in getState().projectDataAge)
             return;
@@ -59,12 +59,10 @@ export function preFetchAllProjectDataIfNeeded(id: number) {
 }
 
 export function openProject(id: number) {
-    return (dispatch: ThunkDispatcher, getState: StoreGetter) => {
+    return (dispatch: ThunkDispatcher) => {
         pabuLocalStorage.openedProjectId = id;
         dispatch({type: Action.OPEN_PROJECT,id});
-        if (id in getState().projectDataAge)
-            return
-        dispatch(fetchAllProjectData(id));
+        dispatch(fetchAllProjectDataIfNeeded(id));
     }
 }
 

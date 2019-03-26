@@ -72,7 +72,7 @@ function resourceReducerFactory(receiveAction: Action, deleteAction: Action = nu
 }
 
 function projectDataAge(state = {}, action) {
-    if (action.type != Action.COMPLETE_PROJECT_DATA_RECEIVED)
+    if (action.type != Action.SET_PROJECT_DATA_AGE)
         return state
     return Object.assign({}, state, {[action.id]: action.time})
 }
