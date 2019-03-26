@@ -81,6 +81,7 @@ def issue_to_dict(issue: Issue):
         'userId': issue.user_id,
         'time_stat': entry_stat_from_list(issue.time_entries),
         'time_entries': [t.id for t in issue.time_entries],
+        'status_date': issue.status_date.timestamp(),
     }
 
 def payment_to_dict(payment: Payment):

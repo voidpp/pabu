@@ -1,15 +1,14 @@
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Chip, createStyles, IconButton, Theme, withStyles } from '@material-ui/core';
+import { Button, Chip, createStyles, Theme, withStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import IssueCardView from '../containers/IssueCardView';
 import StopWatch from '../containers/StopWatch';
 import { pabuLocalStorage, removeKeys } from '../tools';
 import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary } from '../types';
-import PabuTable, { TableColDesriptor } from './PabuTable';
 import ActionIcon from './ActionIcon';
+import DurationSelect from './DurationSelect';
 import IssueActionIcons from './IssueActionIcons';
+import PabuTable, { TableColDesriptor } from './PabuTable';
 
 export type StateProps = {
     issues: Array<Issue>,
@@ -96,6 +95,7 @@ const IssueStatusFilterBar = withStyles(styles)(React.memo((props: IssueStatusFi
 type State = {
     layout: IssueListLayout,
     statusFilters: IssueStatusFilterStatusMap,
+    doneDateFilter: number,
 }
 
 class IssueList extends React.Component<Props, State> {
@@ -105,6 +105,7 @@ class IssueList extends React.Component<Props, State> {
         this.state = {
             layout: pabuLocalStorage.issueListLayout,
             statusFilters: pabuLocalStorage.issueTableFilters,
+            doneDateFilter: pabuLocalStorage.issueDoneDateFilter,
         }
     }
 
@@ -119,19 +120,31 @@ class IssueList extends React.Component<Props, State> {
         pabuLocalStorage.issueTableFilters = statusFilters;
     }
 
+    private changeDoneDateFilter = (value: number) => {
+        this.setState({doneDateFilter: value});
+        pabuLocalStorage.issueDoneDateFilter = value;
+    }
+
     render() {
         const {onAddNewIssue, id, classes} = this.props;
         const issues = this.props.issues.filter((i => this.state.statusFilters[i.status]))
+        const filter = this.state.layout == 'list' ?
+                <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> :
+                <div style={{marginLeft: 10, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                    <Typography style={{paddingRight: 5}}>Hide 'Done' issues older than: </Typography>
+                    <DurationSelect value={this.state.doneDateFilter} onChange={this.changeDoneDateFilter} />
+                </div>;
 
         return <div>
             <div className={classes.menuBar}>
                 <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create issue</Button>
                 <ActionIcon icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
                 <ActionIcon icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
-                {this.state.layout == 'list' ? <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> : null}
-
+                {filter}
             </div>
-            {this.state.layout == 'list' ? <IssueTableView {...this.props} issues={issues}/> : <IssueCardView id={id} {...removeKeys<Props>(this.props, 'classes')}/>}
+            {this.state.layout == 'list' ?
+                <IssueTableView {...this.props} issues={issues}/> :
+                <IssueCardView doneDateFilter={this.state.doneDateFilter} id={id} {...removeKeys<Props>(this.props, 'classes')}/>}
         </div>
     }
 }

@@ -64,6 +64,7 @@ export interface Issue extends PabuModel {
     timeStat: TimeSummary,
     status: IssueStatus,
     rank: number,
+    statusDate: number,
 }
 
 export interface TimeEntry extends PabuModel {
@@ -168,6 +169,7 @@ export class LocalStorageSchema {
     isDarkTheme: boolean = false;
     openedProjectTab: number = 0;
     issueListLayout: IssueListLayout = 'list';
+    issueDoneDateFilter: number = 0;
     issueTableFilters: IssueStatusFilterStatusMap = {
         [IssueStatus.TODO]: true,
         [IssueStatus.IN_PROGRESS]: true,

@@ -29,7 +29,7 @@ class PabuClient {
             console.error(data.error)
             throw new Error('server error');
         }
-        return convertKeysToCamelCase(data.result) as any;
+        return convertKeysToCamelCase(data.result);
     }
 
     async getProjects(id: number = null) {

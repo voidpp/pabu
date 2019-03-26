@@ -10,7 +10,10 @@ function mapStateToProps(state: Store, props: OwnProps) {
 
     let issuesByStatus: IssueByStatusMap = {};
     Object.values(IssueStatus).map(s => {issuesByStatus[s] = []})
+    const now = new Date().getTime() / 1000;
     for (const issue of Object.values(issues).filter(i => i.projectId == props.id).sort((a, b) => a.rank - b.rank)) {
+        if (props.doneDateFilter > 0 && issue.status == IssueStatus.DONE && issue.statusDate < now - props.doneDateFilter)
+            continue;
         issuesByStatus[issue.status].push(issue);
     }
 

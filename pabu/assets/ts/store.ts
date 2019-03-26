@@ -9,11 +9,12 @@ const loggerMiddleware = createLogger();
 
 export default function configureStore() {
 
-    let initialData: Store = convertKeysToCamelCase(window['initialData'].initialData);
-
-    initialData.projectDataAge = Object.values(initialData.projects).reduce((map, p) => (map[p.id] = new Date().getTime(), map), {})
-
-    console.debug(initialData);
+    let initialData: Store = {} as Store;
+    if (window['initialData'].initialData) {
+        initialData = convertKeysToCamelCase(window['initialData'].initialData);
+        initialData.projectDataAge = Object.values(initialData.projects).reduce((map, p) => (map[p.id] = new Date().getTime(), map), {})
+        console.debug(initialData);
+    }
 
     return createStore(rootReducer, initialData, applyMiddleware(thunkMiddleware as ThunkMiddleware, loggerMiddleware))
 
