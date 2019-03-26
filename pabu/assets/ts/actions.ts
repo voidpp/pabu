@@ -1,6 +1,6 @@
 import client from "./client";
 
-import { TickingStat, PaymentSubmitData, IssueStatus, ServerIssueData } from "./types";
+import { TickingStat, PaymentSubmitData, IssueStatus, ServerIssueData, ThunkDispatcher, AllProjectData, StoreGetter } from "./types";
 import { pabuLocalStorage } from "./tools";
 
 export enum Action {
@@ -28,12 +28,12 @@ export enum Action {
     RECEIVE_USERS = 'RECEIVE_USERS',
     RECEIVE_PAYMENTS = 'RECEIVE_PAYMENTS',
     RECEIVE_PROJECT_TOKENS = 'RECEIVE_PROJECT_TOKENS',
-    REQUEST_PROJECTS = 'REQUEST_PROJECTS',
     SET_DARK_THEME = 'SET_DARK_THEME',
+    COMPLETE_PROJECT_DATA_RECEIVED = 'COMPLETE_PROJECT_DATA_RECEIVED',
 }
 
 export function fetchAllProjectData(id: number) {
-    return dispatch => {
+    return dispatch =>
         client.getAllProjectData(id).then(data => {
             dispatch(receiveUsers(data.users))
             dispatch(receiveTimeEntries(data.timeEntries))
@@ -41,18 +41,30 @@ export function fetchAllProjectData(id: number) {
             dispatch(receivePayments(data.payments))
             dispatch(receiveIssues(data.issues))
             dispatch(receiveProjects({[id]: data.project}))
+            dispatch({
+                type: Action.COMPLETE_PROJECT_DATA_RECEIVED,
+                id,
+                time: new Date().getTime(),
+            })
+            return Promise.resolve(data)
         });
+}
+
+export function preFetchAllProjectDataIfNeeded(id: number) {
+    return (dispatch: ThunkDispatcher, getState: StoreGetter) => {
+        if (id in getState().projectDataAge)
+            return;
+        return dispatch(fetchAllProjectData(id));
     }
 }
 
 export function openProject(id: number) {
-    return dispatch => {
+    return (dispatch: ThunkDispatcher, getState: StoreGetter) => {
         pabuLocalStorage.openedProjectId = id;
+        dispatch({type: Action.OPEN_PROJECT,id});
+        if (id in getState().projectDataAge)
+            return
         dispatch(fetchAllProjectData(id));
-        dispatch({
-            type: Action.OPEN_PROJECT,
-            id,
-        })
     }
 }
 
@@ -324,7 +336,7 @@ export function deletePayment(id: number) {
             type: Action.DELETE_PAYMENT,
             id,
         })
-        return new Promise((resolve, reject) => resolve())
+        return Promise.resolve()
     })
 }
 
@@ -334,7 +346,7 @@ export function deleteTimeEntry(id: number) {
             type: Action.DELETE_TIME_ENTRY,
             id,
         })
-        return new Promise((resolve, reject) => resolve())
+        return Promise.resolve();
     })
 }
 

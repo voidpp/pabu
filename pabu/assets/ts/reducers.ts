@@ -4,15 +4,6 @@ import { Store } from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
 
-
-function fetchingProject(state = false, action) {
-    if (action.type == Action.REQUEST_PROJECTS)
-        return true;
-    if (action.type == Action.RECEIVE_PROJECTS)
-        return false;
-    return state;
-}
-
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
         return action.context;
@@ -80,6 +71,12 @@ function resourceReducerFactory(receiveAction: Action, deleteAction: Action = nu
     }
 }
 
+function projectDataAge(state = {}, action) {
+    if (action.type != Action.COMPLETE_PROJECT_DATA_RECEIVED)
+        return state
+    return Object.assign({}, state, {[action.id]: action.time})
+}
+
 function inviteDialogIsOpen(state = false, action) {
     if (action.type == Action.OPEN_INVITE_DIALOG)
         return true;
@@ -90,7 +87,6 @@ function inviteDialogIsOpen(state = false, action) {
 
 const rootReducer = combineReducers<Store>({
     addTimeDialogContext,
-    fetchingProject,
     isDarkTheme,
     issueDialogContext,
     issues: resourceReducerFactory(Action.RECEIVE_ISSUES, Action.DELETE_ISSUE),
@@ -104,6 +100,7 @@ const rootReducer = combineReducers<Store>({
     timeEntries: resourceReducerFactory(Action.RECEIVE_TIME_ENTRIES, Action.DELETE_TIME_ENTRY),
     users: resourceReducerFactory(Action.RECEIVE_USERS),
     inviteDialogIsOpen,
+    projectDataAge,
 });
 
 export default rootReducer

@@ -6,9 +6,17 @@ import TimeEntryDialog from '../components/TimeEntryDialog';
 import PaymentDialog from '../components/PaymentDialog';
 import IssueFormDialog from './IssueFormDialog';
 
-type Props = {
+export type StateProps = {
     issueDialogContext: IssueDialogContext
     addTimeDialogContext: TimeDialogContext,
+    openedProjectId: number,
+    paymentDialogProjectId: number,
+    projects: Array<Project>,
+    users: UserMap,
+    issueData: Issue,
+}
+
+export type DispatchProps = {
     closeProject: Function,
     hideAddIssueDialog: () => void,
     hideAddTimeDialog: () => void,
@@ -16,15 +24,11 @@ type Props = {
     onIssueSubmit: (name: string, desc: string, status: IssueStatus, projectId: number, id: number) => void,
     onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => void
     onTimeSubmit: (amount: string, time: string, projectId: number, issueId: number) => void,
-    openedProjectId: number,
     openProject: (id: number) => void,
-    paymentDialogProjectId: number,
-    projects: Array<Project>,
-    users: UserMap,
-    issueData: Issue,
+    onHoverTitle: (projectId: number) => void,
 }
 
-export default React.memo((props: Props) => {
+export default React.memo((props: StateProps & DispatchProps) => {
 
     return <div>
                 <IssueFormDialog
@@ -47,6 +51,7 @@ export default React.memo((props: Props) => {
             props.projects.map(project => <ProjectRow
                 key={project.id}
                 project={project}
+                onHoverTitle={props.onHoverTitle.bind(this, project.id)}
                 expanded={project.id == props.openedProjectId}
                 handleChange={id => {
                     if (id == props.openedProjectId)

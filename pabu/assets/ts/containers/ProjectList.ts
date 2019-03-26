@@ -1,12 +1,12 @@
 
 import { connect } from 'react-redux';
-import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues } from '../actions';
-import ProjectList from '../components/ProjectList';
-import { PaymentSubmitData, Project, Store, ThunkDispatcher, IssueStatus } from '../types';
+import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues, preFetchAllProjectDataIfNeeded } from '../actions';
+import ProjectList, {StateProps, DispatchProps} from '../components/ProjectList';
+import { PaymentSubmitData, Project, Store, ThunkDispatcher, IssueStatus, Issue } from '../types';
 
 function mapStateToProps(state: Store) {
     const { issueDialogContext, openedProjectId, addTimeDialogContext, paymentDialogProjectId, users, issues, projects } = state;
-    let issueData = {name: '', desc: ''};
+    let issueData = {name: '', desc: '', status: IssueStatus.TODO};
     if (issueDialogContext && issueDialogContext.id) {
         issueData = issues[issueDialogContext.id];
     }
@@ -18,7 +18,7 @@ function mapStateToProps(state: Store) {
         paymentDialogProjectId,
         projects: Object.values(projects).sort((a: Project, b: Project) => b.timeStat.lastEntry - a.timeStat.lastEntry),
         users,
-        issueData,
+        issueData: issueData as Issue,
     }
 }
 
@@ -52,7 +52,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         closeProject: () => {
             dispatch(closeProject());
         },
+        onHoverTitle: (projectId: number) => {
+            dispatch(preFetchAllProjectDataIfNeeded(projectId));
+        }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);
+export default connect<StateProps, DispatchProps>(mapStateToProps, mapDispatchToProps)(ProjectList);

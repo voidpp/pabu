@@ -106,6 +106,12 @@ def add_api_controllers(app: Flask, db: Database):
     @app.before_request
     def common_log(): # pylint: disable=unused-variable
         logger.info("JSONRPC method '%s' called with args: %s" % (request.json['method'], request.json['params']))
+        request.start = datetime.now()
+
+    @app.after_request
+    def print_time(response): # pylint: disable=unused-variable
+        logger.info("JSONRPC method '%s' responded in %s ms", request.json['method'], (datetime.now() - request.start).total_seconds()*1000)
+        return response
 
     def check_project(project_id, conn):
         user_id = get_user_id()

@@ -44,6 +44,7 @@ type Props = {
     handleChange: (id: number) => void,
     project: Project,
     expanded: boolean,
+    onHoverTitle: () => void,
 }
 
 type State = {
@@ -63,7 +64,7 @@ class ProjectRow extends React.Component<Props, State> {
     }
 
     render() {
-        const {classes, handleChange, project, expanded} = this.props
+        const {classes, handleChange, project, expanded, onHoverTitle} = this.props
 
         const id = project.id;
 
@@ -76,7 +77,7 @@ class ProjectRow extends React.Component<Props, State> {
                     key={id}
                     onChange={handleChange.bind(this, id)}
                 >
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onMouseOver={onHoverTitle}>
                         <Typography className={classes.heading}>{project.name}</Typography>
                         <Typography className={classes.secondaryHeading}>
                             Spent <StopWatch projectId={id} initialValue={project.timeStat.spent} /> in {project.issues.length} issues ({paid} hours paid)

@@ -66,7 +66,7 @@ const IssueTableView = React.memo((props: Props) => {
         new TableColDesriptor('status', 'Status'),
         new TableColDesriptor('timeStat', 'Time spent', spentRender, spentSorting),
     ]
-    const controllCellFactory = (issue: Issue) => <IssueActionIcons issue={issue} {...props} />
+    const controllCellFactory = (issue: Issue) => <IssueActionIcons issue={issue} {...removeKeys<Props>(props, 'classes')} />
 
     return <PabuTable rows={issues} colDescriptors={rowDescriptors} controllCellFactory={controllCellFactory} defaultOrder="asc"/>
 })

@@ -133,10 +133,10 @@ export type ProjectDialogContext = {id?: number};
 export type IssueDialogContext = {projectId: number, id?: number};
 export type TimeDialogContext = {projectId: number, issueId: number};
 export type IssueByStatusMap = { [s: string ]: Array<Issue> };
+export type ProjectDataAgeMap = { [s: number]: number }
 
 export interface Store {
     addTimeDialogContext: TimeDialogContext,
-    fetchingProject: boolean,
     isDarkTheme: boolean,
     issueDialogContext: IssueDialogContext,
     issues: IssueMap,
@@ -150,6 +150,7 @@ export interface Store {
     users: UserMap,
     projectInvitationTokens: ProjectInvitationTokenMap,
     inviteDialogIsOpen: boolean,
+    projectDataAge: ProjectDataAgeMap,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;
@@ -182,3 +183,5 @@ export type AllProjectData = {
     payments: PaymentMap,
     tokens: ProjectInvitationTokenMap,
 }
+
+export type StoreGetter = () => Store;
