@@ -30,7 +30,7 @@ export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
     const rowDescriptors = [
         new TableColDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
         new TableColDesriptor('spentHours' , 'Length', lengthFormatter),
-        new TableColDesriptor('issueName', 'Issue'),
+        new TableColDesriptor('issueName', 'Task'),
         new TableColDesriptor('userName', 'User'),
     ]
 

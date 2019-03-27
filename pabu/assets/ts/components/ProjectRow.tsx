@@ -80,7 +80,7 @@ class ProjectRow extends React.Component<Props, State> {
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onMouseOver={onHoverTitle}>
                         <Typography className={classes.heading}>{project.name}</Typography>
                         <Typography className={classes.secondaryHeading}>
-                            Spent <StopWatch projectId={id} initialValue={project.timeStat.spent} /> in {project.issues.length} issues ({paid} hours paid)
+                            Spent <StopWatch projectId={id} initialValue={project.timeStat.spent} /> in {project.issues.length} tasks ({paid} hours paid)
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails style={{display: 'block'}}>
@@ -93,7 +93,7 @@ class ProjectRow extends React.Component<Props, State> {
                         >
                             <Tab label="Summary" className={classes.tabLabel} />
                             <Tab label={`Time entries (${project.timeStat.count})`} className={classes.tabLabel} />
-                            <Tab label={`Issues (${project.issues.length})`} className={classes.tabLabel} />
+                            <Tab label={`Tasks (${project.issues.length})`} className={classes.tabLabel} />
                             <Tab label={`Payments (${project.payments.length})`} className={classes.tabLabel} />
                             <Tab label={`Invite tokens (${project.tokens.length})`} className={classes.tabLabel} />
                             <Tab label={`Users (${project.users.length})`} className={classes.tabLabel} />

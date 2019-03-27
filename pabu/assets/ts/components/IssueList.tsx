@@ -131,13 +131,13 @@ class IssueList extends React.Component<Props, State> {
         const filter = this.state.layout == 'list' ?
                 <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> :
                 <div style={{marginLeft: 10, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                    <Typography style={{paddingRight: 5}}>Hide 'Done' issues older than: </Typography>
+                    <Typography style={{paddingRight: 5}}>Hide 'Done' tasks older than: </Typography>
                     <DurationSelect value={this.state.doneDateFilter} onChange={this.changeDoneDateFilter} />
                 </div>;
 
         return <div>
             <div className={classes.menuBar}>
-                <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create issue</Button>
+                <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create task</Button>
                 <ActionIcon icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
                 <ActionIcon icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
                 {filter}

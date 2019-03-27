@@ -39,7 +39,7 @@ export default class IssueFormDialog extends React.Component<Props, State> {
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
         >
-            <DialogTitle id="form-dialog-title">Create issue</DialogTitle>
+            <DialogTitle id="form-dialog-title">Create task</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">
                 <DialogContent>
                     <TextField
