@@ -60,6 +60,12 @@ const styles = ({ palette, typography }: Theme) => createStyles({
         opacity: 0.7,
         fontSize: '0.8em',
     },
+    projectInfo: {
+        maxWidth: 300,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    }
 });
 
 
@@ -86,7 +92,9 @@ class Header extends React.Component<OwnProps & StateProps & DispatchProps & {cl
         return <div className={classes.stopButton}>
             <Button variant="contained" color="secondary" onClick={onStopTime}>stop time</Button>
             <div className={classes.tickingStatContainer}>
-                <div>{projects[entry.projectId].name}{entry.issueId && entry.issueId in issues ? ` / ${issues[entry.issueId].name}` : ''}</div>
+                <div className={classes.projectInfo}>
+                    {projects[entry.projectId].name}{entry.issueId && entry.issueId in issues ? ` / ${issues[entry.issueId].name}` : ''}
+                </div>
                 <div>
                     <StopWatch projectId={entry.projectId} initialValue={new Date().getTime() / 1000  - entry.start} />
                 </div>
