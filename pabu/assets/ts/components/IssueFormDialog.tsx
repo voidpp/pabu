@@ -46,7 +46,7 @@ export default class IssueFormDialog extends React.Component<Props, State> {
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Name"
+                        label="Summary"
                         type="text"
                         required
                         value={name || ''}

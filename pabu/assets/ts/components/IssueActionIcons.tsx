@@ -7,7 +7,6 @@ import classNames = require('classnames');
 export type OwnProps = {
     tickingStat: TickingStat,
     issue: Issue,
-    onAddNewIssue: (projectId: number) => void,
     onAddNewTime: (projectId: number, issueId: number) => void,
     onDeleteIssue: (projectId: number, issueId: number) => void,
     onUpdateIssue: (projectId: number, issueId: number) => void,
