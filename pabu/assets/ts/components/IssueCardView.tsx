@@ -69,29 +69,20 @@ export default withStyles(styles)(React.memo((props: Props) => {
                         <Draggable draggableId={i.id.toString()} index={idx} key={i.id}>
                             {({innerRef, dragHandleProps, draggableProps}) => (
                                 <div className={classes.card + ' card'} ref={innerRef} {...draggableProps} {...dragHandleProps}>
-                                    <div className="data">
-                                        <div className="details">
-                                            <Tooltip title={i.name}>
-                                                <Typography variant="subtitle1" style={{
-                                                    whiteSpace: 'nowrap',
-                                                    maxWidth: 260,
-                                                    textOverflow: 'ellipis',
-                                                    overflow: 'hidden',
-                                                }}>
-                                                    #{i.id} {i.name}
-                                                </Typography>
-                                            </Tooltip>
-                                            <Typography style={{opacity: 0.6, flexGrow: 1}}>
-                                                <StopWatch projectId={i.projectId} issueId={i.id} initialValue={i.timeStat.spent} />
-                                            </Typography>
-                                        </div>
-                                        <Tooltip title={users[i.userId].name}>
+                                    <div className="header">
+                                        <Typography className="title" variant="subtitle1">
+                                            #{i.id} {i.name}
+                                        </Typography>
                                         {users[i.userId].avatar ?
                                             <Avatar className={classes.avatar} src={users[i.userId].avatar}/> :
                                             <AccountCircle className={classes.avatar}/>}
-                                        </Tooltip>
                                     </div>
-                                    <div className="controls"><IssueActionIcons issue={i} {...removeKeys<Props>(props, 'classes')} /></div>
+                                    <div className="footer">
+                                        <Typography style={{opacity: 0.6, flexGrow: 1}}>
+                                            <StopWatch projectId={i.projectId} issueId={i.id} initialValue={i.timeStat.spent} />
+                                        </Typography>
+                                        <IssueActionIcons issue={i} {...removeKeys<Props>(props, 'classes')} />
+                                    </div>
                                 </div>
                             )}
                         </Draggable>)}
