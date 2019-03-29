@@ -25,18 +25,18 @@ function defaultRowSort(orderBy: string, a: any, b: any) {
 }
 
 
-export type TableCellFormatter = (v: any, row: PabuModel) => React.ReactNode;
-export type TableRowSortingFunction = (a: PabuModel, b: PabuModel) => number;
+export type TableCellFormatter<T extends PabuModel = PabuModel> = (v: any, row: T) => React.ReactNode;
+export type TableRowSortingFunction<T extends PabuModel = PabuModel> = (a: T, b: T) => number;
 
-export class TableColDesriptor {
+export class TableColDesriptor<T extends PabuModel = PabuModel> {
     name: string
     label:  string
-    formatter: TableCellFormatter
-    sortingFunction: TableRowSortingFunction
+    formatter: TableCellFormatter<T>
+    sortingFunction: TableRowSortingFunction<T>
     style: React.CSSProperties
 
-    constructor(name: string, label: string, formatter: TableCellFormatter = v => v,
-                sortingFunction: TableRowSortingFunction = defaultRowSort.bind(null, name), style: React.CSSProperties = {}) {
+    constructor(name: string, label: string, formatter: TableCellFormatter<T> = v => v,
+                sortingFunction: TableRowSortingFunction<T> = defaultRowSort.bind(null, name), style: React.CSSProperties = {}) {
         this.name = name;
         this.label = label;
         this.formatter = formatter;

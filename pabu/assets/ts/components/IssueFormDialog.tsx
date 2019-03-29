@@ -1,7 +1,8 @@
 
 import * as React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem, Grow } from '@material-ui/core';
 import { IssueStatus } from '../types';
+import { dialogTransition } from './tools';
 
 type State = {
     name: string,
@@ -38,6 +39,7 @@ export default class IssueFormDialog extends React.Component<Props, State> {
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
+            TransitionComponent={dialogTransition}
         >
             <DialogTitle id="form-dialog-title">Create task</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">

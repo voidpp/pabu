@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@material-ui/core';
 import { NameDescSubmitCallback } from '../types';
+import { dialogTransition } from './tools';
 
 type State = {
     name: string,
@@ -16,7 +17,7 @@ type Props = {
     onClose: () => void,
 }
 
-export default class NameDescFormDialog extends React.Component<Props, State> {
+export default class ProjectFormDialog extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -38,6 +39,7 @@ export default class NameDescFormDialog extends React.Component<Props, State> {
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
+            TransitionComponent={dialogTransition}
         >
             <DialogTitle id="form-dialog-title">{this.props.caption}</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">

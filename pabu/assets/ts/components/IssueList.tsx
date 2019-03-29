@@ -1,5 +1,5 @@
 
-import { Button, Chip, createStyles, Theme, withStyles, Typography } from '@material-ui/core';
+import { Button, Chip, createStyles, Theme, withStyles, Typography, Link } from '@material-ui/core';
 import * as React from 'react';
 import IssueCardView from '../containers/IssueCardView';
 import StopWatch from '../containers/StopWatch';
@@ -22,6 +22,7 @@ export type DispatchProps = {
     onUpdateIssue: (projectId: number, issueId: number) => void,
     startTime: (projectId: number, issueId: number) => void,
     stopTime: () => void,
+    showIssue: (id: number) => void,
 }
 
 
@@ -54,13 +55,14 @@ const styles = ({ palette }: Theme) => createStyles({
 type Props = StateProps & DispatchProps & OwnProps & MuiProps;
 
 const IssueTableView = React.memo((props: Props) => {
-    let {issues} = props;
+    let {issues, showIssue} = props;
 
     const spentRender = (stat: TimeSummary, issue: Issue) => <StopWatch projectId={issue.projectId} issueId={issue.id} initialValue={stat.spent} />;
     const spentSorting = (a: Issue, b: Issue) => a.timeStat.spent - b.timeStat.spent;
 
     const rowDescriptors = [
-        new TableColDesriptor('name', 'Summary').setStyle({maxWidth: 300, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}),
+        new TableColDesriptor('id', 'Id', id => <Link style={{cursor: 'pointer'}} onClick={() => showIssue(id)}>#{id}</Link>),
+        new TableColDesriptor('name', 'Summary').setStyle({maxWidth: 400, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}),
         new TableColDesriptor('status', 'Status'),
         new TableColDesriptor('timeStat', 'Time spent', spentRender, spentSorting),
     ]

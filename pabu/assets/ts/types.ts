@@ -77,6 +77,7 @@ export interface TimeEntry extends PabuModel {
 
 export interface ExpandedTimeEntry extends TimeEntry {
     issueName: string,
+    issueStatus: IssueStatus,
     userName: string,
     spentHours: number,
 }
@@ -135,6 +136,7 @@ export type IssueDialogContext = {projectId: number, id?: number};
 export type TimeDialogContext = {projectId: number, issueId: number};
 export type IssueByStatusMap = { [s: string ]: Array<Issue> };
 export type ProjectDataAgeMap = { [s: number]: number }
+export type IssueViewDialogContext = {id: number, show: boolean}
 
 export interface Store {
     addTimeDialogContext: TimeDialogContext,
@@ -152,6 +154,7 @@ export interface Store {
     projectInvitationTokens: ProjectInvitationTokenMap,
     inviteDialogIsOpen: boolean,
     projectDataAge: ProjectDataAgeMap,
+    issueViewDialogContext: IssueViewDialogContext,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
+import { dialogTransition } from './tools';
 
 type Props = {
     opened: boolean,
@@ -20,6 +21,7 @@ export default class InviteDialog extends React.Component<Props, {token: string}
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
+            TransitionComponent={dialogTransition}
         >
             <DialogTitle id="form-dialog-title">Project invitation</DialogTitle>
             <form onSubmit={this.onSubmit}>

@@ -1,11 +1,12 @@
 
 import { Button, createStyles, Grid, Theme, Typography, withStyles } from '@material-ui/core';
 import * as React from 'react';
-import NameDescFormDialog from '../components/NameDescFormDialog';
+import ProjectFormDialog from './ProjectFormDialog';
 import Header from '../containers/Header';
 import ProjectList from '../containers/ProjectList';
 import { Project, ProjectDialogContext, ProjectSubmitCallback, UserInfo } from '../types';
 import InviteDialog from './InviteDialog';
+import IssueViewDialog from '../containers/IssueViewDialog';
 
 type Props = {
     userInfo: UserInfo,
@@ -39,7 +40,7 @@ const styles = ({ palette, shape }: Theme) => createStyles({
 export default withStyles(styles)(React.memo((props: Props) => {
 
     return <div className={props.classes.root}>
-        <NameDescFormDialog
+        <ProjectFormDialog
             caption={(props.projectDialogContext && props.projectDialogContext.id) ? "Update project" : "Create project"}
             onSubmit={props.onProjectSubmit.bind(this, props.projectDialogContext ? props.projectDialogContext.id : null)}
             opened={props.projectDialogContext != null}
@@ -51,6 +52,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
             onSubmit={props.onInviteSubmit}
             onClose={props.hideInviteDialog}
         />
+        <IssueViewDialog />
         <Header userInfo={props.userInfo} version={props.version} />
         <Grid container justify="center">
             <div className={props.classes.body}>

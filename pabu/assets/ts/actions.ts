@@ -10,6 +10,7 @@ export enum Action {
     CLOSE_PAYMENT_DIALOG = 'CLOSE_PAYMENT_DIALOG',
     CLOSE_PROJECT = 'CLOSE_PROJECT',
     CLOSE_INVITE_DIALOG = 'CLOSE_INVITE_DIALOG',
+    CLOSE_ISSUE_VIEW_DIALOG = 'CLOSE_ISSUE_VIEW_DIALOG',
     DELETE_PROJECT = 'DELETE_PROJECT',
     DELETE_ISSUE = 'DELETE_ISSUE',
     DELETE_TIME_ENTRY = 'DELETE_TIME_ENTRY',
@@ -21,6 +22,7 @@ export enum Action {
     OPEN_ADD_TIME_DIALOG = 'OPEN_ADD_TIME_DIALOG',
     OPEN_PAYMENT_DIALOG = 'OPEN_PAYMENT_DIALOG',
     OPEN_PROJECT = 'OPEN_PROJECT',
+    OPEN_ISSUE_VIEW_DIALOG = 'OPEN_ISSUE_VIEW_DIALOG',
     RECEIVE_ISSUES = 'RECEIVE_ISSUES',
     RECEIVE_TIME_ENTRIES = 'RECEIVE_TIME_ENTRIES',
     RECEIVE_PROJECTS = 'RECEIVE_PROJECTS',
@@ -30,6 +32,7 @@ export enum Action {
     RECEIVE_PROJECT_TOKENS = 'RECEIVE_PROJECT_TOKENS',
     SET_DARK_THEME = 'SET_DARK_THEME',
     SET_PROJECT_DATA_AGE = 'SET_PROJECT_DATA_AGE',
+
 }
 
 export function fetchAllProjectData(id: number) {
@@ -63,6 +66,19 @@ export function openProject(id: number) {
         pabuLocalStorage.openedProjectId = id;
         dispatch({type: Action.OPEN_PROJECT,id});
         dispatch(fetchAllProjectDataIfNeeded(id));
+    }
+}
+
+export function openIssueViewDialog(id: number) {
+    return {
+        type: Action.OPEN_ISSUE_VIEW_DIALOG,
+        id,
+    }
+}
+
+export function closeIssueViewDialog() {
+    return {
+        type: Action.CLOSE_ISSUE_VIEW_DIALOG,
     }
 }
 

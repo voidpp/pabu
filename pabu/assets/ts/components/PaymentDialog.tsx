@@ -4,6 +4,7 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextFiel
 
 import { PaymentSubmitData, UserMap, User } from '../types';
 import moment = require('moment');
+import { dialogTransition } from './tools';
 
 type Props = {
     opened: boolean,
@@ -35,6 +36,7 @@ export default class PaymentDialog extends React.Component<Props, PaymentSubmitD
             open={opened}
             onClose={onClose}
             aria-labelledby="form-dialog-title"
+            TransitionComponent={dialogTransition}
         >
             <DialogTitle id="form-dialog-title">Add time entry</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">

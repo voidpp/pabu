@@ -1,11 +1,11 @@
 
 import { connect } from 'react-redux';
-import { processIssues, receiveIssues, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog } from '../actions';
+import { processIssues, receiveIssues, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog, openIssueViewDialog } from '../actions';
 import IssueCardView, { DispatchProps, OwnProps, StateProps } from '../components/IssueCardView';
 import { ServerIssueData, Store, ThunkDispatcher, IssueStatus, IssueByStatusMap } from '../types';
 import { DropResult } from 'react-beautiful-dnd';
 
-function mapStateToProps(state: Store, props: OwnProps) {
+function mapStateToProps(state: Store, props: OwnProps): StateProps {
     let {issues, users} = state;
 
     let issuesByStatus: IssueByStatusMap = {};
@@ -23,8 +23,9 @@ function mapStateToProps(state: Store, props: OwnProps) {
     }
 }
 
-const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
+const mapDispatchToProps = (dispatch: ThunkDispatcher): DispatchProps => {
     return {
+        showIssue: (id: number) => dispatch(openIssueViewDialog(id)),
         onDragEnd: (result: DropResult, issues: IssueByStatusMap) => {
             if (result.reason != 'DROP' || !result.destination)
                 return;

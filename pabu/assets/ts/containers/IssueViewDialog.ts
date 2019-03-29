@@ -1,19 +1,22 @@
 
+import { Store,  ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
-import { deleteIssue, openAddTimeDialog, openIssueDialog, openIssueViewDialog, startTime, stopTime } from '../actions';
-import IssueList, { DispatchProps, OwnProps, StateProps } from '../components/IssueList';
-import { Store, ThunkDispatcher } from '../types';
+import IssueViewDialog, {StateProps, DispatchProps} from '../components/IssueViewDialog';
+import { closeIssueViewDialog, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog } from '../actions';
 
-function mapStateToProps(state: Store, props: OwnProps): StateProps {
-    let {issues, tickingStat} = state;
+function mapStateToProps(state: Store): StateProps {
+    let {issues, issueViewDialogContext, tickingStat} = state;
     return {
-        issues: Object.values(issues).filter(i => i.projectId == props.id),
+        issue: issueViewDialogContext.id ? issues[issueViewDialogContext.id] : null,
+        show: issueViewDialogContext.show,
         tickingStat,
     }
 }
 
 const mapDispatchToProps = (dispatch: ThunkDispatcher): DispatchProps => {
     return {
+        onClose: () => dispatch(closeIssueViewDialog()),
+        // TODO: this is copypaste from IssueList.ts ...
         onAddNewTime: (projectId: number, issueId: number) => dispatch(openAddTimeDialog(projectId, issueId)),
         startTime: (projectId: number, issueId: number) => dispatch(startTime(projectId, issueId)),
         stopTime: () => dispatch(stopTime()),
@@ -22,9 +25,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher): DispatchProps => {
                 dispatch(deleteIssue(issueId, projectId));
         },
         onUpdateIssue: (projectId: number, id: number) => dispatch(openIssueDialog(projectId, id)),
-        onAddNewIssue: (projectId: number) => dispatch(openIssueDialog(projectId)),
-        showIssue: (id: number) => dispatch(openIssueViewDialog(id)),
     }
 }
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(IssueList);
+export default connect<StateProps, DispatchProps>(mapStateToProps, mapDispatchToProps)(IssueViewDialog);

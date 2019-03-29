@@ -27,6 +27,7 @@ const darkTheme = createMuiTheme({
     },
     typography: {
         useNextVariants: true,
+
     }
 });
 

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { Action } from './actions';
-import { Store } from './types';
+import { Store, IssueViewDialogContext } from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
 
@@ -85,6 +85,14 @@ function inviteDialogIsOpen(state = false, action) {
     return state;
 }
 
+function issueViewDialogContext(state = {show: false, id: 0}, action): IssueViewDialogContext {
+    if (action.type == Action.OPEN_ISSUE_VIEW_DIALOG)
+        return {show: true, id: action.id};
+    if (action.type == Action.CLOSE_ISSUE_VIEW_DIALOG)
+        return Object.assign({}, state, {show: false});
+    return state;
+}
+
 const rootReducer = combineReducers<Store>({
     addTimeDialogContext,
     isDarkTheme,
@@ -101,6 +109,7 @@ const rootReducer = combineReducers<Store>({
     users: resourceReducerFactory(Action.RECEIVE_USERS),
     inviteDialogIsOpen,
     projectDataAge,
+    issueViewDialogContext,
 });
 
 export default rootReducer

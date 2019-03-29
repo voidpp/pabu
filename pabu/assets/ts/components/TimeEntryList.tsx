@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PabuTable, {TableColDesriptor} from './PabuTable';
-import { PabuModel, ExpandedTimeEntry, TickingStat, TimeEntry } from '../types';
+import { PabuModel, ExpandedTimeEntry, TickingStat, TimeEntry, IssueStatus } from '../types';
 import moment = require('moment');
 import { formatDuration } from '../tools';
-import { Button } from '@material-ui/core';
+import { Button, Link } from '@material-ui/core';
 import StopWatch from '../containers/StopWatch';
 
 export type OwnProps = {
@@ -20,17 +20,23 @@ export type DispatchProps = {
     onAddNewTime: (projectId: number) => void,
     onStartTime: (projectId: number) => void,
     onStopTime: () => void,
+    showIssue: (id: number) => void,
+}
+
+const renderIssueLink = (entry: ExpandedTimeEntry, showIssue): React.ReactNode => {
+    const textDecoration = entry.issueStatus == IssueStatus.DONE ? 'line-through' : 'initial'
+    return <Link style={{cursor: 'pointer', textDecoration}} onClick={() => showIssue(entry.issueId)}>#{entry.issueId}</Link>
 }
 
 export default React.memo((props: StateProps & DispatchProps & OwnProps) => {
-    const {tickingStat, rows, onDelete, onAddNewTime, onStartTime, onStopTime, id} = props;
+    const {tickingStat, rows, onDelete, onAddNewTime, onStartTime, onStopTime, id, showIssue} = props;
 
     const lengthFormatter = (v: number, entry: TimeEntry) => entry.end ? formatDuration(v) : <StopWatch projectId={id} initialValue={v} />
 
     const rowDescriptors = [
         new TableColDesriptor('start', 'Start', v => moment.unix(v).format('YYYY-MM-DD HH:mm')),
         new TableColDesriptor('spentHours' , 'Length', lengthFormatter),
-        new TableColDesriptor('issueId', 'Task'),
+        new TableColDesriptor<ExpandedTimeEntry>('issueId', 'Task', (id, entry) => id ? renderIssueLink(entry, showIssue) : null),
         new TableColDesriptor('userName', 'User'),
     ]
 

@@ -39,6 +39,12 @@ html, body {
     .content {
         padding: 20px;
     }
+    .controls {
+        padding: 10px 20px;
+        > * {
+            margin-right: 10px;
+        }
+    }
 }
 
 .card {
@@ -58,6 +64,9 @@ html, body {
             font-size: 0.9em;
             word-break: break-all;
             padding-right: 5px;
+            > a {
+                cursor: pointer;
+            }
         }
     }
     > .footer {
