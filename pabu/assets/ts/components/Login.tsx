@@ -1,15 +1,9 @@
 
 import * as React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import { Grid, CardHeader, Avatar } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { Grid, Card, CardHeader, Avatar, CardContent, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 export default class Login extends React.Component<{authBackendNames: Array<string>}> {
 

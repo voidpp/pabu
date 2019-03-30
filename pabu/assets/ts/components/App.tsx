@@ -3,16 +3,13 @@ import * as React from 'react';
 import Dashboard from '../containers/Dashboard';
 import Login from './Login';
 import { UserInfo } from '../types';
-import { Paper } from '@material-ui/core';
-
-import {blue, cyan, pink} from '@material-ui/core/colors';
-
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Paper, createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { colors } from '@material-ui/core';
 
 const lightTheme = createMuiTheme({
     palette: {
         type: 'light',
-        primary: blue,
+        primary: colors.blue,
     },
     typography: {
         useNextVariants: true,
@@ -22,8 +19,8 @@ const lightTheme = createMuiTheme({
 const darkTheme = createMuiTheme({
     palette: {
         type: 'dark',
-        primary: cyan,
-        secondary: pink,
+        primary: colors.cyan,
+        secondary: colors.pink,
     },
     typography: {
         useNextVariants: true,

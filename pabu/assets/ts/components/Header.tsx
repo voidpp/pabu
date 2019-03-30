@@ -1,12 +1,7 @@
 import * as React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import { UserInfo, TickingStat, ProjectMap, IssueMap } from '../types';
-import { Avatar, Button, Paper, Divider, withStyles, Theme, createStyles } from '@material-ui/core';
+import { Avatar, Button, Paper, Divider, withStyles, Theme, createStyles, AppBar, Toolbar, IconButton, Typography, Popover } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Popover from '@material-ui/core/Popover';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StopWatch from '../containers/StopWatch';
 

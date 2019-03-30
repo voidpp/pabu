@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import CssBaseline from '@material-ui/core/CssBaseline';
+import {CssBaseline} from '@material-ui/core';
 
 import '../scss/app.scss';
 
