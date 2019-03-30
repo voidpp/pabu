@@ -122,9 +122,13 @@ def add_api_controllers(app: Flask, db: Database):
 
     @jsonrpc_api.dispatcher.add_method
     def process_issues(issues): # pylint: disable=unused-variable
-        def pre_update(data: dict, issue: Issue):
-            if 'status' in data and issue.status != data['status']:
-                data['status_date'] = datetime.now()
+        def pre_update(new_data: dict, old_issue: Issue):
+            if 'status' in new_data and old_issue.status != new_data['status']:
+                new_data['status_date'] = datetime.now()
+                if new_data['status'] == 'in progress':
+                    new_data['assignee_id'] = get_user_id()
+                if new_data['status'] == 'todo':
+                    new_data['assignee_id'] = None
 
         with db.session_scope() as conn:
             issues = process_resources(issues, Issue, conn, {

@@ -1,10 +1,10 @@
 
 import { connect } from 'react-redux';
 import { deletePayment, fetchProjects, openPaymentDialog } from '../actions';
-import { ExpandedPayment, Store, ThunkDispatcher } from '../types';
+import { ExpandedPayment, State, ThunkDispatcher } from '../types';
 import PaymentList, {OwnProps, StateProps, DispatchProps} from '../components/PaymentList';
 
-function mapStateToProps(state: Store, props: OwnProps) {
+function mapStateToProps(state: State, props: OwnProps) {
     const {payments, users} = state;
 
     let paymentRows = [];

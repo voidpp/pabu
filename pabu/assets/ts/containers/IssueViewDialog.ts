@@ -1,15 +1,16 @@
 
-import { Store,  ThunkDispatcher } from '../types';
+import { State,  ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
 import IssueViewDialog, {StateProps, DispatchProps} from '../components/IssueViewDialog';
 import { closeIssueViewDialog, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog } from '../actions';
 
-function mapStateToProps(state: Store): StateProps {
-    let {issues, issueViewDialogContext, tickingStat} = state;
+function mapStateToProps(state: State): StateProps {
+    let {issues, issueViewDialogContext, tickingStat, projects} = state;
     return {
         issue: issueViewDialogContext.id ? issues[issueViewDialogContext.id] : null,
         show: issueViewDialogContext.show,
         tickingStat,
+        project: issueViewDialogContext.id ? projects[issues[issueViewDialogContext.id].projectId] : null
     }
 }
 

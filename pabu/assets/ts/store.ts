@@ -3,13 +3,13 @@ import thunkMiddleware, {ThunkMiddleware} from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import rootReducer from './reducers';
 import { convertKeysToCamelCase } from './tools';
-import { Store } from './types';
+import { State } from './types';
 
 const loggerMiddleware = createLogger();
 
 export default function configureStore() {
 
-    let initialData: Store = {} as Store;
+    let initialData: State = {} as State;
     if (window['initialData'].initialData) {
         initialData = convertKeysToCamelCase(window['initialData'].initialData);
         initialData.projectDataAge = Object.values(initialData.projects).reduce((map, p) => (map[p.id] = new Date().getTime(), map), {})

@@ -1,12 +1,13 @@
 import { createStyles, Theme, Typography, withStyles, Avatar, Tooltip, Link } from "@material-ui/core";
 import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DroppableStateSnapshot, DropResult } from "react-beautiful-dnd";
-import { IssueByStatusMap, IssueStatus, UserMap, TickingStat } from "../types";
+import { IssueByStatusMap, IssueStatus, UserMap, TickingStat, Issue, User } from "../types";
 import classNames = require("classnames");
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import StopWatch from "../containers/StopWatch";
 import IssueActionIcons from "./IssueActionIcons";
 import { removeKeys } from "../tools";
+import { IssueUserIcon } from "./tools";
 
 const styles = ({ palette, shape, typography }: Theme) => createStyles({
     card: {
@@ -26,7 +27,6 @@ const styles = ({ palette, shape, typography }: Theme) => createStyles({
 
 export type StateProps = {
     issues: IssueByStatusMap,
-    users: UserMap,
 }
 
 export type DispatchProps = {
@@ -35,7 +35,7 @@ export type DispatchProps = {
 }
 
 export type OwnProps = {
-    id: number,
+    projectId: number,
     tickingStat: TickingStat,
     onAddNewIssue: (projectId: number) => void,
     onAddNewTime: (projectId: number, issueId: number) => void,
@@ -52,9 +52,40 @@ type MuiProps = {
 
 type Props = OwnProps & StateProps & DispatchProps & MuiProps;
 
+type CardContentProps = {
+    showIssue: (id: number) => void,
+    tickingStat: TickingStat,
+    onAddNewTime: (projectId: number, issueId: number) => void,
+    onDeleteIssue: (projectId: number, issueId: number) => void,
+    onUpdateIssue: (projectId: number, issueId: number) => void,
+    startTime: (projectId: number, issueId: number) => void,
+    stopTime: () => void,
+    issue: Issue,
+}
+
+const CardContent = withStyles(styles)(React.memo((props: CardContentProps & MuiProps) => {
+
+    const {showIssue, issue} = props;
+
+    return <React.Fragment>
+        <div className="header">
+            <Typography className="title" variant="subtitle1">
+                <Link onClick={() => showIssue(issue.id)}>#{issue.id}</Link> {issue.name}
+            </Typography>
+            <IssueUserIcon issue={issue}/>
+        </div>
+        <div className="footer">
+            <Typography style={{opacity: 0.6, flexGrow: 1}}>
+                <StopWatch projectId={issue.projectId} issueId={issue.id} initialValue={issue.timeStat.spent} />
+            </Typography>
+            <IssueActionIcons issue={issue} {...removeKeys<CardContentProps>(props, 'classes')} />
+        </div>
+    </React.Fragment>
+}))
+
 export default withStyles(styles)(React.memo((props: Props) => {
 
-    let {issues, onDragEnd, classes, users, showIssue} = props;
+    let {issues, onDragEnd, classes} = props;
 
     const isDifferentStatus = (status: string, {isDraggingOver, draggingOverWith}: DroppableStateSnapshot): boolean => {
         return isDraggingOver && draggingOverWith && !issues[status].filter(i => i.id == parseInt(draggingOverWith)).length;
@@ -70,20 +101,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
                         <Draggable draggableId={i.id.toString()} index={idx} key={i.id}>
                             {({innerRef, dragHandleProps, draggableProps}) => (
                                 <div className={classes.card + ' card'} ref={innerRef} {...draggableProps} {...dragHandleProps}>
-                                    <div className="header">
-                                        <Typography className="title" variant="subtitle1">
-                                            <Link onClick={() => showIssue(i.id)}>#{i.id}</Link> {i.name}
-                                        </Typography>
-                                        {users[i.userId].avatar ?
-                                            <Avatar className={classes.avatar} src={users[i.userId].avatar}/> :
-                                            <AccountCircle className={classes.avatar}/>}
-                                    </div>
-                                    <div className="footer">
-                                        <Typography style={{opacity: 0.6, flexGrow: 1}}>
-                                            <StopWatch projectId={i.projectId} issueId={i.id} initialValue={i.timeStat.spent} />
-                                        </Typography>
-                                        <IssueActionIcons issue={i} {...removeKeys<Props>(props, 'classes')} />
-                                    </div>
+                                    <CardContent issue={i} {...removeKeys<Props>(props, 'classes')} />
                                 </div>
                             )}
                         </Draggable>)}

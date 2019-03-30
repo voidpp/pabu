@@ -2,13 +2,13 @@
 import { connect } from 'react-redux';
 import { fetchProjects, kickUserFromProject } from '../actions';
 import PabuTable, { TableColDesriptor } from '../components/PabuTable';
-import { Store, ThunkDispatcher, User } from '../types';
+import { State, ThunkDispatcher, User } from '../types';
 
 type Props = {
     id: number,
 }
 
-function mapStateToProps(state: Store, props: Props) {
+function mapStateToProps(state: State, props: Props) {
     const {users, projects} = state;
 
     const project = projects[props.id];

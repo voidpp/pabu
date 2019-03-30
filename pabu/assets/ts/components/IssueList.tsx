@@ -145,7 +145,7 @@ class IssueList extends React.Component<Props, State> {
             </div>
             {this.state.layout == 'list' ?
                 <IssueTableView {...this.props} issues={issues}/> :
-                <IssueCardView doneDateFilter={this.state.doneDateFilter} id={id} {...removeKeys<Props>(this.props, 'classes')}/>}
+                <IssueCardView doneDateFilter={this.state.doneDateFilter} projectId={id} {...removeKeys<Props>(this.props, 'classes')}/>}
         </div>
     }
 }

@@ -2,19 +2,19 @@
 import { connect } from 'react-redux';
 import { deleteProject, openProjectDialog, leaveProject, fetchProjects } from '../actions';
 import ProjectSummary, { DispatchProps, OwnProps, StateProps, UserPaymentStat } from '../components/ProjectSummary';
-import { Store, ThunkDispatcher } from '../types';
+import { State, ThunkDispatcher } from '../types';
 
-function mapStateToProps(store: Store, props: OwnProps): StateProps {
+function mapStateToProps(state: State, props: OwnProps): StateProps {
     const projectId = props.id;
 
-    const project = store.projects[projectId];
-    const payments = Object.values(store.payments).filter(r => r.projectId == projectId);
-    const timeEntries = Object.values(store.timeEntries).filter(r => r.projectId == projectId);
+    const project = state.projects[projectId];
+    const payments = Object.values(state.payments).filter(r => r.projectId == projectId);
+    const timeEntries = Object.values(state.timeEntries).filter(r => r.projectId == projectId);
 
     let userPaymentStat: {[n: number]: UserPaymentStat} = {};
 
     for (let userId of project.users) {
-        userPaymentStat[userId] = {spent: 0, paid: 0, user: store.users[userId], ticking: false};
+        userPaymentStat[userId] = {spent: 0, paid: 0, user: state.users[userId], ticking: false};
     }
 
     for (const payment of payments) {

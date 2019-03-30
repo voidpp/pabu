@@ -2,16 +2,16 @@
 import { connect } from 'react-redux';
 import { processIssues, receiveIssues, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog, openIssueViewDialog } from '../actions';
 import IssueCardView, { DispatchProps, OwnProps, StateProps } from '../components/IssueCardView';
-import { ServerIssueData, Store, ThunkDispatcher, IssueStatus, IssueByStatusMap } from '../types';
+import { ServerIssueData, State, ThunkDispatcher, IssueStatus, IssueByStatusMap } from '../types';
 import { DropResult } from 'react-beautiful-dnd';
 
-function mapStateToProps(state: Store, props: OwnProps): StateProps {
-    let {issues, users} = state;
+function mapStateToProps(state: State, props: OwnProps): StateProps {
+    let {issues} = state;
 
     let issuesByStatus: IssueByStatusMap = {};
     Object.values(IssueStatus).map(s => {issuesByStatus[s] = []})
     const now = new Date().getTime() / 1000;
-    for (const issue of Object.values(issues).filter(i => i.projectId == props.id).sort((a, b) => a.rank - b.rank)) {
+    for (const issue of Object.values(issues).filter(i => i.projectId == props.projectId).sort((a, b) => a.rank - b.rank)) {
         if (props.doneDateFilter > 0 && issue.status == IssueStatus.DONE && issue.statusDate < now - props.doneDateFilter)
             continue;
         issuesByStatus[issue.status].push(issue);
@@ -19,7 +19,6 @@ function mapStateToProps(state: Store, props: OwnProps): StateProps {
 
     return {
         issues: issuesByStatus,
-        users,
     }
 }
 

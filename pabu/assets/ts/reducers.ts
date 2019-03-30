@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { Action } from './actions';
-import { Store, IssueViewDialogContext } from './types';
+import { State, IssueViewDialogContext } from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
 
@@ -93,7 +93,7 @@ function issueViewDialogContext(state = {show: false, id: 0}, action): IssueView
     return state;
 }
 
-const rootReducer = combineReducers<Store>({
+const rootReducer = combineReducers<State>({
     addTimeDialogContext,
     isDarkTheme,
     issueDialogContext,

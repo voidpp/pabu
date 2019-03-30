@@ -1,10 +1,10 @@
 
 import { connect } from 'react-redux';
 import Header, {StateProps, DispatchProps, OwnProps} from '../components/Header';
-import { Store, ThunkDispatcher } from '../types';
+import { State, ThunkDispatcher } from '../types';
 import { stopTime, setDarkTheme } from '../actions';
 
-const mapStateToProps = (state: Store) => {
+const mapStateToProps = (state: State) => {
     const {tickingStat, isDarkTheme, projects, issues } = state;
 
     return {

@@ -2,9 +2,9 @@
 import { connect } from 'react-redux';
 import { closeInviteDialog, closeProjectDialog, fetchProjects, joinToProject, openInviteDialog, openProjectDialog, receiveProjects, sendProject, setDarkTheme, stopTime } from '../actions';
 import Dashboard from '../components/Dashboard';
-import { Store, ThunkDispatcher } from '../types';
+import { State, ThunkDispatcher } from '../types';
 
-const mapStateToProps = (state: Store) => {
+const mapStateToProps = (state: State) => {
     const { projectDialogContext, tickingStat, projects, isDarkTheme, inviteDialogIsOpen } = state;
     let projectData = {name: '', desc: ''};
     if (projectDialogContext && projectDialogContext.id) {

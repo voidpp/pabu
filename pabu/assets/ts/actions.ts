@@ -1,7 +1,6 @@
 import client from "./client";
-
-import { TickingStat, PaymentSubmitData, IssueStatus, ServerIssueData, ThunkDispatcher, AllProjectData, StoreGetter } from "./types";
 import { pabuLocalStorage } from "./tools";
+import { PaymentSubmitData, ServerIssueData, StateGetter, ThunkDispatcher, TickingStat } from "./types";
 
 export enum Action {
     CLOSE_ISSUE_DIALOG = 'CLOSE_ADD_ISSUE_DIALOG',
@@ -54,7 +53,7 @@ export function fetchAllProjectData(id: number) {
 }
 
 export function fetchAllProjectDataIfNeeded(id: number) {
-    return (dispatch: ThunkDispatcher, getState: StoreGetter) => {
+    return (dispatch: ThunkDispatcher, getState: StateGetter) => {
         if (id in getState().projectDataAge)
             return;
         return dispatch(fetchAllProjectData(id));

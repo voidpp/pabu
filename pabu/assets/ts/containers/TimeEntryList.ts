@@ -2,9 +2,9 @@
 import { connect } from 'react-redux';
 import { deleteTimeEntry, fetchProjects, openAddTimeDialog, startTime, stopTime, openIssueViewDialog } from '../actions';
 import TimeEntryList, { DispatchProps, OwnProps, StateProps } from '../components/TimeEntryList';
-import { ExpandedTimeEntry, Store, ThunkDispatcher, IssueStatus } from '../types';
+import { ExpandedTimeEntry, State, ThunkDispatcher, IssueStatus } from '../types';
 
-function mapStateToProps(state: Store, props: OwnProps): StateProps {
+function mapStateToProps(state: State, props: OwnProps): StateProps {
     const {issues, timeEntries, users, tickingStat} = state;
 
     let entries = [];

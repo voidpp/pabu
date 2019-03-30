@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import App from '../components/App';
-import { Store } from '../types';
+import { State } from '../types';
 
-function mapStateToProps(state: Store) {
+function mapStateToProps(state: State) {
     const { isDarkTheme } = state;
     return {
         isDarkTheme,

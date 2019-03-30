@@ -2,9 +2,9 @@
 import { connect } from 'react-redux';
 import { createProjectToken, deleteProjectToken, fetchProjects } from '../actions';
 import ProjectInviteTokenList, { DispatchProps, OwnProps, StateProps } from '../components/ProjectInviteTokenList';
-import { ProjectInvitationToken, Store, ThunkDispatcher } from '../types';
+import { ProjectInvitationToken, State, ThunkDispatcher } from '../types';
 
-function mapStateToProps(state: Store, props: OwnProps) {
+function mapStateToProps(state: State, props: OwnProps) {
     const {projectInvitationTokens} = state;
 
     return {

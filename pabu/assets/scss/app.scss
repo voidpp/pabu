@@ -45,6 +45,18 @@ html, body {
             margin-right: 10px;
         }
     }
+    .details {
+        margin: 10px 20px;
+        td {
+            padding: 3px 0px;
+        }
+        tr > td:first-child {
+            padding-right: 10px;
+            > p {
+                font-weight: bold;
+            }
+        }
+    }
 }
 
 .card {

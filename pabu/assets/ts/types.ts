@@ -59,7 +59,8 @@ export interface Issue extends PabuModel {
     name: string,
     desc: string,
     projectId: number,
-    userId: number,
+    reporterId: number,
+    assigneeId: number,
     timeEntries: Array<number>,
     timeStat: TimeSummary,
     status: IssueStatus,
@@ -138,7 +139,7 @@ export type IssueByStatusMap = { [s: string ]: Array<Issue> };
 export type ProjectDataAgeMap = { [s: number]: number }
 export type IssueViewDialogContext = {id: number, show: boolean}
 
-export interface Store {
+export interface State {
     addTimeDialogContext: TimeDialogContext,
     isDarkTheme: boolean,
     issueDialogContext: IssueDialogContext,
@@ -189,4 +190,4 @@ export type AllProjectData = {
     tokens: ProjectInvitationTokenMap,
 }
 
-export type StoreGetter = () => Store;
+export type StateGetter = () => State;

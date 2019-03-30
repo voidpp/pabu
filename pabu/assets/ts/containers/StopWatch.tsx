@@ -1,8 +1,8 @@
+import { createStyles, Theme, withStyles } from "@material-ui/core";
 import * as React from 'react';
-import { withStyles, Theme, createStyles } from "@material-ui/core";
 import { connect } from 'react-redux';
-import { ThunkDispatcher, Store, TickingStat } from '../types';
 import { formatDuration, formatStopwatchDuration } from '../tools';
+import { State, TickingStat } from '../types';
 
 
 const styles = ({ palette, typography }: Theme) => createStyles({
@@ -17,13 +17,13 @@ type Props = {
     issueId?: number,
 }
 
-type State = {
+type StopWatchState = {
     value: number,
     timerId: NodeJS.Timeout,
     started: number,
 }
 
-class StopWatch extends React.Component<Props, State> {
+class StopWatch extends React.Component<Props, StopWatchState> {
 
     constructor(props: Props) {
         super(props);
@@ -88,7 +88,7 @@ class StopWatch extends React.Component<Props, State> {
     }
 }
 
-function mapStateToProps(state: Store) {
+function mapStateToProps(state: State) {
     const { tickingStat } = state;
     return {
         tickingStat

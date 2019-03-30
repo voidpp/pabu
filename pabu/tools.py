@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import class_mapper, ColumnProperty
+from sqlalchemy import or_
 import sqlalchemy.sql.sqltypes
 from voluptuous import Schema
 
@@ -78,7 +79,8 @@ def issue_to_dict(issue: Issue):
         'status': issue.status,
         'rank': issue.rank,
         'project_id': issue.project_id,
-        'userId': issue.user_id,
+        'reporter_id': issue.reporter_id,
+        'assignee_id': issue.assignee_id,
         'time_stat': entry_stat_from_list(issue.time_entries),
         'time_entries': [t.id for t in issue.time_entries],
         'status_date': issue.status_date.timestamp(),
@@ -120,7 +122,7 @@ def time_entry_to_dict(time_entry: TimeEntry):
     }
 
 
-def idize(func, rows):
+def idize(func, rows: list) -> dict:
     return {r.id: func(r) for r in rows}
 
 def get_all_project_data(db: Database):
@@ -129,11 +131,21 @@ def get_all_project_data(db: Database):
         rows = conn.query(Project).join(projects_users).join(User).filter(User.id == user_id).all()
         project_id_list = [r.id for r in rows]
 
+        project_user_rows = conn.query(User).join(projects_users).join(Project).filter(Project.id.in_(project_id_list)).all()
+        users = idize(user_to_dict, project_user_rows)
+
+        # if somebody left the project still needs his/her data
+        issue_users = [i.assignee_id for i in conn.query(Issue.assignee_id).filter(~Issue.assignee_id.in_(users.keys())).all()]
+        issue_users += [i.reporter_id for i in conn.query(Issue.reporter_id).filter(~Issue.reporter_id.in_(users.keys())).all()]
+
+        if issue_users:
+            users.update(idize(user_to_dict, conn.query(User).filter(User.id.in_(issue_users))))
+
         return {
             'projects': idize(project_to_dict, rows),
             'issues': idize(issue_to_dict, conn.query(Issue).filter(Issue.project_id.in_(project_id_list)).all()),
             'time_entries': idize(time_entry_to_dict, conn.query(TimeEntry).filter(TimeEntry.project_id.in_(project_id_list)).all()),
-            'users': idize(user_to_dict, conn.query(User).join(projects_users).join(Project).filter(Project.id.in_(project_id_list)).all()),
+            'users': users,
             'payments': idize(payment_to_dict, conn.query(Payment).filter(Payment.project_id.in_(project_id_list)).all()),
             'project_invitation_tokens': idize(project_token_to_dict, conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.project_id.in_(project_id_list)).all()),
         }
