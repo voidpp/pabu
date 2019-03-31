@@ -2,6 +2,7 @@ import * as React from 'react';
 import { withStyles, IconButton, Theme, createStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { filterDataProps } from '../tools';
 
 type ActionIconProps = {
     icon: IconProp,
@@ -25,7 +26,7 @@ const styles = ({ palette }: Theme) => createStyles({
 export default withStyles(styles)(React.memo((props: ActionIconProps) => {
     const {icon, classes, onClick, disabled} = props;
     return (
-        <IconButton className={classes.iconButton} onClick={onClick} disabled={disabled}>
+        <IconButton {...filterDataProps(props)} className={classes.iconButton} onClick={onClick} disabled={disabled}>
             <FontAwesomeIcon icon={icon} className={classes.icon + (props.className ? (' ' + props.className) : '')} />
         </IconButton>
     )

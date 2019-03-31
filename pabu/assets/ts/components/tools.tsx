@@ -18,7 +18,8 @@ const userAvatarStyles = ({ palette, shape, typography }: Theme) => createStyles
 const UserAvatarComponent = withStyles(userAvatarStyles)(React.memo((props: {userId: number, users: UserMap, classes: any}) => {
     const {users, userId, classes} = props;
     const user = users[userId];
-    return user.avatar ? <Avatar className={classes.avatar} src={user.avatar}/> : <AccountCircle className={classes.avatar}/>
+    return user.avatar ? <Avatar data-tip={user.name} className={classes.avatar} src={user.avatar}/> :
+        <AccountCircle className={classes.avatar} data-tip={user.name}/>
 }));
 
 export const UserAvatar = connect((state: State) => ({users: state.users}))(UserAvatarComponent);

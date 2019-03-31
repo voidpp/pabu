@@ -82,3 +82,12 @@ export function convertKeysToCamelCase<T>(data: T): T {
 export function removeKeys<T extends object>(data: T, ...keys: Array<string>): T {
     return Object.keys(data).filter(k => keys.indexOf(k) == -1).reduce((map, key) => (map[key] = data[key], map), {}) as T;
 }
+
+export function filterDataProps(props: StringObject): StringObject {
+    let res = {};
+    for (const key in props) {
+        if (key.startsWith('data-'))
+            res[key] = props[key];
+    }
+    return res;
+}

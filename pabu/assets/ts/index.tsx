@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import {CssBaseline} from '@material-ui/core';
+import * as ReactTooltip from 'react-tooltip'
 
 import '../scss/app.scss';
 
@@ -28,6 +29,7 @@ ReactDOM.render(
     <React.Fragment>
         <CssBaseline />
         <Root/>
+        <ReactTooltip effect="solid" className="pb-tooltip"/>
     </React.Fragment>,
     document.getElementById("body")
 );

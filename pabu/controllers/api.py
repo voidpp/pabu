@@ -73,7 +73,8 @@ def add_api_controllers(app: Flask, db: Database):
     def get_projects(id: int = None): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(Project).outerjoin(Payment).join(projects_users).join(User).filter(User.id == user_id).outerjoin(Issue)
+            qs = conn.query(Project).outerjoin(Payment).join(projects_users).join(User).filter(User.id == user_id) \
+                     .outerjoin(Issue,Project.id == Issue.project_id)
             if id:
                 qs = qs.filter(Project.id == id)
             data = {r.id: project_to_dict(r) for r in qs.all()}
@@ -143,7 +144,8 @@ def add_api_controllers(app: Flask, db: Database):
     def get_issues(project_id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            rows = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(Project.id == project_id).all()
+            rows = conn.query(Issue).join(Project).join(projects_users).join(User).filter(User.id == user_id) \
+                       .filter(Project.id == project_id).all()
             return {r.id: issue_to_dict(r) for r in rows}
 
     @jsonrpc_api.dispatcher.add_method
@@ -267,7 +269,8 @@ def add_api_controllers(app: Flask, db: Database):
     def delete_project_token(id: int): # pylint: disable=unused-variable
         user_id = get_user_id()
         with db.session_scope() as conn:
-            qs = conn.query(ProjectInvitationToken).join(Project).join(projects_users).join(User).filter(User.id == user_id).filter(ProjectInvitationToken.id == id)
+            qs = conn.query(ProjectInvitationToken).join(Project).join(projects_users).join(User).filter(User.id == user_id) \
+                      .filter(ProjectInvitationToken.id == id)
             prj_token = qs.first()
             if not prj_token:
                 abort(404)

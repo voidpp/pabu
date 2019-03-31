@@ -1,10 +1,11 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography, Chip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
 import { Issue, TickingStat, Project } from '../types';
 import { dialogTransition, UserLabel, Badge, NoDataLabel } from './tools';
 import StopWatch from '../containers/StopWatch';
 import moment = require('moment');
+import Tooltip from './Tooltip';
 
 export type StateProps = {
     issue: Issue,
@@ -76,10 +77,11 @@ export default React.memo((props: StateProps & DispatchProps) => {
                             <td>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                     <Badge text={issue.status} style={{marginRight: 5}}></Badge>
-                                    <Typography component="span">
-                                        {/* TODO: Tooltip: moment.unix(issue.statusDate).format('YYYY-MM-DD HH:mm') */}
-                                        ({moment.duration(issue.statusDate*1000 - new Date().getTime()).humanize(true)})
-                                    </Typography>
+                                    <Tooltip placement="top" title={moment.unix(issue.statusDate).format('YYYY-MM-DD HH:mm:ss')}>
+                                        <Typography component="span">
+                                            ({moment.duration(issue.statusDate*1000 - new Date().getTime()).humanize(true)})
+                                        </Typography>
+                                    </Tooltip>
                                 </div>
                             </td>
                         </tr>
@@ -90,12 +92,6 @@ export default React.memo((props: StateProps & DispatchProps) => {
                     </tbody>
                 </table>
                 <Divider/>
-                {/* <DialogContent className="content">
-                    <Typography style={{fontStyle: issue.desc ? 'default' : 'italic'}}>
-                        {issue.desc || 'There is no description'}
-                    </Typography>
-                </DialogContent>
-                <Divider/> */}
                 <DialogActions>
                     <Button variant="contained" color="secondary" onClick={()=>onDeleteIssue(issue.projectId, issue.id)}>Delete</Button>
                 </DialogActions>

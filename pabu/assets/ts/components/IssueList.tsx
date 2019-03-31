@@ -139,8 +139,8 @@ class IssueList extends React.Component<Props, State> {
         return <div>
             <div className={classes.menuBar}>
                 <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create task</Button>
-                <ActionIcon icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
-                <ActionIcon icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon data-tip="List view" icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon data-tip="Card view" icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
                 {filter}
             </div>
             {this.state.layout == 'list' ?
