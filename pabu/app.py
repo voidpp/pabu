@@ -12,6 +12,7 @@ from .controllers.api import add_api_controllers
 from .controllers.auth import add_auth_controllers
 from .auth import is_logged_in
 from .tools import get_all_project_data
+from .javascript_libraries import javascript_libraries
 
 frontend = Flask('pabu')
 api = Flask('api')
@@ -56,7 +57,8 @@ def index(path = None):
             'authBackendNames': list(config.auth.keys()),
             'version': pkg_resources.get_distribution('pabu').version,
             'initialData': get_all_project_data(db) if is_logged_in() else None,
-        }
+        },
+        javascript_libraries = javascript_libraries[config.mode],
     )
 
 add_api_controllers(api, db)

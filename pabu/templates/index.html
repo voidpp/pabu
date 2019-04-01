@@ -8,10 +8,9 @@
     <body>
         <div id="body"></div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.4/umd/react.development.js" integrity="sha256-5qXzTpCme2glpjIMD82N9CvHzot7DsNj+J81wNBYCs8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.4/umd/react-dom.development.js" integrity="sha256-zaBIa6kuwEspzOIU5TeB5bATnxmvJFmht9smi5jLH/Q=" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/@material-ui/core/umd/material-ui.development.js"></script>
-        <script src="https://unpkg.com/react-beautiful-dnd@10.1.0/dist/react-beautiful-dnd.js"></script>
+        {% for desc in javascript_libraries %}
+            <script src="{{desc['url']}}" crossorigin="anonymous" integrity="{{desc['hash']}}"></script>
+        {% endfor %}
 
         <script>
             window.initialData = {{data|tojson|safe}}

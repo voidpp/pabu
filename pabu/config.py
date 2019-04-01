@@ -19,12 +19,19 @@ class OAuthConfig(NodeBase):
     def serialize(self):
         return self.__dict__
 
+class Mode(Enum):
+
+    DEVELOPMENT = 'development'
+    PRODUCTION = 'production'
+
 @tree.root()
 class PabuConfig():
 
     database = DatabaseLeaf
 
     auth = tree.dict_node(Any(*backend_names), OAuthConfig)
+
+    mode = Mode
 
     logger = dict
 
