@@ -133,7 +133,7 @@ def add_api_controllers(app: Flask, db: Database):
 
         with db.session_scope() as conn:
             issues = process_resources(issues, Issue, conn, {
-                'pre_process': lambda d: {'user_id': get_user_id()},
+                'pre_process': lambda d: {'reporter_id': get_user_id()},
                 'pre_update': pre_update,
                 'checker': lambda i: check_project(i.project_id, conn),
                 'post_process': lambda d, i: None if 'id' in d else {'rank': i.id},
