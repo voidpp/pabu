@@ -1,12 +1,13 @@
 {
     "name": "pabu",
-    "version": "0.13.3",
     "description": "",
     "author": "Lajos Santa",
     "author_email": "santa.lajos@gmail.com",
     "url": "https://github.com/voidpp/pabu",
     "license": "MIT",
     "include_package_data": true,
+    "use_scm_version": true,
+    "setup_requires": ["setuptools_scm"],
     "install_requires": [
         "Flask~=1.0",
         "alembic~=1.0",
