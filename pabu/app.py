@@ -1,6 +1,8 @@
 import logging
 import logging.config
 import pkg_resources
+import json
+import os
 
 from flask import Flask, render_template, session
 from werkzeug.wsgi import DispatcherMiddleware
@@ -50,8 +52,12 @@ db = Database(str(config.database))
 @frontend.route('/')
 @frontend.route('/<path:path>')
 def index(path = None):
+    with open(os.path.join(os.path.dirname(__file__), 'changelog.json')) as f:
+        changelog = json.load(f)
+
     return render_template('index.html',
         data = {
+            'changelog': changelog,
             'userInfo': session.get('user_info'),
             'isLoggedIn': is_logged_in(),
             'authBackendNames': list(config.auth.keys()),
