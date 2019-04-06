@@ -1,4 +1,4 @@
-import { LocalStorageSchema } from "./types";
+import { LocalStorageSchema, AppData } from "./types";
 
 const durationDesc = [
     {divider: 3600, unit: 'hour'},
@@ -91,3 +91,5 @@ export function filterDataProps(props: StringObject): StringObject {
     }
     return res;
 }
+
+export const appData = window['appData'] as AppData;

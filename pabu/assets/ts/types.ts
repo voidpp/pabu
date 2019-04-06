@@ -139,23 +139,28 @@ export type IssueByStatusMap = { [s: string ]: Array<Issue> };
 export type ProjectDataAgeMap = { [s: number]: number }
 export type IssueViewDialogContext = {id: number, show: boolean}
 
-export interface State {
+export type AllProjectData = {
+    projects: ProjectMap,
+    issues: IssueMap,
+    timeEntries: TimeEntryMap,
+    users: UserMap,
+    payments: PaymentMap,
+    projectInvitationTokens: ProjectInvitationTokenMap,
+}
+
+export interface State extends AllProjectData {
     addTimeDialogContext: TimeDialogContext,
     isDarkTheme: boolean,
     issueDialogContext: IssueDialogContext,
-    issues: IssueMap,
     openedProjectId: number,
     paymentDialogProjectId: number,
-    payments: PaymentMap,
     projectDialogContext: ProjectDialogContext,
-    projects: ProjectMap,
     tickingStat: TickingStat,
-    timeEntries: TimeEntryMap,
-    users: UserMap,
     projectInvitationTokens: ProjectInvitationTokenMap,
     inviteDialogIsOpen: boolean,
     projectDataAge: ProjectDataAgeMap,
     issueViewDialogContext: IssueViewDialogContext,
+    lastSeenChangelogVersion: string,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;
@@ -179,15 +184,25 @@ export class LocalStorageSchema {
         [IssueStatus.IN_PROGRESS]: true,
         [IssueStatus.DONE]: false,
     };
-}
-
-export type AllProjectData = {
-    project: Project,
-    issues: IssueMap,
-    timeEntries: TimeEntryMap,
-    users: UserMap,
-    payments: PaymentMap,
-    tokens: ProjectInvitationTokenMap,
+    lastSeenChangelogVersion: string = 'v0.0.0';
 }
 
 export type StateGetter = () => State;
+
+export interface VersionChangeLog {
+    name: string,
+    enh: Array<string>,
+    fix: Array<string>,
+    date: number,
+}
+
+export type Changelog = Array<VersionChangeLog>;
+
+export interface AppData {
+    changelog: Changelog,
+    userInfo: UserInfo,
+    isLoggedIn: boolean
+    authBackendNames: Array<string>,
+    version: string,
+    initialData: AllProjectData,
+}

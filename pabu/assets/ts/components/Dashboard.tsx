@@ -4,12 +4,11 @@ import * as React from 'react';
 import ProjectFormDialog from './ProjectFormDialog';
 import Header from '../containers/Header';
 import ProjectList from '../containers/ProjectList';
-import { Project, ProjectDialogContext, ProjectSubmitCallback, UserInfo } from '../types';
+import { Project, ProjectDialogContext, ProjectSubmitCallback, UserInfo, Changelog } from '../types';
 import InviteDialog from './InviteDialog';
 import IssueViewDialog from '../containers/IssueViewDialog';
 
 type Props = {
-    userInfo: UserInfo,
     onProjectSubmit: ProjectSubmitCallback,
     projectDialogContext: ProjectDialogContext,
     onInviteSubmit: (token: string) => void,
@@ -20,7 +19,6 @@ type Props = {
     projectData: Project,
     classes: any,
     inviteDialogIsOpen: boolean,
-    version: string,
 }
 
 const styles = ({ palette, shape }: Theme) => createStyles({
@@ -53,7 +51,7 @@ export default withStyles(styles)(React.memo((props: Props) => {
             onClose={props.hideInviteDialog}
         />
         <IssueViewDialog />
-        <Header userInfo={props.userInfo} version={props.version} />
+        <Header />
         <Grid container justify="center">
             <div className={props.classes.body}>
                 <div style={{display: 'flex'}}>

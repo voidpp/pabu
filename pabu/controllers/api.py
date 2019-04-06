@@ -14,7 +14,7 @@ from pabu.auth import get_user_id, is_logged_in
 from pabu.db import Database
 from pabu.models import Issue, Payment, Project, ProjectInvitationToken, TimeEntry, User, projects_users
 from pabu.tools import (entry_stat_from_list, issue_to_dict, project_to_dict, project_token_to_dict, sqla_model_to_voluptuous,
-                        time_entry_to_dict, user_to_dict, payment_to_dict)
+                        time_entry_to_dict, user_to_dict, payment_to_dict, get_all_project_data as get_all_project_data_)
 
 logger = logging.getLogger(__name__)
 
@@ -319,14 +319,7 @@ def add_api_controllers(app: Flask, db: Database):
 
     @jsonrpc_api.dispatcher.add_method
     def get_all_project_data(id: int): # pylint: disable=unused-variable
-        return {
-            'project': get_projects(id)[id],
-            'issues': get_issues(id),
-            'time_entries': get_time_entries(id),
-            'users': get_project_users(id),
-            'payments': get_payments(id),
-            'tokens': get_project_tokens(id),
-        }
+        return get_all_project_data_(db, id)
 
     @jsonrpc_api.dispatcher.add_method
     def ping(): # pylint: disable=unused-variable

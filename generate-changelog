@@ -1,42 +1,7 @@
 #!/usr/bin/env python3
 
-import json
-import re
-from git import Repo
-from collections import OrderedDict
+from pabu.changelog import generate_changelog, CHANGELOG_FILE_PATH
 
-r = Repo('.')
+generate_changelog()
 
-pattern = re.compile('(enh|fix): (.+)')
-
-data = OrderedDict()
-
-last_tag = None
-
-commit_hash_to_tag = {str(t.commit): t.tag.tag for t in r.tags}
-
-for commit in r.iter_commits():
-
-    commit_hex = commit.binsha.hex()
-
-    if commit_hex in commit_hash_to_tag:
-        last_tag = commit_hash_to_tag[commit_hex]
-        data[last_tag] = {'enh': [], 'fix': []}
-
-    if not last_tag:
-        continue
-
-    matches = pattern.match(commit.message.strip())
-    if not matches:
-        continue
-
-    prefix, message = matches.groups()
-
-    data[last_tag][prefix].append(message)
-
-filename = 'pabu/changelog.json'
-
-with open(filename, 'w') as f:
-    json.dump([{'name': tag_name, **tag_data} for tag_name, tag_data in data.items()], f, indent=2)
-
-print('%s has been written' % filename)
+print('%s has been written' % CHANGELOG_FILE_PATH)

@@ -3,6 +3,7 @@ import { Action } from './actions';
 import { State, IssueViewDialogContext } from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
+import { pabuLocalStorage } from './tools';
 
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
@@ -93,6 +94,12 @@ function issueViewDialogContext(state = {show: false, id: 0}, action): IssueView
     return state;
 }
 
+function lastSeenChangelogVersion(state = pabuLocalStorage.lastSeenChangelogVersion, action) {
+    if (action.type == Action.SET_LAST_SEEN_CHANGELOG_VERSION)
+        return action.version;
+    return state;
+}
+
 const rootReducer = combineReducers<State>({
     addTimeDialogContext,
     isDarkTheme,
@@ -110,6 +117,7 @@ const rootReducer = combineReducers<State>({
     inviteDialogIsOpen,
     projectDataAge,
     issueViewDialogContext,
+    lastSeenChangelogVersion,
 });
 
 export default rootReducer

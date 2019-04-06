@@ -125,11 +125,14 @@ def time_entry_to_dict(time_entry: TimeEntry):
 def idize(func, rows: list) -> dict:
     return {r.id: func(r) for r in rows}
 
-def get_all_project_data(db: Database):
+def get_all_project_data(db: Database, project_id = None):
     user_id = get_user_id()
     with db.session_scope() as conn:
-        rows = conn.query(Project).join(projects_users).join(User).filter(User.id == user_id).all()
-        project_id_list = [r.id for r in rows]
+        project_query = conn.query(Project).join(projects_users).join(User).filter(User.id == user_id)
+        if project_id:
+            project_query = project_query.filter(Project.id == project_id)
+        project_rows = project_query.all()
+        project_id_list = [r.id for r in project_rows]
 
         project_user_rows = conn.query(User).join(projects_users).join(Project).filter(Project.id.in_(project_id_list)).all()
         users = idize(user_to_dict, project_user_rows)
@@ -142,7 +145,7 @@ def get_all_project_data(db: Database):
             users.update(idize(user_to_dict, conn.query(User).filter(User.id.in_(issue_users))))
 
         return {
-            'projects': idize(project_to_dict, rows),
+            'projects': idize(project_to_dict, project_rows),
             'issues': idize(issue_to_dict, conn.query(Issue).filter(Issue.project_id.in_(project_id_list)).all()),
             'time_entries': idize(time_entry_to_dict, conn.query(TimeEntry).filter(TimeEntry.project_id.in_(project_id_list)).all()),
             'users': users,

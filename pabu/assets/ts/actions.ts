@@ -31,7 +31,15 @@ export enum Action {
     RECEIVE_PROJECT_TOKENS = 'RECEIVE_PROJECT_TOKENS',
     SET_DARK_THEME = 'SET_DARK_THEME',
     SET_PROJECT_DATA_AGE = 'SET_PROJECT_DATA_AGE',
+    SET_LAST_SEEN_CHANGELOG_VERSION = 'SET_LAST_SEEN_CHANGELOG_VERSION',
+}
 
+export function setLastSeenChangelogVersion(version: string) {
+    pabuLocalStorage.lastSeenChangelogVersion = version;
+    return {
+        type: Action.SET_LAST_SEEN_CHANGELOG_VERSION,
+        version,
+    }
 }
 
 export function fetchAllProjectData(id: number) {
@@ -39,10 +47,10 @@ export function fetchAllProjectData(id: number) {
         client.getAllProjectData(id).then(data => {
             dispatch(receiveUsers(data.users))
             dispatch(receiveTimeEntries(data.timeEntries))
-            dispatch(receiveProjectTokens(data.tokens))
+            dispatch(receiveProjectTokens(data.projectInvitationTokens))
             dispatch(receivePayments(data.payments))
             dispatch(receiveIssues(data.issues))
-            dispatch(receiveProjects({[id]: data.project}))
+            dispatch(receiveProjects(data.projects))
             dispatch({
                 type: Action.SET_PROJECT_DATA_AGE,
                 id,

@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { UserInfo, TickingStat, ProjectMap, IssueMap } from '../types';
+import { TickingStat, ProjectMap, IssueMap } from '../types';
 import { Avatar, Button, Paper, Divider, withStyles, Theme, createStyles, AppBar, Toolbar, IconButton, Typography, Popover } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StopWatch from '../containers/StopWatch';
+import { appData } from '../tools';
+import Version from '../containers/Version';
 
 
 export type OwnProps = {
-    userInfo: UserInfo,
-    version: string,
 }
 
 export type StateProps = {
@@ -38,11 +38,6 @@ const styles = ({ palette, typography }: Theme) => createStyles({
         display: 'flex',
         flexDirection: 'row',
         padding: 20,
-    },
-    version: {
-        opacity: 0.6,
-        paddingLeft: 5,
-        fontSize: '0.8em',
     },
     stopButton: {
         flexGrow: 1,
@@ -98,7 +93,8 @@ class Header extends React.Component<OwnProps & StateProps & DispatchProps & {cl
     }
 
     render() {
-        let {userInfo, tickingStat, onThemeClick, isDarkTheme, classes, version} = this.props;
+        const {tickingStat, onThemeClick, isDarkTheme, classes} = this.props;
+        const {version, userInfo} = appData;
         let isOpen = Boolean(this.state.anchorEl);
 
         return <div style={{flexGrow: 1}}>
@@ -108,7 +104,7 @@ class Header extends React.Component<OwnProps & StateProps & DispatchProps & {cl
                         <Avatar src="/static/images/pabu-head.png"/>
                     </IconButton>
                     <Typography variant="h6" color="inherit">Pabu</Typography>
-                    <Typography variant="subtitle2" color="inherit" className={classes.version}>(v{version})</Typography>
+                    <Version />
                     {tickingStat.ticking ? this.renderStopButton() : <div style={{flexGrow: 1}}/>}
                     <IconButton style={{width: 40, height: 40}} onClick={onThemeClick.bind(this, !isDarkTheme)}>
                         <FontAwesomeIcon icon={{iconName: 'moon', prefix: isDarkTheme ? 'fas' : 'far'}} style={{fontSize: 15}}/>
@@ -119,7 +115,7 @@ class Header extends React.Component<OwnProps & StateProps & DispatchProps & {cl
                         onClick={this.handleProfileMenuOpen}
                         color="inherit"
                     >
-                        {userInfo.picture ?
+                        {appData.userInfo.picture ?
                             <Avatar style={{width: 35, height: 35}} src={userInfo.picture}/> :
                             <AccountCircle/>
                         }

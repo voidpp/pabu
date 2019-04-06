@@ -18,7 +18,7 @@
         "python-dateutil~=2.8",
         "loginpass~=0.2"
     ],
-    "extra_requires": {
+    "extras_require": {
         "deploy": [
             "GitPython~=2.1",
             "twine~=1.13"

@@ -2,20 +2,20 @@ import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware, {ThunkMiddleware} from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import rootReducer from './reducers';
-import { convertKeysToCamelCase } from './tools';
-import { State } from './types';
+import { convertKeysToCamelCase, appData } from './tools';
+import { State, AllProjectData } from './types';
 
 const loggerMiddleware = createLogger();
 
 export default function configureStore() {
 
-    let initialData: State = {} as State;
-    if (window['initialData'].initialData) {
-        initialData = convertKeysToCamelCase(window['initialData'].initialData);
-        initialData.projectDataAge = Object.values(initialData.projects).reduce((map, p) => (map[p.id] = new Date().getTime(), map), {})
-        console.debug(initialData);
+    let initialStoreData: State = {} as State;
+    if (appData.initialData) {
+        Object.assign(initialStoreData, convertKeysToCamelCase<AllProjectData>(appData.initialData));
+        initialStoreData.projectDataAge = Object.values(initialStoreData.projects).reduce((map, p) => (map[p.id] = new Date().getTime(), map), {})
+        console.debug(initialStoreData);
     }
 
-    return createStore(rootReducer, initialData, applyMiddleware(thunkMiddleware as ThunkMiddleware, loggerMiddleware))
+    return createStore(rootReducer, initialStoreData, applyMiddleware(thunkMiddleware as ThunkMiddleware, loggerMiddleware))
 
 }

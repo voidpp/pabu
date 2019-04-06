@@ -64,3 +64,5 @@ pabu/static/bundle.js
 pabu/static/bundle.js.map
 alembic.ini
 pabu/changelog.json
+pip-wheel-metadata
+package-lock.json

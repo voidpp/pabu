@@ -7,7 +7,7 @@ import os
 from flask import Flask, render_template, session
 from werkzeug.wsgi import DispatcherMiddleware
 
-from .config import load
+from .config import load, Mode
 from .db import Database
 from .models import User
 from .controllers.api import add_api_controllers
@@ -15,6 +15,7 @@ from .controllers.auth import add_auth_controllers
 from .auth import is_logged_in
 from .tools import get_all_project_data
 from .javascript_libraries import javascript_libraries
+from .changelog import CHANGELOG_FILE_PATH
 
 frontend = Flask('pabu')
 api = Flask('api')
@@ -49,11 +50,20 @@ logger.info("App start")
 
 db = Database(str(config.database))
 
+changelog = []
+
+if os.path.isfile(CHANGELOG_FILE_PATH):
+    with open(CHANGELOG_FILE_PATH) as f:
+        changelog = json.load(f)
+else:
+    if config.mode == Mode.PRODUCTION:
+        logger.error("Changelog is missing!")
+    else:
+        logger.info("Changelog is missing.")
+
 @frontend.route('/')
 @frontend.route('/<path:path>')
 def index(path = None):
-    with open(os.path.join(os.path.dirname(__file__), 'changelog.json')) as f:
-        changelog = json.load(f)
 
     return render_template('index.html',
         data = {

@@ -12,11 +12,11 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import Root, { store } from "./containers/Root";
 import { fetchTickingStat, openProject, setDarkTheme } from "./actions";
-import { pabuLocalStorage } from "./tools";
+import { pabuLocalStorage, appData } from "./tools";
 
 library.add(fab, fas, far);
 
-if (window['initialData'].isLoggedIn) {
+if (appData.isLoggedIn) {
     store.dispatch(fetchTickingStat());
     if (pabuLocalStorage.openedProjectId)
         store.dispatch(openProject(pabuLocalStorage.openedProjectId));
