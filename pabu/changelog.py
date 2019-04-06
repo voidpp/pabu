@@ -4,7 +4,7 @@ import os
 from git import Repo
 from collections import OrderedDict
 
-CHANGELOG_FILE_PATH = os.path.join(os.path.dirname(__file__), 'changelog.json')
+from . import CHANGELOG_FILE_PATH
 
 def generate_changelog():
 

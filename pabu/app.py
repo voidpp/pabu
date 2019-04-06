@@ -15,7 +15,7 @@ from .controllers.auth import add_auth_controllers
 from .auth import is_logged_in
 from .tools import get_all_project_data
 from .javascript_libraries import javascript_libraries
-from .changelog import CHANGELOG_FILE_PATH
+from . import CHANGELOG_FILE_PATH
 
 frontend = Flask('pabu')
 api = Flask('api')
