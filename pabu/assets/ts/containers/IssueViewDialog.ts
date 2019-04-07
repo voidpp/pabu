@@ -2,7 +2,7 @@
 import { State,  ThunkDispatcher } from '../types';
 import { connect } from 'react-redux';
 import IssueViewDialog, {StateProps, DispatchProps} from '../components/IssueViewDialog';
-import { closeIssueViewDialog, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog } from '../actions';
+import { closeIssueViewDialog, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog, openConfirmDialog } from '../actions';
 
 function mapStateToProps(state: State): StateProps {
     let {issues, issueViewDialogContext, tickingStat, projects} = state;
@@ -22,8 +22,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher): DispatchProps => {
         startTime: (projectId: number, issueId: number) => dispatch(startTime(projectId, issueId)),
         stopTime: () => dispatch(stopTime()),
         onDeleteIssue: (projectId: number, issueId: number) => {
-            if(confirm('Do you really want to delete this task?'))
-                dispatch(deleteIssue(issueId, projectId));
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to delete this task?',
+                callback: () => dispatch(deleteIssue(issueId, projectId)),
+            }))
         },
         onUpdateIssue: (projectId: number, id: number) => dispatch(openIssueDialog(projectId, id)),
     }

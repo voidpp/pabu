@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { Action } from './actions';
-import { State, IssueViewDialogContext } from './types';
+import { State, IssueViewDialogContext, ConfirmDialogContex } from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
 import { pabuLocalStorage } from './tools';
@@ -100,6 +100,14 @@ function lastSeenChangelogVersion(state = pabuLocalStorage.lastSeenChangelogVers
     return state;
 }
 
+function confirmDialogContex(state: ConfirmDialogContex = {show: false, message: '', callback: () => null}, action): ConfirmDialogContex {
+    if (action.type == Action.OPEN_CONFIRM_DIALOG) {
+        return {...action.data, show: true};}
+    if (action.type == Action.CLOSE_CONFIRM_DIALOG)
+        return {...state, show: false};
+    return state;
+}
+
 const rootReducer = combineReducers<State>({
     addTimeDialogContext,
     isDarkTheme,
@@ -118,6 +126,7 @@ const rootReducer = combineReducers<State>({
     projectDataAge,
     issueViewDialogContext,
     lastSeenChangelogVersion,
+    confirmDialogContex,
 });
 
 export default rootReducer

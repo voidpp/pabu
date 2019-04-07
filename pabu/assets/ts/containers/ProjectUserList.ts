@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { fetchProjects, kickUserFromProject } from '../actions';
+import { fetchProjects, kickUserFromProject, openConfirmDialog } from '../actions';
 import PabuTable, { TableColDesriptor } from '../components/PabuTable';
 import { State, ThunkDispatcher, User } from '../types';
 
@@ -27,10 +27,13 @@ function mapStateToProps(state: State, props: Props) {
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
         onDelete: (user: User, context: any) => {
-            if (confirm('Do you really want to kick this user from this project?')) {
-                dispatch(kickUserFromProject(context, user.id));
-                dispatch(fetchProjects(context))
-            }
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to kick this user from this project?',
+                callback: () => {
+                    dispatch(kickUserFromProject(context, user.id));
+                    dispatch(fetchProjects(context))
+                },
+            }))
         }
     }
 }

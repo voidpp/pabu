@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { deleteTimeEntry, fetchProjects, openAddTimeDialog, startTime, stopTime, openIssueViewDialog } from '../actions';
+import { deleteTimeEntry, fetchProjects, openAddTimeDialog, startTime, stopTime, openIssueViewDialog, openConfirmDialog } from '../actions';
 import TimeEntryList, { DispatchProps, OwnProps, StateProps } from '../components/TimeEntryList';
 import { ExpandedTimeEntry, State, ThunkDispatcher, IssueStatus } from '../types';
 
@@ -33,8 +33,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher): DispatchProps => {
     return {
         showIssue: (id: number) => dispatch(openIssueViewDialog(id)),
         onDelete: (entry: ExpandedTimeEntry) => {
-            if (confirm('Do you really want to delete this time entry?'))
-                dispatch(deleteTimeEntry(entry.id)).then(() => dispatch(fetchProjects(entry.projectId)))
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to delete this time entry?',
+                callback: () => dispatch(deleteTimeEntry(entry.id)).then(() => dispatch(fetchProjects(entry.projectId))),
+            }))
         },
         onAddNewTime: (projectId) => dispatch(openAddTimeDialog(projectId)),
         onStartTime: (projectId: number) => dispatch(startTime(projectId)),

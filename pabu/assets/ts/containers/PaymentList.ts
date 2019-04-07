@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { deletePayment, fetchProjects, openPaymentDialog } from '../actions';
+import { deletePayment, fetchProjects, openPaymentDialog, openConfirmDialog } from '../actions';
 import { ExpandedPayment, State, ThunkDispatcher } from '../types';
 import PaymentList, {OwnProps, StateProps, DispatchProps} from '../components/PaymentList';
 
@@ -25,11 +25,10 @@ function mapStateToProps(state: State, props: OwnProps) {
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
         onDelete: (payment: ExpandedPayment) => {
-            const projectId = payment.projectId;
-            if (confirm('Do you really want to delete this payment?'))
-                dispatch(deletePayment(payment.id)).then(() => {
-                    dispatch(fetchProjects(projectId))
-                })
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to delete this payment?',
+                callback: () => dispatch(deletePayment(payment.id)).then(() => dispatch(fetchProjects(payment.projectId))),
+            }))
         },
         onAddPayment: (projectId: number) => {
             dispatch(openPaymentDialog(projectId))

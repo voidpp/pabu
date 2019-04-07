@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { deleteProject, openProjectDialog, leaveProject, fetchProjects } from '../actions';
+import { deleteProject, openProjectDialog, leaveProject, fetchProjects, openConfirmDialog } from '../actions';
 import ProjectSummary, { DispatchProps, OwnProps, StateProps, UserPaymentStat } from '../components/ProjectSummary';
 import { State, ThunkDispatcher } from '../types';
 
@@ -40,15 +40,19 @@ function mapStateToProps(state: State, props: OwnProps): StateProps {
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
         onDeleteProject: (projectId: number) => {
-            if (confirm('Do you really want to delete this project?'))
-                dispatch(deleteProject(projectId));
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to delete this project?',
+                callback: () => dispatch(deleteProject(projectId)),
+            }))
         },
         onUpdateProject: (projectId: number) => {
             dispatch(openProjectDialog(projectId))
         },
         onLeaveProject: (projectId: number) => {
-            if (confirm('Do you really want to leave this project?'))
-                dispatch(leaveProject(projectId))
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to leave this project?',
+                callback: () => dispatch(leaveProject(projectId)),
+            }))
         },
     }
 }

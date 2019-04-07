@@ -148,6 +148,15 @@ export type AllProjectData = {
     projectInvitationTokens: ProjectInvitationTokenMap,
 }
 
+export interface ConfirmDialogData {
+    message: string,
+    callback: () => void,
+}
+
+export interface ConfirmDialogContex extends ConfirmDialogData {
+    show: boolean,
+}
+
 export interface State extends AllProjectData {
     addTimeDialogContext: TimeDialogContext,
     isDarkTheme: boolean,
@@ -161,6 +170,7 @@ export interface State extends AllProjectData {
     projectDataAge: ProjectDataAgeMap,
     issueViewDialogContext: IssueViewDialogContext,
     lastSeenChangelogVersion: string,
+    confirmDialogContex: ConfirmDialogContex,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

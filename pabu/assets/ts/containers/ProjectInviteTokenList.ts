@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { createProjectToken, deleteProjectToken, fetchProjects } from '../actions';
+import { createProjectToken, deleteProjectToken, fetchProjects, openConfirmDialog } from '../actions';
 import ProjectInviteTokenList, { DispatchProps, OwnProps, StateProps } from '../components/ProjectInviteTokenList';
 import { ProjectInvitationToken, State, ThunkDispatcher } from '../types';
 
@@ -15,11 +15,10 @@ function mapStateToProps(state: State, props: OwnProps) {
 const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
     return {
         onDelete: (prjToken: ProjectInvitationToken) => {
-            const projectId = prjToken.projectId;
-            if (confirm('Do you really want to delete this token?'))
-                dispatch(deleteProjectToken(prjToken.id)).then(() => {
-                    dispatch(fetchProjects(projectId))
-                })
+            dispatch(openConfirmDialog({
+                message: 'Do you really want to delete this token?',
+                callback: () => dispatch(deleteProjectToken(prjToken.id)).then(() => dispatch(fetchProjects(prjToken.projectId))),
+            }))
         },
         onCreateProjectToken: (projectId: number) => {
             dispatch(createProjectToken(projectId))
