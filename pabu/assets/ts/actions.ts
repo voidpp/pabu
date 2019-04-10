@@ -36,6 +36,20 @@ export enum Action {
     SET_PROJECT_DATA_AGE = 'SET_PROJECT_DATA_AGE',
 }
 
+export const enqueueSnackbar = notification => ({
+    type: 'ENQUEUE_SNACKBAR',
+    notification: {
+        key: new Date().getTime() + Math.random(),
+        ...notification,
+    },
+});
+
+export const removeSnackbar = key => ({
+    type: 'REMOVE_SNACKBAR',
+    key,
+});
+
+
 export function openConfirmDialog(data: ConfirmDialogData) {
     return {
         type: Action.OPEN_CONFIRM_DIALOG,

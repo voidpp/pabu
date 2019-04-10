@@ -6,6 +6,7 @@ import { Paper, createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 import { colors } from '@material-ui/core';
 import { appData } from '../tools';
 import ConfirmDialog from '../containers/ConfirmDialog';
+import Notifier from '../containers/Notifier';
 
 const lightTheme = createMuiTheme({
     palette: {
@@ -40,6 +41,7 @@ export default React.memo((props: Props) => {
     return (
         <MuiThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
             <Paper style={{ height: '100%' }}>
+                <Notifier/>
                 {appData.isLoggedIn ? <Dashboard /> : <Login />}
                 <ConfirmDialog />
             </Paper>

@@ -171,6 +171,7 @@ export interface State extends AllProjectData {
     issueViewDialogContext: IssueViewDialogContext,
     lastSeenChangelogVersion: string,
     confirmDialogContex: ConfirmDialogContex,
+    notifications: Array<{key: number, message: string, options: {variant: 'warning'|'default'}}>
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

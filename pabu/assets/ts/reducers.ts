@@ -108,6 +108,19 @@ function confirmDialogContex(state: ConfirmDialogContex = {show: false, message:
     return state;
 }
 
+
+function notifications(state = [], action)  {
+    switch (action.type) {
+        case 'ENQUEUE_SNACKBAR':
+            return state.concat([action.notification])
+        case 'REMOVE_SNACKBAR':
+            return state.filter(n => n.key !== action.key);
+        default:
+            return state;
+    }
+};
+
+
 const rootReducer = combineReducers<State>({
     addTimeDialogContext,
     isDarkTheme,
@@ -127,6 +140,7 @@ const rootReducer = combineReducers<State>({
     issueViewDialogContext,
     lastSeenChangelogVersion,
     confirmDialogContex,
+    notifications,
 });
 
 export default rootReducer
