@@ -312,7 +312,10 @@ export function sendTime(projectId: number, time: string, amount: string, issueI
 }
 
 export function createProjectToken(projectId: number) {
-    return dispatch => client.createProjectToken(projectId).then(t => dispatch(receiveProjectTokens({[t.id]: t})));
+    return dispatch => client.createProjectToken(projectId).then(t => {
+        dispatch(enqueueSnackbar({message: 'token created', options: {anchorOrigin: {vertical: 'top', horizontal: 'right'}}}))
+        dispatch(receiveProjectTokens({[t.id]: t}))
+    });
 }
 
 export function deleteProjectToken(id: number) {
