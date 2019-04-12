@@ -3,10 +3,11 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withSnackbar, withSnackbarProps } from 'notistack';
-import { removeSnackbar } from '../actions';
+import { removeNotification } from '../actions';
+import { Notification } from '../types';
 
 export type OwnProps = {
-    notifications: Array<any>,
+    notifications: Array<Notification>,
     removeSnackbar: (key: any) => void,
 }
 
@@ -34,7 +35,7 @@ class Notifier extends React.Component<OwnProps & withSnackbarProps> {
             // Do nothing if snackbar is already displayed
             if (this.displayed.includes(notification.key)) return;
             // Display snackbar using notistack
-            this.props.enqueueSnackbar(notification.message, notification.options);
+            this.props.enqueueSnackbar(notification.message, Object.assign({anchorOrigin: {vertical: 'top', horizontal: 'right'}}, notification.options));
             // Keep track of snackbars that we've displayed
             this.storeDisplayed(notification.key);
             // Dispatch action to remove snackbar from redux store
@@ -51,6 +52,6 @@ const mapStateToProps = store => ({
     notifications: store.notifications,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({ removeSnackbar }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ removeSnackbar: removeNotification }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(Notifier));

@@ -111,9 +111,9 @@ function confirmDialogContex(state: ConfirmDialogContex = {show: false, message:
 
 function notifications(state = [], action)  {
     switch (action.type) {
-        case 'ENQUEUE_SNACKBAR':
+        case Action.ENQUEUE_NOTIFICATION:
             return state.concat([action.notification])
-        case 'REMOVE_SNACKBAR':
+        case Action.REMOVE_NOTIFICATION:
             return state.filter(n => n.key !== action.key);
         default:
             return state;

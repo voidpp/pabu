@@ -1,5 +1,6 @@
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
+import { OptionsObject } from "notistack";
 
 export interface UserInfo {
     name: string,
@@ -157,6 +158,12 @@ export interface ConfirmDialogContex extends ConfirmDialogData {
     show: boolean,
 }
 
+export type Notification = {
+    key: number,
+    message: string,
+    options?: OptionsObject,
+}
+
 export interface State extends AllProjectData {
     addTimeDialogContext: TimeDialogContext,
     isDarkTheme: boolean,
@@ -171,7 +178,7 @@ export interface State extends AllProjectData {
     issueViewDialogContext: IssueViewDialogContext,
     lastSeenChangelogVersion: string,
     confirmDialogContex: ConfirmDialogContex,
-    notifications: Array<{key: number, message: string, options: {variant: 'warning'|'default'}}>
+    notifications: Array<Notification>,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;
