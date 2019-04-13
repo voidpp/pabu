@@ -1,6 +1,6 @@
 
 import { connect } from 'react-redux';
-import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues, fetchAllProjectDataIfNeeded } from '../actions';
+import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchProjects, openProject, receiveIssues, sendPayment, sendTime, processIssues, fetchAllProjectDataIfNeeded, enqueueNotification } from '../actions';
 import ProjectList, {StateProps, DispatchProps} from '../components/ProjectList';
 import { PaymentSubmitData, Project, State, ThunkDispatcher, IssueStatus, Issue } from '../types';
 
@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
                 dispatch(closeIssueDialog())
                 dispatch(fetchProjects(projectId))
                 dispatch(receiveIssues(issues))
+                dispatch(enqueueNotification(`Task has been ${id ? 'modified': 'created'}`, {variant: 'success'}));
             })
         },
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {

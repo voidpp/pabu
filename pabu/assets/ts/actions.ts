@@ -309,6 +309,7 @@ export function processIssues(issues: Array<ServerIssueData>) {
 export function sendTime(projectId: number, time: string, amount: string, issueId: number = null) {
     return dispatch => {
         return client.addTime(projectId, amount, time, issueId).then(() => {
+            dispatch(enqueueNotification('Time has been added', {variant: 'success'}));
             dispatch(closeAddTimeDialog())
             dispatch(fetchAllProjectData(projectId));
         })
@@ -317,14 +318,14 @@ export function sendTime(projectId: number, time: string, amount: string, issueI
 
 export function createProjectToken(projectId: number) {
     return dispatch => client.createProjectToken(projectId).then(t => {
-        dispatch(enqueueNotification('Token created', {variant: 'success'}));
+        dispatch(enqueueNotification('Token has been created', {variant: 'success'}));
         dispatch(receiveProjectTokens({[t.id]: t}))
     });
 }
 
 export function deleteProjectToken(id: number) {
     return dispatch => client.deleteProjectToken(id).then(() => {
-        dispatch(enqueueNotification('Token deleted', {variant: 'success'}));
+        dispatch(enqueueNotification('Token has been deleted', {variant: 'success'}));
         dispatch({
             type: Action.DELETE_PROJECT_TOKEN,
             id,
@@ -372,7 +373,7 @@ export function sendPayment(projectId: number, data: PaymentSubmitData) {
         return client.addPayment(projectId, data.amount, data.user_id, data.time, data.note).then(res => {
             dispatch(closePaymentDialog())
             dispatch(fetchAllProjectData(projectId));
-            dispatch(enqueueNotification('Payment created', {variant: 'success'}));
+            dispatch(enqueueNotification('Payment has been created', {variant: 'success'}));
         })
     }
 }
@@ -380,7 +381,7 @@ export function sendPayment(projectId: number, data: PaymentSubmitData) {
 export function deleteProject(id: number) {
     return dispatch => {
         return client.deleteProject(id).then(() => {
-            dispatch(enqueueNotification('Project deleted', {variant: 'success'}));
+            dispatch(enqueueNotification('Project has been deleted', {variant: 'success'}));
             dispatch(fetchProjects())
             dispatch({
                 type: Action.DELETE_PROJECT,
@@ -392,7 +393,7 @@ export function deleteProject(id: number) {
 
 export function deletePayment(id: number) {
     return dispatch => client.deletePayment(id).then(() => {
-        dispatch(enqueueNotification('Payment deleted', {variant: 'success'}));
+        dispatch(enqueueNotification('Payment has been deleted', {variant: 'success'}));
         dispatch({
             type: Action.DELETE_PAYMENT,
             id,
@@ -403,7 +404,7 @@ export function deletePayment(id: number) {
 
 export function deleteTimeEntry(id: number) {
     return dispatch => client.deleteTimeEntry(id).then(() => {
-        dispatch(enqueueNotification('Time entry deleted', {variant: 'success'}));
+        dispatch(enqueueNotification('Time entry has been deleted', {variant: 'success'}));
         dispatch({
             type: Action.DELETE_TIME_ENTRY,
             id,
@@ -415,7 +416,7 @@ export function deleteTimeEntry(id: number) {
 export function deleteIssue(id: number, openedProjectId: number) {
     return dispatch => {
         return client.deleteIssue(id).then(() => {
-            dispatch(enqueueNotification('Task deleted', {variant: 'success'}));
+            dispatch(enqueueNotification('Task has been deleted', {variant: 'success'}));
             dispatch({
                 type: Action.DELETE_ISSUE,
                 id,
