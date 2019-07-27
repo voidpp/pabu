@@ -1,0 +1,97 @@
+{
+  "object_kind": "issue",
+  "event_type": "issue",
+  "user": {
+    "name": "Lajos S\u00e1nta",
+    "username": "voidpp42",
+    "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/3247488/avatar.png"
+  },
+  "project": {
+    "id": 9825295,
+    "name": "testprj1",
+    "description": "",
+    "web_url": "https://gitlab.com/voidpp42/testprj1",
+    "avatar_url": null,
+    "git_ssh_url": "git@gitlab.com:voidpp42/testprj1.git",
+    "git_http_url": "https://gitlab.com/voidpp42/testprj1.git",
+    "namespace": "voidpp42",
+    "visibility_level": 0,
+    "path_with_namespace": "voidpp42/testprj1",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "https://gitlab.com/voidpp42/testprj1",
+    "url": "git@gitlab.com:voidpp42/testprj1.git",
+    "ssh_url": "git@gitlab.com:voidpp42/testprj1.git",
+    "http_url": "https://gitlab.com/voidpp42/testprj1.git"
+  },
+  "object_attributes": {
+    "author_id": 3247488,
+    "closed_at": null,
+    "confidential": false,
+    "created_at": "2019-05-01 15:02:54 UTC",
+    "description": "",
+    "due_date": null,
+    "id": 20502256,
+    "iid": 4,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "milestone_id": null,
+    "moved_to_id": null,
+    "project_id": 9825295,
+    "relative_position": 1073743823,
+    "state": "opened",
+    "time_estimate": 0,
+    "title": "it4",
+    "updated_at": "2019-05-01 15:31:12 UTC",
+    "updated_by_id": 3247488,
+    "weight": null,
+    "url": "https://gitlab.com/voidpp42/testprj1/issues/4",
+    "total_time_spent": 0,
+    "human_total_time_spent": null,
+    "human_time_estimate": null,
+    "assignee_ids": [
+      3247488
+    ],
+    "assignee_id": 3247488,
+    "action": "update"
+  },
+  "labels": [
+    {
+      "id": 8964990,
+      "title": "To Do",
+      "color": "#F0AD4E",
+      "project_id": 9825295,
+      "created_at": "2018-12-08 09:38:23 UTC",
+      "updated_at": "2018-12-08 09:38:23 UTC",
+      "template": false,
+      "description": null,
+      "type": "ProjectLabel",
+      "group_id": null
+    }
+  ],
+  "changes": {
+    "assignees": {
+      "previous": [],
+      "current": [
+        {
+          "name": "Lajos S\u00e1nta",
+          "username": "voidpp42",
+          "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/3247488/avatar.png"
+        }
+      ]
+    }
+  },
+  "repository": {
+    "name": "testprj1",
+    "url": "git@gitlab.com:voidpp42/testprj1.git",
+    "description": "",
+    "homepage": "https://gitlab.com/voidpp42/testprj1"
+  },
+  "assignees": [
+    {
+      "name": "Lajos S\u00e1nta",
+      "username": "voidpp42",
+      "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/3247488/avatar.png"
+    }
+  ]
+}

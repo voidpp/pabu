@@ -20,16 +20,19 @@ from . import CHANGELOG_FILE_PATH
 frontend = Flask('pabu')
 api = Flask('api')
 auth = Flask('auth')
+hooks = Flask('hooks')
 
 secret_key = 'j32bd4kj2d4jkvgh23jk4hvgj23hg4ekjhg'
 
 frontend.secret_key = secret_key
 auth.secret_key = secret_key
 api.secret_key = secret_key
+hooks.secret_key = secret_key
 
 wsgi_application = DispatcherMiddleware(frontend, {
     '/api': api,
     '/auth': auth,
+    '/hooks': hooks,
 })
 
 config = load()
@@ -79,3 +82,20 @@ def index(path = None):
 
 add_api_controllers(api, db)
 add_auth_controllers(auth, config, db)
+
+from flask import request, abort
+from .models import Source, Project, SourceType
+from .hooks import handle_gitlab_issue_hook
+
+# X-Gitlab-Token HTTP
+@hooks.route('/<receive_token>', methods = ['POST'])
+def hooks_handler(receive_token):
+    with db.session_scope() as conn:
+        source = conn.query(Source).filter(Source.receive_token == receive_token).first() # type: Source
+
+        if source.type == SourceType.GITLAB:
+            handle_gitlab_issue_hook(request.get_json(), source, conn)
+        else:
+            abort(400)
+
+    return 'ok'

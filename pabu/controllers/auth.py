@@ -1,4 +1,5 @@
 
+import logging
 from flask import Flask, jsonify, session, redirect
 from authlib.flask.client import OAuth
 from loginpass import create_flask_blueprint
@@ -8,6 +9,8 @@ from pabu.auth import backends
 from pabu.config import Config
 from pabu.db import Database
 from pabu.models import User
+
+logger = logging.getLogger(__name__)
 
 class Cache(object):
     def __init__(self):
@@ -23,13 +26,12 @@ class Cache(object):
         if k in self._data:
             del self._data[k]
 
-
-
 def add_auth_controllers(app: Flask, config: Config, db: Database):
 
     oauth = OAuth(app, Cache())
 
     def handle_authorize(remote, token, user_info):
+        logger.debug("User authorized. info: %s", user_info)
         sub = user_info['sub']
         email = user_info['email']
         user_info['providerName'] = remote.name
@@ -39,6 +41,7 @@ def add_auth_controllers(app: Flask, config: Config, db: Database):
             if not user:
                 user = User(sub = sub, email = email)
                 conn.add(user)
+                logger.debug("new user has been added sub: %s", sub)
             user.email = email
             user.name = user_info['name']
             user.avatar = user_info['picture']

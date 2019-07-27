@@ -39,9 +39,20 @@ class Source(Base):
     __tablename__ = 'sources'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
     type = Column(Enum(SourceType), nullable = False)
     config = Column(JSON, nullable = False)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
+    receive_token = Column(String, nullable = False)
+
+    project = relationship("Project")
+
+class SourceUserMapping(Base):
+    __tablename__ = 'source_user_mapping'
+
+    id = Column(Integer, primary_key=True)
+    source_id = Column(Integer, ForeignKey('sources.id', ondelete = 'CASCADE'), nullable = False)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete = 'CASCADE'), nullable = False)
+    name = Column(String, nullable = False)
 
 class Issue(Base):
     __tablename__ = 'issues'

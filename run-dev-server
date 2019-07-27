@@ -2,7 +2,9 @@
 
 from werkzeug.serving import run_simple
 
-from pabu.app import wsgi_application
+from pabu.app import wsgi_application, api
+
+api.debug = True
 
 run_simple(
     '0.0.0.0',

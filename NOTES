@@ -1,0 +1,11 @@
+sources
+
+    username mapping!
+
+        - source_id
+        - name
+        - user_id
+
+    config:
+        gitlab:
+            - todo_label_name
