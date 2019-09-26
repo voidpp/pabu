@@ -7,7 +7,7 @@ import sqlalchemy.sql.sqltypes
 from voluptuous import Schema
 
 from .db import Database
-from .models import Project, Issue, Payment, User, ProjectInvitationToken, TimeEntry, projects_users
+from .models import Project, Issue, Payment, User, ProjectInvitationToken, TimeEntry, projects_users, Tag
 from .auth import get_user_id
 
 def get_table(bind, table_name: str):
@@ -84,6 +84,7 @@ def issue_to_dict(issue: Issue):
         'time_stat': entry_stat_from_list(issue.time_entries),
         'time_entries': [t.id for t in issue.time_entries],
         'status_date': issue.status_date.timestamp(),
+        'tags': [t.id for t in issue.tags],
     }
 
 def payment_to_dict(payment: Payment):
@@ -151,4 +152,5 @@ def get_all_project_data(db: Database, project_id = None):
             'users': users,
             'payments': idize(payment_to_dict, conn.query(Payment).filter(Payment.project_id.in_(project_id_list)).all()),
             'project_invitation_tokens': idize(project_token_to_dict, conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.project_id.in_(project_id_list)).all()),
+            'tags': idize(issue_to_dict, conn.query(Tag).filter(Tag.project_id.in_(project_id_list)).all()),
         }

@@ -14,6 +14,8 @@ module.exports = {
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
 
+    mode: 'production',
+
     module: {
         rules: [
             {
@@ -45,7 +47,7 @@ module.exports = {
         {
             "react": "React",
             "react-dom": "ReactDOM",
-            "@material-ui/core": "material-ui",
+            "@material-ui/core": "MaterialUI",
             "react-beautiful-dnd": "ReactBeautifulDnd",
         },
     ]

@@ -13,6 +13,11 @@ projects_users = Table('projects_users', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id', ondelete = 'CASCADE'))
 )
 
+issues_tags = Table('issues_tags', Base.metadata,
+    Column('issue_id', Integer, ForeignKey('issues.id', ondelete = 'CASCADE')),
+    Column('tag_id', Integer, ForeignKey('tags.id', ondelete = 'CASCADE'))
+)
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -57,6 +62,7 @@ class Issue(Base):
     status_date = Column(DateTime, default = datetime.now, nullable = False)
 
     project = relationship("Project", backref = "issues")
+    tags = relationship("Tag", secondary = issues_tags)
 
 class TimeEntry(Base):
     __tablename__ = 'time_entries'
@@ -93,3 +99,11 @@ class ProjectInvitationToken(Base):
     token = Column(String, nullable = False)
 
     project = relationship("Project", backref = "tokens")
+
+class Tag(Base):
+
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key = True)
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
+    name = Column(String, nullable = False)

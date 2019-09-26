@@ -1,8 +1,20 @@
-
 import * as React from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem, Grow } from '@material-ui/core';
-import { IssueStatus } from '../types';
-import { dialogTransition } from './tools';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl, Input,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from '@material-ui/core';
+import {IssueStatus} from '../types';
+import {dialogTransition} from './tools';
+import MultiSelect from "./MultiSelect";
+
 
 type State = {
     name: string,
@@ -16,6 +28,33 @@ type Props = {
     initialData: State,
     onClose: () => void,
 }
+
+
+    const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+    const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 
 export default class IssueFormDialog extends React.Component<Props, State> {
 
@@ -31,7 +70,7 @@ export default class IssueFormDialog extends React.Component<Props, State> {
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
         this.props.onSubmit(this.state.name, this.state.desc, this.state.status);
-    }
+    };
 
     render() {
         let {name, desc} = this.state;
@@ -42,48 +81,56 @@ export default class IssueFormDialog extends React.Component<Props, State> {
             TransitionComponent={dialogTransition}
         >
             <DialogTitle id="form-dialog-title">Create task</DialogTitle>
-            <form onSubmit={this.onSubmit} id="create_project_form">
-                <DialogContent>
-                    <TextField
-                        autoFocus
+            {/*<form onSubmit={this.onSubmit} id="create_project_form">*/}
+            <DialogContent>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Summary"
+                    type="text"
+                    required
+                    value={name || ''}
+                    onChange={ev => {
+                        this.setState({name: ev.target.value})
+                    }}
+                    fullWidth
+                />
+                <FormControl fullWidth required>
+                    <InputLabel htmlFor="status">Status</InputLabel>
+                    <Select
                         margin="dense"
-                        id="name"
-                        label="Summary"
-                        type="text"
-                        required
-                        value={name || ''}
-                        onChange={ev => {this.setState({name: ev.target.value})}}
-                        fullWidth
-                    />
-                    <FormControl fullWidth required>
-                        <InputLabel htmlFor="status">Status</InputLabel>
-                        <Select
-                            margin="dense"
-                            inputProps={{name: 'status', id: 'status'}}
-                            onChange={ev => {this.setState({status: ev.target.value as IssueStatus})}}
-                            value={this.state.status}
-                        >
+                        inputProps={{name: 'status', id: 'status'}}
+                        onChange={ev => {
+                            this.setState({status: ev.target.value as IssueStatus})
+                        }}
+                        value={this.state.status}
+                    >
                         {Object.values(IssueStatus).map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        margin="dense"
-                        id="description"
-                        label="Description"
-                        type="text"
-                        value={desc || ''}
-                        multiline
-                        onChange={ev => {this.setState({desc: ev.target.value})}}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.props.onClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button type="submit" color="primary">Submit</Button>
-                </DialogActions>
-            </form>
+                    </Select>
+                </FormControl>
+                <TextField
+                    margin="dense"
+                    id="description"
+                    label="Description"
+                    type="text"
+                    value={desc || ''}
+                    multiline
+                    onChange={ev => {
+                        this.setState({desc: ev.target.value})
+                    }}
+                    fullWidth
+                />
+
+                <MultiSelect />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={this.props.onClose} color="primary">
+                    Cancel
+                </Button>
+                <Button type="submit" color="primary">Submit</Button>
+            </DialogActions>
+            {/*</form>*/}
         </Dialog>
     }
 }

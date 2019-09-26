@@ -90,6 +90,12 @@ export interface User {
     avatar: string,
 }
 
+export interface Tag {
+    id: number,
+    name: string,
+    projectId: number,
+}
+
 export interface PaymentSubmitData {
     user_id: number,
     amount: string,
@@ -132,6 +138,7 @@ export type TimeEntryMap = { [n: number]: TimeEntry };
 export type UserMap = { [n: number]: User };
 export type PaymentMap = { [n: number]: Payment };
 export type ProjectInvitationTokenMap = { [n: number]: ProjectInvitationToken };
+export type TagMap = { [n: number]: Tag };
 
 export type ProjectDialogContext = {id?: number};
 export type IssueDialogContext = {projectId: number, id?: number};
@@ -147,6 +154,7 @@ export type AllProjectData = {
     users: UserMap,
     payments: PaymentMap,
     projectInvitationTokens: ProjectInvitationTokenMap,
+    tags: TagMap,
 }
 
 export interface ConfirmDialogData {

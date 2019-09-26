@@ -70,7 +70,7 @@ export default class PaymentDialog extends React.Component<Props, PaymentSubmitD
                                 name: 'user',
                                 id: 'user',
                             }}
-                            onChange={ev => {this.setState({user_id: parseInt(ev.target.value)})}}
+                            onChange={ev => {this.setState({user_id: parseInt(ev.target.value as string)})}}
                             value={this.state.user_id > 0 ? this.state.user_id : ''}
                         >
                         {users.map(user => <MenuItem key={user.id} value={user.id}>{user.name}</MenuItem>)}

@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 
 from werkzeug.serving import run_simple
+from argparse import ArgumentParser
 
 from pabu.app import wsgi_application
 
+parser = ArgumentParser()
+parser.add_argument('-p', '--port', default = 5000, type = int)
+
+args = parser.parse_args()
+
 run_simple(
     '0.0.0.0',
-    5000,
+    args.port,
     wsgi_application,
     use_reloader = True,
     use_debugger = True,

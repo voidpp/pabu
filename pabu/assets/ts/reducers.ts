@@ -1,9 +1,9 @@
-import { combineReducers } from 'redux';
-import { Action } from './actions';
-import { State, IssueViewDialogContext, ConfirmDialogContex } from './types';
+import {combineReducers} from 'redux';
+import {Action} from './actions';
+import {ConfirmDialogContex, IssueViewDialogContext, State} from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
-import { pabuLocalStorage } from './tools';
+import {pabuLocalStorage} from './tools';
 
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
@@ -118,8 +118,7 @@ function notifications(state = [], action)  {
         default:
             return state;
     }
-};
-
+}
 
 const rootReducer = combineReducers<State>({
     addTimeDialogContext,
@@ -141,6 +140,7 @@ const rootReducer = combineReducers<State>({
     lastSeenChangelogVersion,
     confirmDialogContex,
     notifications,
+    tags: resourceReducerFactory(Action.RECEIVE_TAGS),
 });
 
 export default rootReducer

@@ -48,8 +48,8 @@ export default class DurationSelect extends React.Component<Props, State> {
                 margin="dense"
                 inputProps={{name: 'status', id: 'status'}}
                 onChange={ev => {
-                    this.props.onChange(this.valueToNumber(ev.target.value))
-                    this.setState({value: ev.target.value});
+                    this.props.onChange(this.valueToNumber(ev.target.value as string))
+                    this.setState({value: ev.target.value as string});
                 }}
                 value={this.state.value}
                 SelectDisplayProps={{style: {fontSize: 14, padding: '2px 24px 2px 1px'}}}

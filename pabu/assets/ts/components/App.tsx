@@ -14,7 +14,6 @@ const lightTheme = createMuiTheme({
         primary: colors.blue,
     },
     typography: {
-        useNextVariants: true,
     }
 });
 
@@ -25,8 +24,6 @@ const darkTheme = createMuiTheme({
         secondary: colors.pink,
     },
     typography: {
-        useNextVariants: true,
-
     }
 });
 
