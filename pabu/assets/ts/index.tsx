@@ -4,8 +4,6 @@ import * as ReactDOM from "react-dom";
 import {CssBaseline} from '@material-ui/core';
 import * as ReactTooltip from 'react-tooltip'
 
-import '../scss/app.scss';
-
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
