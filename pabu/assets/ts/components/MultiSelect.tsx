@@ -1,6 +1,8 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import Select from 'react-select';
+import Creatable from 'react-select/creatable';
+
 import {Chip, MenuItem, Paper, TextField, Typography} from '@material-ui/core';
 
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -149,7 +151,7 @@ function MultiValue(props) {
 
 function Menu(props) {
     return (
-        <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+        <Paper square className={props.selectProps.classes.paper} {...props.innerProps} style={{zIndex: 8000}}>
             {props.children}
         </Paper>
     );
@@ -161,7 +163,7 @@ const components = {
     MultiValue,
     NoOptionsMessage,
     Option,
-    Placeholder,
+    // Placeholder,
     SingleValue,
     ValueContainer,
 };
@@ -175,6 +177,7 @@ export default function MultiSelect() {
 
     const handleChangeMulti = value => {
         setMulti(value);
+        console.log(value);
     };
 
     const selectStyles = {
@@ -188,19 +191,19 @@ export default function MultiSelect() {
     };
 
     return (
-        <Select
+        <Creatable
             classes={classes}
             styles={selectStyles}
             inputId="react-select-multiple"
             TextFieldProps={{
-                label: 'Countries',
+                label: 'Tags',
                 InputLabelProps: {
                     htmlFor: 'react-select-multiple',
                     shrink: true,
                 },
             }}
-            placeholder="Select multiple countries"
-            // options={suggestions}
+            // placeholder="Select multiple countries"
+            options={[]}
             components={components}
             value={multi}
             onChange={handleChangeMulti}

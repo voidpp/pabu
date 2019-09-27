@@ -15,7 +15,6 @@ import {IssueStatus} from '../types';
 import {dialogTransition} from './tools';
 import MultiSelect from "./MultiSelect";
 
-
 type State = {
     name: string,
     desc: string,
@@ -28,33 +27,6 @@ type Props = {
     initialData: State,
     onClose: () => void,
 }
-
-
-    const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
-    const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
 
 export default class IssueFormDialog extends React.Component<Props, State> {
 
@@ -121,7 +93,6 @@ export default class IssueFormDialog extends React.Component<Props, State> {
                     }}
                     fullWidth
                 />
-
                 <MultiSelect />
             </DialogContent>
             <DialogActions>
