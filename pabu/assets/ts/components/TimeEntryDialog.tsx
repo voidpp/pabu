@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
 import moment = require('moment');
-import { dialogTransition } from './tools';
+import { DialogTransition } from './tools';
 
 type Props = {
     opened: boolean,
@@ -22,7 +22,7 @@ export default class TimeEntryDialog extends React.Component<Props, {amount: str
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
-            TransitionComponent={dialogTransition}
+            TransitionComponent={DialogTransition}
         >
             <DialogTitle id="form-dialog-title">Add time entry</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">

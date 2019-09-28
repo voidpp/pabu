@@ -307,6 +307,10 @@ export function processIssues(issues: Array<ServerIssueData>) {
     return dispatch => client.processIssues(issues);
 }
 
+export function processTags(issueId: number, tags: Array<string>) {
+    return dispatch => client.processTags(issueId, tags);
+}
+
 export function sendTime(projectId: number, time: string, amount: string, issueId: number = null) {
     return dispatch => {
         return client.addTime(projectId, amount, time, issueId).then(() => {

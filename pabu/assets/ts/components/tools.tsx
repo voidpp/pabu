@@ -5,7 +5,11 @@ import { User, Issue, State, UserMap } from '../types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { connect } from 'react-redux';
 
-export const dialogTransition = p => <Grow {...p} />
+export class DialogTransition extends React.Component {
+    render() {
+        return <Grow {...this.props} />;
+    }
+}
 
 const userAvatarStyles = ({ palette, shape, typography }: Theme) => createStyles({
     avatar: {

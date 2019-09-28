@@ -35,6 +35,13 @@ export interface ServerIssueData {
     rank?: number,
 }
 
+export interface IssueFormData {
+    name: string,
+    desc: string,
+    status: IssueStatus,
+    tags: Array<string>,
+}
+
 export interface PabuModel {
     id: number,
 }
@@ -67,6 +74,7 @@ export interface Issue extends PabuModel {
     status: IssueStatus,
     rank: number,
     statusDate: number,
+    tags: Array<number>,
 }
 
 export interface TimeEntry extends PabuModel {

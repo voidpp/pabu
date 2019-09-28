@@ -10,25 +10,31 @@ import {
     MenuItem,
     Select,
     TextField,
+    Theme,
+    createStyles,
+    withStyles,
+    WithStyles,
 } from '@material-ui/core';
-import {IssueStatus} from '../types';
-import {dialogTransition} from './tools';
+import {IssueStatus, IssueFormData} from '../types';
+import {DialogTransition} from './tools';
 import MultiSelect from "./MultiSelect";
 
-type State = {
-    name: string,
-    desc: string,
-    status: IssueStatus,
-}
+type State = IssueFormData;
+
+const styles = () => createStyles({
+    dialog: {
+        overflow: 'visible',
+    }
+});
 
 type Props = {
     opened: boolean,
-    onSubmit: (name: string, desc: string, status: IssueStatus) => void,
+    onSubmit: (name: string, desc: string, status: IssueStatus, tags: Array<string>) => void,
     initialData: State,
     onClose: () => void,
-}
+} & WithStyles<typeof styles>;
 
-export default class IssueFormDialog extends React.Component<Props, State> {
+class IssueFormDialog extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -41,20 +47,25 @@ export default class IssueFormDialog extends React.Component<Props, State> {
 
     onSubmit = (ev: React.SyntheticEvent) => {
         ev.preventDefault();
-        this.props.onSubmit(this.state.name, this.state.desc, this.state.status);
+        this.submit();
     };
 
+    submit = () => {
+        this.props.onSubmit(this.state.name, this.state.desc, this.state.status, this.state.tags);
+    }
+
     render() {
-        let {name, desc} = this.state;
+        let {name, desc, tags} = this.state;
         return <Dialog
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
-            TransitionComponent={dialogTransition}
+            TransitionComponent={DialogTransition}
+            classes={{ paperScrollPaper: this.props.classes.dialog }}
         >
             <DialogTitle id="form-dialog-title">Create task</DialogTitle>
-            {/*<form onSubmit={this.onSubmit} id="create_project_form">*/}
-            <DialogContent>
+            <form onSubmit={this.onSubmit} id="create_project_form">
+            <DialogContent className={this.props.classes.dialog}>
                 <TextField
                     autoFocus
                     margin="dense"
@@ -93,15 +104,17 @@ export default class IssueFormDialog extends React.Component<Props, State> {
                     }}
                     fullWidth
                 />
-                <MultiSelect />
+                <MultiSelect values={tags} onChange={v => this.setState({tags: v})} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.props.onClose} color="primary">
                     Cancel
                 </Button>
-                <Button type="submit" color="primary">Submit</Button>
+                <Button type="submit" color="primary" onClick={() => this.submit()}>Submit</Button>
             </DialogActions>
-            {/*</form>*/}
+            </form>
         </Dialog>
     }
 }
+
+export default withStyles(styles)(IssueFormDialog);

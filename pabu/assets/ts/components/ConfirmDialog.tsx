@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ConfirmDialogContex } from '../types';
 import { Dialog, DialogContent, DialogActions, Button, Typography } from '@material-ui/core';
-import { dialogTransition } from './tools';
+import { DialogTransition } from './tools';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export type StateProps = {
@@ -16,7 +16,7 @@ export default React.memo((props: StateProps & DispatchProps) => {
     return <Dialog
         open={props.confirmDialogContex.show}
         onClose={() => props.closeDialog(null)}
-        TransitionComponent={dialogTransition}
+        TransitionComponent={DialogTransition}
     >
         <DialogContent style={{display: 'flex', alignItems: 'center'}}>
             <Typography><FontAwesomeIcon icon="question-circle" style={{fontSize: '3em', marginRight: 20}} /></Typography>

@@ -145,6 +145,7 @@ function MultiValue(props) {
             })}
             onDelete={props.removeProps.onClick}
             deleteIcon={<CancelIcon {...props.removeProps} />}
+            style={{height: 28}}
         />
     );
 }
@@ -163,32 +164,27 @@ const components = {
     MultiValue,
     NoOptionsMessage,
     Option,
-    // Placeholder,
+    Placeholder,
     SingleValue,
     ValueContainer,
 };
 
-export default function MultiSelect() {
-    const classes = useStyles();
+export default function MultiSelect(props: {values: Array<string>, onChange: (vals: Array<string>) => void}) {
+    const classes = useStyles({});
 
     const theme = useTheme();
-    const [multi, setMulti] = React.useState(null);
-
-
-    const handleChangeMulti = value => {
-        setMulti(value);
-        console.log(value);
-    };
 
     const selectStyles = {
         input: base => ({
             ...base,
-            color: theme.palette.text.primary,
+            color: theme.typography.body1.color,
             '& input': {
                 font: 'inherit',
             },
         }),
     };
+
+    const values = props.values.map(v => ({label: v, value: v}));
 
     return (
         <Creatable
@@ -203,10 +199,11 @@ export default function MultiSelect() {
                 },
             }}
             // placeholder="Select multiple countries"
-            options={[]}
+            options={values}
             components={components}
-            value={multi}
-            onChange={handleChangeMulti}
+            value={values}
+            // as Array: fucking react-select...
+            onChange={vals => props.onChange(vals ? (vals as Array<any>).map(v => v.value) : [])}
             isMulti
         />
     );

@@ -69,6 +69,7 @@ def project_to_dict(project: Project):
         'users': [u.id for u in project.users],
         'payments': [p.id for p in project.payments],
         'tokens': [t.id for t in project.tokens],
+        'tags': [t.id for t in project.tags],
     }
 
 def issue_to_dict(issue: Issue):
@@ -85,6 +86,13 @@ def issue_to_dict(issue: Issue):
         'time_entries': [t.id for t in issue.time_entries],
         'status_date': issue.status_date.timestamp(),
         'tags': [t.id for t in issue.tags],
+    }
+
+def tag_to_dict(tag: Tag):
+    return {
+        'id': tag.id,
+        'name': tag.name,
+        'project_id': tag.project_id,
     }
 
 def payment_to_dict(payment: Payment):
@@ -152,5 +160,5 @@ def get_all_project_data(db: Database, project_id = None):
             'users': users,
             'payments': idize(payment_to_dict, conn.query(Payment).filter(Payment.project_id.in_(project_id_list)).all()),
             'project_invitation_tokens': idize(project_token_to_dict, conn.query(ProjectInvitationToken).filter(ProjectInvitationToken.project_id.in_(project_id_list)).all()),
-            'tags': idize(issue_to_dict, conn.query(Tag).filter(Tag.project_id.in_(project_id_list)).all()),
+            'tags': idize(tag_to_dict, conn.query(Tag).filter(Tag.project_id.in_(project_id_list)).all()),
         }

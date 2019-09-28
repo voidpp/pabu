@@ -1,4 +1,4 @@
-import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap, AllProjectData, TimeEntry } from "./types";
+import { Project, Issue, TimeEntryMap, ProjectInvitationToken, ProjectInvitationTokenMap, IssueStatus, ServerIssueData, IssueMap, AllProjectData, TimeEntry, TagMap } from "./types";
 import { convertKeysToSnakeCase, convertKeysToCamelCase } from "./tools";
 
 class PabuClient {
@@ -62,6 +62,10 @@ class PabuClient {
 
     async processIssues(issues: Array<ServerIssueData>): Promise<IssueMap> {
         return this._send('process_issues', [issues.map(convertKeysToSnakeCase)]);
+    }
+
+    async processTags(issueId: number, tags: Array<string>): Promise<void> {
+        return this._send('process_tags', [issueId, tags]);
     }
 
     async addTime(projectId: number, amount: string, time: string, issueId: number = null) {

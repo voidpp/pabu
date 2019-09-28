@@ -107,3 +107,5 @@ class Tag(Base):
     id = Column(Integer, primary_key = True)
     project_id = Column(Integer, ForeignKey('projects.id', ondelete = 'CASCADE'), nullable = False)
     name = Column(String, nullable = False)
+
+    project = relationship("Project", backref = "tags")

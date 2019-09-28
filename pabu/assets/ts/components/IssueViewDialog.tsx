@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Ico
 import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
 import { Issue, TickingStat, Project } from '../types';
-import { dialogTransition, UserLabel, Badge, NoDataLabel } from './tools';
+import { DialogTransition, UserLabel, Badge, NoDataLabel } from './tools';
 import StopWatch from '../containers/StopWatch';
 import moment = require('moment');
 import Tooltip from './Tooltip';
@@ -38,7 +38,7 @@ export default React.memo((props: StateProps & DispatchProps) => {
     }
 
     return  <Dialog
-                TransitionComponent={dialogTransition}
+                TransitionComponent={DialogTransition}
                 onClose={onClose}
                 open={show}
                 className="issue-view-dialog"

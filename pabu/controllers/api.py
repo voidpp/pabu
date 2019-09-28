@@ -12,7 +12,7 @@ from voluptuous import Schema
 
 from pabu.auth import get_user_id, is_logged_in
 from pabu.db import Database
-from pabu.models import Issue, Payment, Project, ProjectInvitationToken, TimeEntry, User, projects_users
+from pabu.models import Issue, Payment, Project, ProjectInvitationToken, TimeEntry, User, projects_users, Tag
 from pabu.tools import (entry_stat_from_list, issue_to_dict, project_to_dict, project_token_to_dict, sqla_model_to_voluptuous,
                         time_entry_to_dict, user_to_dict, payment_to_dict, get_all_project_data as get_all_project_data_)
 
@@ -139,6 +139,27 @@ def add_api_controllers(app: Flask, db: Database):
                 'post_process': lambda d, i: None if 'id' in d else {'rank': i.id},
             })
             return {i.id: issue_to_dict(i) for i in issues}
+
+    # @jsonrpc_api.dispatcher.add_method
+    # def process_tags(tags): # pylint: disable=unused-variable
+    #     with db.session_scope() as conn:
+    #         issues = process_resources(tags, Tag, conn, {
+    #             'checker': lambda i: check_project(i.project_id, conn),
+    #         })
+    #         return {i.id: issue_to_dict(i) for i in issues}
+
+    @jsonrpc_api.dispatcher.add_method
+    def process_tags(issue_id, tags): # pylint: disable=unused-variable
+        with db.session_scope() as conn:
+            project_id = conn.query(Project.id).join(Issue, Issue.project_id == Project.id).filter(Issue.id == issue_id).first().id
+            check_project(project_id, conn)
+            existing_tags = conn.query(Tag).filter(Tag.project_id == project_id).filter(Tag.name.in_(tags)).all()
+            existing_tag_names = set(t.name for t in existing_tags)
+            new_tags = [Tag(name = n, project_id = project_id) for n in list(set(tags) - existing_tag_names)]
+            if new_tags:
+                conn.add(*new_tags)
+            issue = conn.query(Issue).filter(Issue.id == issue_id).first()
+            issue.tags = new_tags + existing_tags
 
     @jsonrpc_api.dispatcher.add_method
     def get_issues(project_id: int): # pylint: disable=unused-variable

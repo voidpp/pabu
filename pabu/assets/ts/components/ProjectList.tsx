@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { TimeDialogContext, UserMap, PaymentSubmitData, Project, IssueDialogContext, Issue, IssueStatus } from '../types';
+import { TimeDialogContext, UserMap, PaymentSubmitData, Project, IssueDialogContext, Issue, IssueStatus, IssueFormData } from '../types';
 import ProjectRow from '../components/ProjectRow';
 import TimeEntryDialog from '../components/TimeEntryDialog';
 import PaymentDialog from '../components/PaymentDialog';
@@ -13,7 +13,7 @@ export type StateProps = {
     paymentDialogProjectId: number,
     projects: Array<Project>,
     users: UserMap,
-    issueData: Issue,
+    issueData: IssueFormData,
 }
 
 export type DispatchProps = {
@@ -21,7 +21,7 @@ export type DispatchProps = {
     hideAddIssueDialog: () => void,
     hideAddTimeDialog: () => void,
     hidePaymentDialog: () => void,
-    onIssueSubmit: (name: string, desc: string, status: IssueStatus, projectId: number, id: number) => void,
+    onIssueSubmit: (name: string, desc: string, status: IssueStatus, projectId: number, id: number, tags: Array<string>) => void,
     onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => void
     onTimeSubmit: (amount: string, time: string, projectId: number, issueId: number) => void,
     openProject: (id: number) => void,
@@ -32,7 +32,7 @@ export default React.memo((props: StateProps & DispatchProps) => {
 
     return <div>
                 <IssueFormDialog
-                    onSubmit={(name, desc, status) => props.onIssueSubmit(name, desc, status, props.issueDialogContext.projectId, props.issueDialogContext.id)}
+                    onSubmit={(name, desc, status, tags) => props.onIssueSubmit(name, desc, status, props.issueDialogContext.projectId, props.issueDialogContext.id, tags)}
                     opened={props.issueDialogContext != null}
                     initialData={props.issueData}
                     onClose={props.hideAddIssueDialog} />

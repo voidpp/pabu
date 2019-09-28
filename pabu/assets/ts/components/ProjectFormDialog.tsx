@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@material-ui/core';
 import { NameDescSubmitCallback } from '../types';
-import { dialogTransition } from './tools';
+import { DialogTransition } from './tools';
 
 type State = {
     name: string,
@@ -39,7 +39,7 @@ export default class ProjectFormDialog extends React.Component<Props, State> {
             open={this.props.opened}
             onClose={this.props.onClose}
             aria-labelledby="form-dialog-title"
-            TransitionComponent={dialogTransition}
+            TransitionComponent={DialogTransition}
         >
             <DialogTitle id="form-dialog-title">{this.props.caption}</DialogTitle>
             <form onSubmit={this.onSubmit} id="create_project_form">
