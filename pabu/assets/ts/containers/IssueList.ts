@@ -9,8 +9,7 @@ function mapStateToProps(state: State, props: OwnProps): StateProps {
     return {
         issues: Object.values(issues).filter(i => i.projectId == props.id),
         tickingStat,
-        // tags: Object.values(tags).filter(t => t.projectId == props.id),
-        tags,
+        tags: Object.values(tags).filter(t => t.projectId == props.id).reduce((r, t) => (r[t.id] = t, r), {}),
     }
 }
 

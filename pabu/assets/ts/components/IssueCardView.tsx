@@ -81,7 +81,7 @@ const CardContent = withStyles(styles)(React.memo((props: CardContentProps & Mui
         </div>
         <div style={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
             {issue.tags.map(id => (
-                <Chip style={{marginRight: 5}} size="small" label={tags[id].name} onClick={() => setTagFilter(id)} />
+                <Chip key={id} style={{marginRight: 5}} size="small" label={tags[id].name} onClick={() => setTagFilter(id)} />
             ))}
         </div>
         <div className="footer">

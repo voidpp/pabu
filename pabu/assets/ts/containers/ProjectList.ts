@@ -33,10 +33,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
         onIssueSubmit: async (name: string, desc: string, status: IssueStatus, projectId: number, id: number, tags: Array<string>) => {
             const issues = await dispatch(processIssues([{name, desc, status, projectId, id}]));
             await dispatch(processTags(Object.values(issues)[0].id, tags));
+            await dispatch(fetchTags(projectId));
             dispatch(closeIssueDialog());
             dispatch(fetchProjects(projectId));
             dispatch(fetchIssues(projectId));
-            dispatch(fetchTags(projectId));
             dispatch(showNotification(`Task has been ${id ? 'modified': 'created'}`));
         },
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {
