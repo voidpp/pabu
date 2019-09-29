@@ -169,7 +169,13 @@ const components = {
     ValueContainer,
 };
 
-export default function MultiSelect(props: {values: Array<string>, onChange: (vals: Array<string>) => void}) {
+export type Props = {
+    values: Array<string>,
+    options: Array<string>,
+    onChange: (vals: Array<string>) => void,
+};
+
+export default function MultiSelect(props: Props) {
     const classes = useStyles({});
 
     const theme = useTheme();
@@ -184,8 +190,6 @@ export default function MultiSelect(props: {values: Array<string>, onChange: (va
         }),
     };
 
-    const values = props.values.map(v => ({label: v, value: v}));
-
     return (
         <Creatable
             classes={classes}
@@ -199,9 +203,9 @@ export default function MultiSelect(props: {values: Array<string>, onChange: (va
                 },
             }}
             // placeholder="Select multiple countries"
-            options={values}
+            options={props.options.map(v => ({label: v, value: v}))}
             components={components}
-            value={values}
+            value={props.values.map(v => ({label: v, value: v}))}
             // as Array: fucking react-select...
             onChange={vals => props.onChange(vals ? (vals as Array<any>).map(v => v.value) : [])}
             isMulti

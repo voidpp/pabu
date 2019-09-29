@@ -32,6 +32,7 @@ type Props = {
     onSubmit: (name: string, desc: string, status: IssueStatus, tags: Array<string>) => void,
     initialData: State,
     onClose: () => void,
+    tags: Array<string>,
 } & WithStyles<typeof styles>;
 
 class IssueFormDialog extends React.Component<Props, State> {
@@ -104,13 +105,17 @@ class IssueFormDialog extends React.Component<Props, State> {
                     }}
                     fullWidth
                 />
-                <MultiSelect values={tags} onChange={v => this.setState({tags: v})} />
+                <MultiSelect
+                    values={tags}
+                    options={this.props.tags}
+                    onChange={v => this.setState({tags: v})}
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.props.onClose} color="primary">
                     Cancel
                 </Button>
-                <Button type="submit" color="primary" onClick={() => this.submit()}>Submit</Button>
+                <Button type="submit" color="primary">Submit</Button>
             </DialogActions>
             </form>
         </Dialog>

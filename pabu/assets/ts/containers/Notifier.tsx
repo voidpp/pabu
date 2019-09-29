@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { withSnackbar, withSnackbarProps } from 'notistack';
+import { withSnackbar, WithSnackbarProps } from 'notistack';
 import { removeNotification } from '../actions';
 import { Notification } from '../types';
 
@@ -11,7 +11,7 @@ export type OwnProps = {
     removeSnackbar: (key: any) => void,
 }
 
-class Notifier extends React.Component<OwnProps & withSnackbarProps> {
+class Notifier extends React.Component<OwnProps & WithSnackbarProps> {
     displayed = [];
 
     storeDisplayed = (id) => {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core';
 import { Tooltip } from '@material-ui/core';
 
 function arrowGenerator(color) {

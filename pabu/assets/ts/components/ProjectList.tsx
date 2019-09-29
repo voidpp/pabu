@@ -14,6 +14,7 @@ export type StateProps = {
     projects: Array<Project>,
     users: UserMap,
     issueData: IssueFormData,
+    tags: Array<string>,
 }
 
 export type DispatchProps = {
@@ -35,6 +36,7 @@ export default React.memo((props: StateProps & DispatchProps) => {
                     onSubmit={(name, desc, status, tags) => props.onIssueSubmit(name, desc, status, props.issueDialogContext.projectId, props.issueDialogContext.id, tags)}
                     opened={props.issueDialogContext != null}
                     initialData={props.issueData}
+                    tags={props.tags}
                     onClose={props.hideAddIssueDialog} />
                 <TimeEntryDialog
                     opened={props.addTimeDialogContext != null}
