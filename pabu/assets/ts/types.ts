@@ -1,6 +1,5 @@
 import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
-import { OptionsObject } from "notistack";
 
 export interface UserInfo {
     name: string,
@@ -174,10 +173,12 @@ export interface ConfirmDialogContex extends ConfirmDialogData {
     show: boolean,
 }
 
+export type NotificationVariant = 'success' | 'warning' | 'error';
+
 export type Notification = {
-    key: number,
+    show: boolean,
     message: string,
-    options?: OptionsObject,
+    variant: NotificationVariant,
 }
 
 export interface State extends AllProjectData {
@@ -194,7 +195,7 @@ export interface State extends AllProjectData {
     issueViewDialogContext: IssueViewDialogContext,
     lastSeenChangelogVersion: string,
     confirmDialogContex: ConfirmDialogContex,
-    notifications: Array<Notification>,
+    notification: Notification,
 }
 
 export type ThunkDispatcher = ThunkDispatch<{}, undefined, Action>;

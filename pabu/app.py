@@ -6,6 +6,8 @@ import os
 
 from flask import Flask, render_template, session
 from werkzeug.wsgi import DispatcherMiddleware
+import pkg_resources
+from time import time
 
 from .config import load, Mode
 from .db import Database
@@ -74,6 +76,8 @@ def index(path = None):
             'version': pkg_resources.get_distribution('pabu').version,
             'initialData': get_all_project_data(db) if is_logged_in() else None,
         },
+        dev_mode = config.mode == Mode.DEVELOPMENT,
+        version = str(time()) if config.mode == Mode.DEVELOPMENT else pkg_resources.get_distribution("pabu").version,
         javascript_libraries = javascript_libraries[config.mode],
     )
 

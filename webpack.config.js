@@ -1,3 +1,5 @@
+var LiveReloadPlugin = require('webpack-livereload-plugin');
+
 module.exports = {
     entry: "./pabu/assets/ts/index.tsx",
     output: {
@@ -46,5 +48,9 @@ module.exports = {
             "@fortawesome/free-brands-svg-icons": "free-brands-svg-icons",
             "@fortawesome/free-regular-svg-icons": "free-regular-svg-icons",
         },
+    ],
+
+    plugins: [
+        new LiveReloadPlugin({})
     ]
 };

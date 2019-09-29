@@ -32,7 +32,6 @@
     "jayson": "^2.1.2",
     "json-rpc-client": "^0.2.2",
     "moment": "^2.24.0",
-    "notistack": "^0.9.2",
     "npm": "^6.9.0",
     "object-assign-deep": "^0.4.0",
     "react": "^16.8.4",
@@ -46,7 +45,8 @@
     "redux-thunk": "^2.3.0",
     "semver": "^6.0.0",
     "ts-loader": "^6.1.2",
-    "webpack": "^4.29.6"
+    "webpack": "^4.29.6",
+    "webpack-livereload-plugin": "^2.2.0"
   },
   "devDependencies": {
     "@types/react-redux": "^7.0.3",

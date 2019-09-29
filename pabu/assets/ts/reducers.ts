@@ -1,9 +1,10 @@
 import {combineReducers} from 'redux';
-import {Action} from './actions';
-import {ConfirmDialogContex, IssueViewDialogContext, State} from './types';
+import {Action, hideNotification} from './actions';
+import {ConfirmDialogContex, IssueViewDialogContext, State, Notification} from './types';
 
 import * as objectAssignDeep from 'object-assign-deep';
 import {pabuLocalStorage} from './tools';
+import {showNotification} from './actions';
 
 function projectDialogContext(state = null, action) {
     if (action.type == Action.OPEN_PROJECT_DIALOG)
@@ -109,12 +110,12 @@ function confirmDialogContex(state: ConfirmDialogContex = {show: false, message:
 }
 
 
-function notifications(state = [], action)  {
+function notification(state: Notification = {show: false, message: '', variant: 'success'}, action)  {
     switch (action.type) {
-        case Action.ENQUEUE_NOTIFICATION:
-            return state.concat([action.notification])
-        case Action.REMOVE_NOTIFICATION:
-            return state.filter(n => n.key !== action.key);
+        case Action.SHOW_NOTIFICATION:
+            return {message: action.message, variant: action.variant, show: true};
+        case Action.HIDE_NOTIFICATION:
+            return Object.assign({}, state, {show: false});
         default:
             return state;
     }
@@ -139,7 +140,7 @@ const rootReducer = combineReducers<State>({
     issueViewDialogContext,
     lastSeenChangelogVersion,
     confirmDialogContex,
-    notifications,
+    notification,
     tags: resourceReducerFactory(Action.RECEIVE_TAGS),
 });
 
