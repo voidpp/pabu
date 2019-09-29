@@ -11,10 +11,10 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js", ".json"]
+        extensions: [".ts", ".tsx", ".js"]
     },
 
-    mode: 'production',
+    mode: 'development',
 
     module: {
         rules: [
@@ -41,6 +41,10 @@ module.exports = {
             "react-dom": "ReactDOM",
             "@material-ui/core": "MaterialUI",
             "react-beautiful-dnd": "ReactBeautifulDnd",
+            "@fortawesome/fontawesome-svg-core": "fontawesome-svg-core",
+            "@fortawesome/free-solid-svg-icons": "free-solid-svg-icons",
+            "@fortawesome/free-brands-svg-icons": "free-brands-svg-icons",
+            "@fortawesome/free-regular-svg-icons": "free-regular-svg-icons",
         },
     ]
 };
