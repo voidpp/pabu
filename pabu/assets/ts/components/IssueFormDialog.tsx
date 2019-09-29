@@ -106,9 +106,10 @@ class IssueFormDialog extends React.Component<Props, State> {
                     fullWidth
                 />
                 <MultiSelect
-                    values={tags}
-                    options={this.props.tags}
-                    onChange={v => this.setState({tags: v})}
+                    label="Tags"
+                    values={tags.map(t => ({label: t, value: t}))}
+                    options={this.props.tags.map(t => ({label: t, value: t}))}
+                    onChange={v => this.setState({tags: v.map(t => t.value)})}
                 />
             </DialogContent>
             <DialogActions>

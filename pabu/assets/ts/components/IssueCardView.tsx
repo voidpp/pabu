@@ -44,6 +44,7 @@ export type OwnProps = {
     startTime: (projectId: number, issueId: number) => void,
     stopTime: () => void,
     doneDateFilter: number,
+    tagFilter: Array<number>,
 }
 
 type MuiProps = {

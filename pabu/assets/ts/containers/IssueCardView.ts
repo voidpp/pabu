@@ -14,6 +14,10 @@ function mapStateToProps(state: State, props: OwnProps): StateProps {
     for (const issue of Object.values(issues).filter(i => i.projectId == props.projectId).sort((a, b) => a.rank - b.rank)) {
         if (props.doneDateFilter > 0 && issue.status == IssueStatus.DONE && issue.statusDate < now - props.doneDateFilter)
             continue;
+
+        if (props.tagFilter.length && issue.tags.filter(id => props.tagFilter.includes(id)).length != props.tagFilter.length)
+            continue;
+
         issuesByStatus[issue.status].push(issue);
     }
 

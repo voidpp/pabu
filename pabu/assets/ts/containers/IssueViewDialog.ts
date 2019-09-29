@@ -5,12 +5,13 @@ import IssueViewDialog, {StateProps, DispatchProps} from '../components/IssueVie
 import { closeIssueViewDialog, openAddTimeDialog, startTime, stopTime, deleteIssue, openIssueDialog, openConfirmDialog } from '../actions';
 
 function mapStateToProps(state: State): StateProps {
-    let {issues, issueViewDialogContext, tickingStat, projects} = state;
+    let {issues, issueViewDialogContext, tickingStat, projects, tags} = state;
     return {
         issue: issueViewDialogContext.id ? issues[issueViewDialogContext.id] : null,
         show: issueViewDialogContext.show,
         tickingStat,
-        project: issueViewDialogContext.id ? projects[issues[issueViewDialogContext.id].projectId] : null
+        project: issueViewDialogContext.id ? projects[issues[issueViewDialogContext.id].projectId] : null,
+        tags,
     }
 }
 

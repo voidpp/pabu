@@ -4,15 +4,17 @@ import * as React from 'react';
 import IssueCardView from '../containers/IssueCardView';
 import StopWatch from '../containers/StopWatch';
 import { pabuLocalStorage, removeKeys } from '../tools';
-import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary } from '../types';
+import { Issue, IssueListLayout, IssueStatus, IssueStatusFilterStatusMap, TickingStat, TimeSummary, TagMap, Tag } from '../types';
 import ActionIcon from './ActionIcon';
 import DurationSelect from './DurationSelect';
 import IssueActionIcons from './IssueActionIcons';
 import PabuTable, { TableColDesriptor } from './PabuTable';
+import MultiSelect from './MultiSelect';
 
 export type StateProps = {
     issues: Array<Issue>,
     tickingStat: TickingStat,
+    tags: TagMap,
 }
 
 export type DispatchProps = {
@@ -97,6 +99,7 @@ type State = {
     layout: IssueListLayout,
     statusFilters: IssueStatusFilterStatusMap,
     doneDateFilter: number,
+    tagFilter: Array<number>,
 }
 
 class IssueList extends React.Component<Props, State> {
@@ -107,6 +110,7 @@ class IssueList extends React.Component<Props, State> {
             layout: pabuLocalStorage.issueListLayout,
             statusFilters: pabuLocalStorage.issueTableFilters,
             doneDateFilter: pabuLocalStorage.issueDoneDateFilter,
+            tagFilter: [],
         }
     }
 
@@ -127,25 +131,40 @@ class IssueList extends React.Component<Props, State> {
     }
 
     render() {
+        // TODO: issue filtering implemented twice, once for IssueCardView and once for IssueTableView... merge them!
         const {onAddNewIssue, id, classes} = this.props;
-        const issues = this.props.issues.filter((i => this.state.statusFilters[i.status]))
-        const filter = this.state.layout == 'list' ?
-                <IssueStatusFilterBar value={this.state.statusFilters} onChange={this.changeFilter.bind(this)} /> :
+        const {layout, statusFilters, doneDateFilter, tagFilter} = this.state;
+        let issues = this.props.issues.filter((i => statusFilters[i.status]))
+        if (tagFilter.length) {
+            issues = issues.filter(i => i.tags.filter(id => tagFilter.includes(id)).length == tagFilter.length)
+        }
+        const filter = layout == 'list' ?
+                <IssueStatusFilterBar value={statusFilters} onChange={this.changeFilter.bind(this)} /> :
                 <div style={{marginLeft: 10, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                     <Typography style={{paddingRight: 5}}>Hide 'Done' tasks older than: </Typography>
-                    <DurationSelect value={this.state.doneDateFilter} onChange={this.changeDoneDateFilter} />
+                    <DurationSelect value={doneDateFilter} onChange={this.changeDoneDateFilter} />
                 </div>;
 
         return <div>
             <div className={classes.menuBar}>
                 <Button size="small" color="primary" onClick={onAddNewIssue.bind(this, id)} style={{marginRight: 10}}>Create task</Button>
-                <ActionIcon data-tip="List view" icon="list" onClick={() => this.changeLayout('list')} className={this.state.layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
-                <ActionIcon data-tip="Card view" icon="table" onClick={() => this.changeLayout('card')} className={this.state.layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon data-tip="List view" icon="list" onClick={() => this.changeLayout('list')} className={layout == 'list' ? '' : classes.inactiveLayoutIcon}/>
+                <ActionIcon data-tip="Card view" icon="table" onClick={() => this.changeLayout('card')} className={layout == 'card' ? '' : classes.inactiveLayoutIcon}/>
                 {filter}
+                <div style={{marginLeft: 20, flexGrow: 1}}>
+                    <MultiSelect
+                        placeholder="Filter by tags..."
+                        options={Object.values(this.props.tags).map(t => ({label: t.name, value: t.id}))}
+                        values={tagFilter.map(id => ({value: id, label: this.props.tags[id].name}))}
+                        onChange={v => this.setState({tagFilter: v.map(v => v.value)})}
+                    />
+                 </div>
             </div>
-            {this.state.layout == 'list' ?
+            {layout == 'list' ?
                 <IssueTableView {...this.props} issues={issues}/> :
-                <IssueCardView doneDateFilter={this.state.doneDateFilter} projectId={id} {...removeKeys<Props>(this.props, 'classes')}/>}
+                <IssueCardView tagFilter={tagFilter} doneDateFilter={doneDateFilter} projectId={id}
+                    {...removeKeys<Props>(this.props, 'classes')}
+                />}
         </div>
     }
 }

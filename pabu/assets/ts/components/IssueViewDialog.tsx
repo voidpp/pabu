@@ -1,7 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography, Chip } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
-import { Issue, TickingStat, Project } from '../types';
+import { Issue, TickingStat, Project, TagMap } from '../types';
 import { DialogTransition, UserLabel, Badge, NoDataLabel } from './tools';
 import StopWatch from '../containers/StopWatch';
 import moment = require('moment');
@@ -12,6 +12,7 @@ export type StateProps = {
     show: boolean,  // needed for nice hide effect
     tickingStat: TickingStat,
     project: Project,
+    tags: TagMap,
 }
 
 export type DispatchProps = {
@@ -24,7 +25,7 @@ export type DispatchProps = {
 }
 
 export default React.memo((props: StateProps & DispatchProps) => {
-    const {issue, onClose, show, tickingStat, startTime, stopTime, onDeleteIssue, onAddNewTime, onUpdateIssue, project} = props;
+    const {issue, onClose, show, tickingStat, startTime, stopTime, onDeleteIssue, onAddNewTime, onUpdateIssue, project, tags} = props;
     if (!issue) return <div></div>;
 
     function getTickingIcon() {
@@ -88,6 +89,13 @@ export default React.memo((props: StateProps & DispatchProps) => {
                         <tr>
                             <td style={{verticalAlign: 'top'}}><Typography>Description</Typography></td>
                             <td>{issue.desc ? <Typography>{issue.desc}</Typography> : <NoDataLabel text="There is no description" />}</td>
+                        </tr>
+                        <tr>
+                            <td style={{verticalAlign: 'center'}}><Typography>Tags</Typography></td>
+                            <td>
+                                {issue.tags.map(id => <Chip style={{marginRight: 5}} key={id} label={tags[id].name} />)}
+                                {issue.tags.length == 0 ? <NoDataLabel text="There are no tags" /> : ''}
+                            </td>
                         </tr>
                     </tbody>
                 </table>

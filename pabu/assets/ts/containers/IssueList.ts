@@ -5,10 +5,12 @@ import IssueList, { DispatchProps, OwnProps, StateProps } from '../components/Is
 import { State, ThunkDispatcher } from '../types';
 
 function mapStateToProps(state: State, props: OwnProps): StateProps {
-    let {issues, tickingStat} = state;
+    let {issues, tickingStat, tags} = state;
     return {
         issues: Object.values(issues).filter(i => i.projectId == props.id),
         tickingStat,
+        // tags: Object.values(tags).filter(t => t.projectId == props.id),
+        tags,
     }
 }
 

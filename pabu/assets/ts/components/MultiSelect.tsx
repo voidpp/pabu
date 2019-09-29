@@ -169,16 +169,27 @@ const components = {
     ValueContainer,
 };
 
+
+export type Option = {
+    value: any,
+    label: string,
+}
+
 export type Props = {
-    values: Array<string>,
-    options: Array<string>,
-    onChange: (vals: Array<string>) => void,
+    values: Array<Option>,
+    options: Array<Option>,
+    onChange: (vals: Array<Option>) => void,
+    label?: string,
+    placeholder?: string,
+    creatable?: boolean,
 };
 
 export default function MultiSelect(props: Props) {
     const classes = useStyles({});
 
     const theme = useTheme();
+
+    const {values, options, onChange, label, placeholder = false, creatable = false} = props;
 
     const selectStyles = {
         input: base => ({
@@ -190,24 +201,25 @@ export default function MultiSelect(props: Props) {
         }),
     };
 
+    const Comp: any = creatable ? Creatable : Select;
+
     return (
-        <Creatable
+        <Comp
             classes={classes}
             styles={selectStyles}
             inputId="react-select-multiple"
             TextFieldProps={{
-                label: 'Tags',
+                label,
                 InputLabelProps: {
                     htmlFor: 'react-select-multiple',
                     shrink: true,
                 },
             }}
-            // placeholder="Select multiple countries"
-            options={props.options.map(v => ({label: v, value: v}))}
+            placeholder={placeholder}
+            options={options}
             components={components}
-            value={props.values.map(v => ({label: v, value: v}))}
-            // as Array: fucking react-select...
-            onChange={vals => props.onChange(vals ? (vals as Array<any>).map(v => v.value) : [])}
+            value={values}
+            onChange={v => onChange(v ? v : [])}
             isMulti
         />
     );
