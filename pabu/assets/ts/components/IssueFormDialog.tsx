@@ -106,6 +106,7 @@ class IssueFormDialog extends React.Component<Props, State> {
                     fullWidth
                 />
                 <MultiSelect
+                    creatable
                     label="Tags"
                     values={tags.map(t => ({label: t, value: t}))}
                     options={this.props.tags.map(t => ({label: t, value: t}))}

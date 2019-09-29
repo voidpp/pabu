@@ -5,7 +5,7 @@ import TimeEntryList, { DispatchProps, OwnProps, StateProps } from '../component
 import { ExpandedTimeEntry, State, ThunkDispatcher, IssueStatus } from '../types';
 
 function mapStateToProps(state: State, props: OwnProps): StateProps {
-    const {issues, timeEntries, users, tickingStat} = state;
+    const {issues, timeEntries, users, tickingStat, tags} = state;
 
     let entries = [];
     for (const id in timeEntries) {
@@ -13,19 +13,24 @@ function mapStateToProps(state: State, props: OwnProps): StateProps {
         if (entry.projectId != props.id)
             continue
 
+
+        const issue = (entry.issueId in issues) ? issues[entry.issueId] : null;
+
         let exEntry: ExpandedTimeEntry = {
             ...entry,
-            issueStatus: (entry.issueId in issues) ? issues[entry.issueId].status : IssueStatus.TODO,
-            issueName: (entry.issueId in issues) ? issues[entry.issueId].name : '',
+            issueStatus: issue ? issue.status : IssueStatus.TODO,
+            issueName: issue ? issue.name : '',
             userName: (entry.userId in users) ? users[entry.userId].name : '',
             spentHours: (entry.end || new Date().getTime()/1000) - entry.start,
+            issueTags: issue ? Object.values(tags).filter(t => issue.tags.includes(t.id)).map(t => t.id) : [],
         }
         entries.push(exEntry)
     }
 
     return {
         rows: entries,
-        tickingStat
+        tickingStat,
+        tags: Object.values(tags).filter(t => t.projectId == props.id),
     }
 }
 

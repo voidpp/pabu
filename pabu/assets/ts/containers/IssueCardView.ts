@@ -6,7 +6,7 @@ import { ServerIssueData, State, ThunkDispatcher, IssueStatus, IssueByStatusMap 
 import { DropResult } from 'react-beautiful-dnd';
 
 function mapStateToProps(state: State, props: OwnProps): StateProps {
-    let {issues} = state;
+    let {issues, tags} = state;
 
     let issuesByStatus: IssueByStatusMap = {};
     Object.values(IssueStatus).map(s => {issuesByStatus[s] = []})
@@ -23,6 +23,7 @@ function mapStateToProps(state: State, props: OwnProps): StateProps {
 
     return {
         issues: issuesByStatus,
+        tags,
     }
 }
 

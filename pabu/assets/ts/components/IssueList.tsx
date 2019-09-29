@@ -110,7 +110,7 @@ class IssueList extends React.Component<Props, State> {
             layout: pabuLocalStorage.issueListLayout,
             statusFilters: pabuLocalStorage.issueTableFilters,
             doneDateFilter: pabuLocalStorage.issueDoneDateFilter,
-            tagFilter: [],
+            tagFilter: pabuLocalStorage.issueTagFilter,
         }
     }
 
@@ -128,6 +128,11 @@ class IssueList extends React.Component<Props, State> {
     private changeDoneDateFilter = (value: number) => {
         this.setState({doneDateFilter: value});
         pabuLocalStorage.issueDoneDateFilter = value;
+    }
+
+    private changeTagFilter = (tagFilter: Array<number>) => {
+        this.setState({tagFilter});
+        pabuLocalStorage.issueTagFilter = tagFilter;
     }
 
     render() {
@@ -156,13 +161,17 @@ class IssueList extends React.Component<Props, State> {
                         placeholder="Filter by tags..."
                         options={Object.values(this.props.tags).map(t => ({label: t.name, value: t.id}))}
                         values={tagFilter.map(id => ({value: id, label: this.props.tags[id].name}))}
-                        onChange={v => this.setState({tagFilter: v.map(v => v.value)})}
+                        onChange={v => this.changeTagFilter(v.map(v => v.value))}
                     />
                  </div>
             </div>
             {layout == 'list' ?
                 <IssueTableView {...this.props} issues={issues}/> :
-                <IssueCardView tagFilter={tagFilter} doneDateFilter={doneDateFilter} projectId={id}
+                <IssueCardView
+                    tagFilter={tagFilter}
+                    doneDateFilter={doneDateFilter}
+                    projectId={id}
+                    setTagFilter={id => this.changeTagFilter([id])}
                     {...removeKeys<Props>(this.props, 'classes')}
                 />}
         </div>

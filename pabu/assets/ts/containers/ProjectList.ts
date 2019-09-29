@@ -1,7 +1,7 @@
 
 import { connect } from 'react-redux';
 import { closeAddTimeDialog, closeIssueDialog, closePaymentDialog, closeProject, fetchAllProjectDataIfNeeded, fetchIssues, fetchProjects,
-    openProject, processIssues, processTags, sendPayment, sendTime, showNotification } from '../actions';
+    openProject, processIssues, processTags, sendPayment, sendTime, showNotification, fetchTags } from '../actions';
 import ProjectList, { DispatchProps, StateProps } from '../components/ProjectList';
 import { IssueFormData, IssueStatus, PaymentSubmitData, Project, State, ThunkDispatcher } from '../types';
 
@@ -34,8 +34,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatcher) => {
             const issues = await dispatch(processIssues([{name, desc, status, projectId, id}]));
             await dispatch(processTags(Object.values(issues)[0].id, tags));
             dispatch(closeIssueDialog());
-            dispatch(fetchIssues(projectId));
             dispatch(fetchProjects(projectId));
+            dispatch(fetchIssues(projectId));
+            dispatch(fetchTags(projectId));
             dispatch(showNotification(`Task has been ${id ? 'modified': 'created'}`));
         },
         onPaymentSubmit: (projectId: number, data: PaymentSubmitData) => {

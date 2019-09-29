@@ -89,6 +89,7 @@ export interface ExpandedTimeEntry extends TimeEntry {
     issueStatus: IssueStatus,
     userName: string,
     spentHours: number,
+    issueTags: Array<number>,
 }
 
 export interface User {
@@ -219,6 +220,7 @@ export class LocalStorageSchema {
         [IssueStatus.IN_PROGRESS]: true,
         [IssueStatus.DONE]: false,
     };
+    issueTagFilter: Array<number> = [];
     lastSeenChangelogVersion: string = 'v0.0.0';
 }
 

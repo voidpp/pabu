@@ -13,7 +13,7 @@ from voluptuous import Schema
 from pabu.auth import get_user_id, is_logged_in
 from pabu.db import Database
 from pabu.models import Issue, Payment, Project, ProjectInvitationToken, TimeEntry, User, projects_users, Tag
-from pabu.tools import (entry_stat_from_list, issue_to_dict, project_to_dict, project_token_to_dict, sqla_model_to_voluptuous,
+from pabu.tools import (entry_stat_from_list, issue_to_dict, project_to_dict, project_token_to_dict, sqla_model_to_voluptuous, tag_to_dict,
                         time_entry_to_dict, user_to_dict, payment_to_dict, get_all_project_data as get_all_project_data_)
 
 logger = logging.getLogger(__name__)
@@ -140,14 +140,6 @@ def add_api_controllers(app: Flask, db: Database):
             })
             return {i.id: issue_to_dict(i) for i in issues}
 
-    # @jsonrpc_api.dispatcher.add_method
-    # def process_tags(tags): # pylint: disable=unused-variable
-    #     with db.session_scope() as conn:
-    #         issues = process_resources(tags, Tag, conn, {
-    #             'checker': lambda i: check_project(i.project_id, conn),
-    #         })
-    #         return {i.id: issue_to_dict(i) for i in issues}
-
     @jsonrpc_api.dispatcher.add_method
     def process_tags(issue_id, tags): # pylint: disable=unused-variable
         with db.session_scope() as conn:
@@ -160,6 +152,15 @@ def add_api_controllers(app: Flask, db: Database):
                 conn.add(*new_tags)
             issue = conn.query(Issue).filter(Issue.id == issue_id).first()
             issue.tags = new_tags + existing_tags
+
+    @jsonrpc_api.dispatcher.add_method
+    def get_tags(project_id: int): # pylint: disable=unused-variable
+        user_id = get_user_id()
+        with db.session_scope() as conn:
+            rows = conn.query(Tag).join(Project).join(projects_users).join(User).filter(User.id == user_id) \
+                       .filter(Project.id == project_id).all()
+            return {r.id: tag_to_dict(r) for r in rows}
+
 
     @jsonrpc_api.dispatcher.add_method
     def get_issues(project_id: int): # pylint: disable=unused-variable

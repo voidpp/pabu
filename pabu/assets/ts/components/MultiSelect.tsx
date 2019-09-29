@@ -144,8 +144,8 @@ function MultiValue(props) {
                 [props.selectProps.classes.chipFocused]: props.isFocused,
             })}
             onDelete={props.removeProps.onClick}
-            deleteIcon={<CancelIcon {...props.removeProps} />}
-            style={{height: 28}}
+            deleteIcon={<CancelIcon {...props.removeProps} fontSize="small" style={{marginLeft: -5, marginRight: 2}} />}
+            size="small"
         />
     );
 }
@@ -182,6 +182,7 @@ export type Props = {
     label?: string,
     placeholder?: string,
     creatable?: boolean,
+    style?: React.CSSProperties,
 };
 
 export default function MultiSelect(props: Props) {
@@ -189,7 +190,7 @@ export default function MultiSelect(props: Props) {
 
     const theme = useTheme();
 
-    const {values, options, onChange, label, placeholder = false, creatable = false} = props;
+    const {values, options, onChange, label, placeholder = false, creatable = false, style = {}} = props;
 
     const selectStyles = {
         input: base => ({
@@ -207,6 +208,7 @@ export default function MultiSelect(props: Props) {
         <Comp
             classes={classes}
             styles={selectStyles}
+            style={style}
             inputId="react-select-multiple"
             TextFieldProps={{
                 label,

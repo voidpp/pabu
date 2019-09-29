@@ -222,6 +222,14 @@ export function fetchProjects(id: number = null, ) {
     }
 }
 
+export function fetchTags(projectId: number) {
+    return dispatch => {
+        return client.getTags(projectId).then(data => {
+            dispatch(receiveTags(data))
+        })
+    }
+}
+
 export function fetchProjectUsers(projectId: number) {
     return dispatch => {
         return client.getProjectUsers(projectId).then(data => {
@@ -277,6 +285,14 @@ export function receiveProjects(data) {
 export function receiveIssues(data, deepUpdate = false) {
     return  {
         type: Action.RECEIVE_ISSUES,
+        data,
+        deepUpdate,
+    }
+}
+
+export function receiveTags(data, deepUpdate = false) {
+    return  {
+        type: Action.RECEIVE_TAGS,
         data,
         deepUpdate,
     }

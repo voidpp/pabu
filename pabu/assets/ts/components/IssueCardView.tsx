@@ -1,7 +1,7 @@
-import { createStyles, Theme, Typography, withStyles, Avatar, Tooltip, Link } from "@material-ui/core";
+import { createStyles, Theme, Typography, withStyles, Avatar, Tooltip, Link, Chip } from "@material-ui/core";
 import * as React from 'react';
 import { DragDropContext, Draggable, Droppable, DroppableStateSnapshot, DropResult } from "react-beautiful-dnd";
-import { IssueByStatusMap, IssueStatus, UserMap, TickingStat, Issue, User } from "../types";
+import { IssueByStatusMap, IssueStatus, UserMap, TickingStat, Issue, User, TagMap } from "../types";
 import classNames = require("classnames");
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import StopWatch from "../containers/StopWatch";
@@ -27,6 +27,7 @@ const styles = ({ palette, shape, typography }: Theme) => createStyles({
 
 export type StateProps = {
     issues: IssueByStatusMap,
+    tags: TagMap,
 }
 
 export type DispatchProps = {
@@ -45,6 +46,7 @@ export type OwnProps = {
     stopTime: () => void,
     doneDateFilter: number,
     tagFilter: Array<number>,
+    setTagFilter: (id: number) => void,
 }
 
 type MuiProps = {
@@ -62,11 +64,13 @@ type CardContentProps = {
     startTime: (projectId: number, issueId: number) => void,
     stopTime: () => void,
     issue: Issue,
+    tags: TagMap,
+    setTagFilter: (id: number) => void,
 }
 
 const CardContent = withStyles(styles)(React.memo((props: CardContentProps & MuiProps) => {
 
-    const {showIssue, issue} = props;
+    const {showIssue, issue, tags, setTagFilter} = props;
 
     return <React.Fragment>
         <div className="header">
@@ -74,6 +78,11 @@ const CardContent = withStyles(styles)(React.memo((props: CardContentProps & Mui
                 <Link onClick={() => showIssue(issue.id)}>#{issue.id}</Link> {issue.name}
             </Typography>
             <IssueUserIcon issue={issue}/>
+        </div>
+        <div style={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
+            {issue.tags.map(id => (
+                <Chip style={{marginRight: 5}} size="small" label={tags[id].name} onClick={() => setTagFilter(id)} />
+            ))}
         </div>
         <div className="footer">
             <Typography style={{opacity: 0.6, flexGrow: 1}}>

@@ -93,7 +93,7 @@ export default React.memo((props: StateProps & DispatchProps) => {
                         <tr>
                             <td style={{verticalAlign: 'center'}}><Typography>Tags</Typography></td>
                             <td>
-                                {issue.tags.map(id => <Chip style={{marginRight: 5}} key={id} label={tags[id].name} />)}
+                                {issue.tags.map(id => <Chip size="small" style={{marginRight: 5}} key={id} label={tags[id].name} />)}
                                 {issue.tags.length == 0 ? <NoDataLabel text="There are no tags" /> : ''}
                             </td>
                         </tr>

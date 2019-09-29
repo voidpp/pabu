@@ -48,6 +48,10 @@ class PabuClient {
         return this._send('get_time_entries', [project_id]);
     }
 
+    async getTags(project_id: number): Promise<TagMap> {
+        return this._send('get_tags', [project_id]);
+    }
+
     async getProjectUsers(project_id: number) {
         return this._send('get_project_users', [project_id]);
     }
