@@ -110,7 +110,7 @@ class IssueList extends React.Component<Props, State> {
             layout: pabuLocalStorage.issueListLayout,
             statusFilters: pabuLocalStorage.issueTableFilters,
             doneDateFilter: pabuLocalStorage.issueDoneDateFilter,
-            tagFilter: pabuLocalStorage.issueTagFilter,
+            tagFilter: pabuLocalStorage.issueTagFilter[props.id] || [],
         }
     }
 
@@ -132,7 +132,7 @@ class IssueList extends React.Component<Props, State> {
 
     private changeTagFilter = (tagFilter: Array<number>) => {
         this.setState({tagFilter});
-        pabuLocalStorage.issueTagFilter = tagFilter;
+        pabuLocalStorage.issueTagFilter = Object.assign({}, pabuLocalStorage.issueTagFilter, {[this.props.id]: tagFilter});
     }
 
     render() {
@@ -160,7 +160,7 @@ class IssueList extends React.Component<Props, State> {
                     <MultiSelect
                         placeholder="Filter by tags..."
                         options={Object.values(this.props.tags).map(t => ({label: t.name, value: t.id}))}
-                        values={tagFilter.map(id => ({value: id, label: this.props.tags[id].name}))}
+                        values={tagFilter.filter(id => this.props.tags[id]).map(id => ({value: id, label: this.props.tags[id].name}))}
                         onChange={v => this.changeTagFilter(v.map(v => v.value))}
                     />
                  </div>

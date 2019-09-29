@@ -220,7 +220,7 @@ export class LocalStorageSchema {
         [IssueStatus.IN_PROGRESS]: true,
         [IssueStatus.DONE]: false,
     };
-    issueTagFilter: Array<number> = [];
+    issueTagFilter: {[n: number]: Array<number>} = {};
     lastSeenChangelogVersion: string = 'v0.0.0';
 }
 
