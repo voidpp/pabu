@@ -19,6 +19,7 @@ $ pip install -e .[deploy]
 $ git tag -a v1.42.0 -m 'v1.42.0'
 $ ./generate-changelog
 $ npm run-script build
-$ twine upload
+$ python setup.py sdist
+$ twine upload dist/pabu-1.42.0.tar.gz
 $ git push --tags
 ```
